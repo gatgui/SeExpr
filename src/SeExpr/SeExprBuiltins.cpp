@@ -1250,9 +1250,9 @@ static const char* vnoise_docstring=
 	// skip zero-length intervals
 	if (weights[lo] == 0) {
 	    if (lo > 0 && cutoffs[lo] > 0) // scan backward if possible
-		while (--lo > 0 && weights[lo] == 0);
+		while (--lo > 0 && weights[lo] == 0) {}
 	    else if (lo < range-1)	// else scan forward if possible
-		while (++lo < range-1 && weights[lo] == 0);
+		while (++lo < range-1 && weights[lo] == 0) {}
 	}
 
 	// add offset and return result
@@ -1310,9 +1310,9 @@ static const char* vnoise_docstring=
 	// skip zero-length intervals
 	if (weights[lo] == 0) {
 	    if (lo > 0 && cutoffs[lo] > 0) // scan backward if possible
-		while (--lo > 0 && weights[lo] == 0);
+		while (--lo > 0 && weights[lo] == 0) {}
 	    else if (lo < nvals-1)	// else scan forward if possible
-		while (++lo < nvals-1 && weights[lo] == 0);
+		while (++lo < nvals-1 && weights[lo] == 0) {}
 	}
 
 	// return corresponding value
