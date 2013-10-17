@@ -89,8 +89,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     }
 
     typedef unsigned int uint32_t;
+#   ifndef M_E
 #   define M_E (2.7182818284590452354)
+#   endif
+#   ifndef M_PI
 #   define M_PI (3.141592653589793238)
+#   endif
 #   define UINT32_MAX (0xffffffff)
 #   define UINT32_MIN (0)
 #else
