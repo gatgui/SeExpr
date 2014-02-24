@@ -146,6 +146,7 @@ SeExpression::prep() const
     if (_parseTree && !_parseTree->prep(wantVec())) {
         // build line lookup table
         std::vector<int> lines;
+        std::vector<int>::iterator lit;
         const char* start=_expression.c_str();
         const char* p=_expression.c_str();
         while(*p!=0){
@@ -157,9 +158,11 @@ SeExpression::prep() const
         std::stringstream sstream;
         sstream<<"Prep errors:"<<std::endl;
         for(unsigned int i=0;i<_errors.size();i++){
-            int* bound=lower_bound(&*lines.begin(),&*lines.end(),_errors[i].startPos);
-            int line=bound-&*lines.begin()+1;
+            //int* bound=lower_bound(&*lines.begin(),&*lines.end(),_errors[i].startPos);
+            //int line=bound-&*lines.begin()+1;
             //int column=_errors[i].startPos-lines[line-1];
+            lit = lower_bound(lines.begin(), lines.end(), _errors[i].startPos);
+            int line = (lit != lines.end() ? *lit : lines.back()) - lines.front() + 1;
             sstream<<"  Line "<<line<<": "<<_errors[i].error<<std::endl;
         }
         _parseError=std::string(sstream.str());
