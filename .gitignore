@@ -1,4 +1,6 @@
+build
 .build
 release
 debug
 *.dblite
+*_moc.cpp

@@ -18,11 +18,22 @@ qtmochdrs = ["SeExprEdBrowser.h",
              "SeExprEdShortEdit.h"]
 
 if sys.platform == "darwin":
-   def GenerateMOC(src):
-      pass
+   def GenerateMOC(hdr):
+      import os
+      import subprocess
+      dn, bn = os.path.split(hdr)
+      bn, ext = os.path.splitext(bn)
+      cmd = "moc \"%s/%s%s\" -o \"%s/%s_moc.cpp\"" % (dn, bn, ext, dn, bn)
+      p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+      out, _ = p.communicate()
+      if p.returncode != 0:
+         raise Exception("MOC failed for %s" % hdr)
    
    def RequireQt(env):
       env.Append(LINKFLAGS = " -framework QtCore -framework QtGui -framework QtOpenGL")
+
+for hdr in qtmochdrs:
+   GenerateMOC("src/SeExprEditor/%s" % hdr)
 
 if not sys.platform == "win32":
   libtype = ("staticlib" if int(ARGUMENTS.get("static", "0")) != 0 else "sharedlib")
@@ -55,3 +66,5 @@ prjs = [
 ]
 
 excons.DeclareTargets(env, prjs)
+
+
