@@ -1,36 +1,18 @@
 /*
- SEEXPR SOFTWARE
- Copyright 2011 Disney Enterprises, Inc. All rights reserved
- 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are
- met:
- 
- * Redistributions of source code must retain the above copyright
- notice, this list of conditions and the following disclaimer.
- 
- * Redistributions in binary form must reproduce the above copyright
- notice, this list of conditions and the following disclaimer in
- the documentation and/or other materials provided with the
- distribution.
- 
- * The names "Disney", "Walt Disney Pictures", "Walt Disney Animation
- Studios" or the names of its contributors may NOT be used to
- endorse or promote products derived from this software without
- specific prior written permission from Walt Disney Pictures.
- 
- Disclaimer: THIS SOFTWARE IS PROVIDED BY WALT DISNEY PICTURES AND
- CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
- FOR A PARTICULAR PURPOSE, NONINFRINGEMENT AND TITLE ARE DISCLAIMED.
- IN NO EVENT SHALL WALT DISNEY PICTURES, THE COPYRIGHT HOLDER OR
- CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND BASED ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+* Copyright Disney Enterprises, Inc.  All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License
+* and the following modification to it: Section 6 Trademarks.
+* deleted and replaced with:
+*
+* 6. Trademarks. This License does not grant permission to use the
+* trade names, trademarks, service marks, or product names of the
+* Licensor and its affiliates, except as required for reproducing
+* the content of the NOTICE file.
+*
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
 */
 
 /* Parse tree nodes - this is where the expression evaluation happens.
@@ -63,7 +45,7 @@
 */
 
 #ifndef MAKEDEPEND
-#include <math.h>
+#include <cmath>
 #endif
 #include "SeVec3d.h"
 #include "SeExpression.h"
@@ -648,7 +630,6 @@ SeExprModNode::eval(SeVec3d& result) const
     }
 }
 
-
 void
 SeExprExpNode::eval(SeVec3d& result) const
 {
@@ -659,15 +640,17 @@ SeExprExpNode::eval(SeVec3d& result) const
     child1->eval(b);
 
     if (!_isVec) {
-	result[0] = pow(a[0], b[0]);
+        if(a[0]<0 && std::floor(b[0])!=b[0]) a[0]=0.;
+	result[0] = std::pow(a[0], b[0]);
     }
     else {
 	// at least one child is a vector and the result is too
 	if (!child0->isVec()) a[1] = a[2] = a[0];
 	if (!child1->isVec()) b[1] = b[2] = b[0];
-	result[0] = pow(a[0], b[0]);
-	result[1] = pow(a[1], b[1]);
-	result[2] = pow(a[2], b[2]);
+        for(int k=0;k<3;k++) if(a[k]<0 && std::floor(b[k])!=b[k]) a[k]=0.;
+        result[0] = std::pow(a[0], b[0]);
+        result[1] = std::pow(a[1], b[1]);
+        result[2] = std::pow(a[2], b[2]);
     }
 }
 

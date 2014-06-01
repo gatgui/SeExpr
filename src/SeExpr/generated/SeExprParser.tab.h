@@ -88,7 +88,7 @@
 
 #if ! defined SeExprYYSTYPE && ! defined SeExprYYSTYPE_IS_DECLARED
 typedef union SeExprYYSTYPE
-#line 92 "src/SeExpr/SeExprParser.y"
+#line 74 "src/SeExpr/SeExprParser.y"
 {
     SeExprNode* n; /* a node is returned for all non-terminals to
 		      build the parse tree from the leaves up. */

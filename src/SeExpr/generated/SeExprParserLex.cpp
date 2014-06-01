@@ -545,42 +545,24 @@ int SeExpr_flex_debug = 0;
 char *SeExprtext;
 #line 1 "src/SeExpr/SeExprParserLex.l"
 /*
- SEEXPR SOFTWARE
- Copyright 2011 Disney Enterprises, Inc. All rights reserved
- 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are
- met:
- 
- * Redistributions of source code must retain the above copyright
- notice, this list of conditions and the following disclaimer.
- 
- * Redistributions in binary form must reproduce the above copyright
- notice, this list of conditions and the following disclaimer in
- the documentation and/or other materials provided with the
- distribution.
- 
- * The names "Disney", "Walt Disney Pictures", "Walt Disney Animation
- Studios" or the names of its contributors may NOT be used to
- endorse or promote products derived from this software without
- specific prior written permission from Walt Disney Pictures.
- 
- Disclaimer: THIS SOFTWARE IS PROVIDED BY WALT DISNEY PICTURES AND
- CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
- FOR A PARTICULAR PURPOSE, NONINFRINGEMENT AND TITLE ARE DISCLAIMED.
- IN NO EVENT SHALL WALT DISNEY PICTURES, THE COPYRIGHT HOLDER OR
- CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND BASED ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+* Copyright Disney Enterprises, Inc.  All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License
+* and the following modification to it: Section 6 Trademarks.
+* deleted and replaced with:
+*
+* 6. Trademarks. This License does not grant permission to use the
+* trade names, trademarks, service marks, or product names of the
+* Licensor and its affiliates, except as required for reproducing
+* the content of the NOTICE file.
+*
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
 */
 /* Don't generate SeExprwrap since everything is in one string */
 /* Don't generate unput since it's unused and gcc complains... */
-#line 42 "src/SeExpr/SeExprParserLex.l"
+#line 24 "src/SeExpr/SeExprParserLex.l"
 #include <ctype.h>
 #include <string.h>
 #include <string>
@@ -613,7 +595,7 @@ void resetCounters(std::vector<char*>* stringTokensIn){
     columnNumber+=SeExprleng;\
     SeExprlloc.last_column=columnNumber;SeExprlloc.last_line=lineNumber;} 
 
-#line 617 "SeExprParserLexIn.cpp"
+#line 599 "SeExprParserLexIn.cpp"
 
 #define INITIAL 0
 
@@ -793,9 +775,9 @@ SeExprYY_DECL
 	register char *SeExpr_cp, *SeExpr_bp;
 	register int SeExpr_act;
     
-#line 81 "src/SeExpr/SeExprParserLex.l"
+#line 63 "src/SeExpr/SeExprParserLex.l"
 
-#line 799 "SeExprParserLexIn.cpp"
+#line 781 "SeExprParserLexIn.cpp"
 
 	if ( !(SeExpr_init) )
 		{
@@ -880,122 +862,122 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 SeExprYY_RULE_SETUP
-#line 82 "src/SeExpr/SeExprParserLex.l"
+#line 64 "src/SeExpr/SeExprParserLex.l"
 
 	SeExprYY_BREAK
 case 2:
 SeExprYY_RULE_SETUP
-#line 84 "src/SeExpr/SeExprParserLex.l"
+#line 66 "src/SeExpr/SeExprParserLex.l"
 { return IF; }
 	SeExprYY_BREAK
 case 3:
 SeExprYY_RULE_SETUP
-#line 85 "src/SeExpr/SeExprParserLex.l"
+#line 67 "src/SeExpr/SeExprParserLex.l"
 { return ELSE; }
 	SeExprYY_BREAK
 case 4:
 SeExprYY_RULE_SETUP
-#line 87 "src/SeExpr/SeExprParserLex.l"
+#line 69 "src/SeExpr/SeExprParserLex.l"
 { return OR; }
 	SeExprYY_BREAK
 case 5:
 SeExprYY_RULE_SETUP
-#line 88 "src/SeExpr/SeExprParserLex.l"
+#line 70 "src/SeExpr/SeExprParserLex.l"
 { return AND; }
 	SeExprYY_BREAK
 case 6:
 SeExprYY_RULE_SETUP
-#line 89 "src/SeExpr/SeExprParserLex.l"
+#line 71 "src/SeExpr/SeExprParserLex.l"
 { return EQ; }
 	SeExprYY_BREAK
 case 7:
 SeExprYY_RULE_SETUP
-#line 90 "src/SeExpr/SeExprParserLex.l"
+#line 72 "src/SeExpr/SeExprParserLex.l"
 { return NE; }
 	SeExprYY_BREAK
 case 8:
 SeExprYY_RULE_SETUP
-#line 91 "src/SeExpr/SeExprParserLex.l"
+#line 73 "src/SeExpr/SeExprParserLex.l"
 { return LE; }
 	SeExprYY_BREAK
 case 9:
 SeExprYY_RULE_SETUP
-#line 92 "src/SeExpr/SeExprParserLex.l"
+#line 74 "src/SeExpr/SeExprParserLex.l"
 { return GE; }
 	SeExprYY_BREAK
 case 10:
 SeExprYY_RULE_SETUP
-#line 93 "src/SeExpr/SeExprParserLex.l"
+#line 75 "src/SeExpr/SeExprParserLex.l"
 { return ARROW; }
 	SeExprYY_BREAK
 case 11:
 SeExprYY_RULE_SETUP
-#line 94 "src/SeExpr/SeExprParserLex.l"
+#line 76 "src/SeExpr/SeExprParserLex.l"
 { return AddEq; }
 	SeExprYY_BREAK
 case 12:
 SeExprYY_RULE_SETUP
-#line 95 "src/SeExpr/SeExprParserLex.l"
+#line 77 "src/SeExpr/SeExprParserLex.l"
 { return SubEq; }
 	SeExprYY_BREAK
 case 13:
 SeExprYY_RULE_SETUP
-#line 96 "src/SeExpr/SeExprParserLex.l"
+#line 78 "src/SeExpr/SeExprParserLex.l"
 { return MultEq; }
 	SeExprYY_BREAK
 case 14:
 SeExprYY_RULE_SETUP
-#line 97 "src/SeExpr/SeExprParserLex.l"
+#line 79 "src/SeExpr/SeExprParserLex.l"
 { return DivEq; }
 	SeExprYY_BREAK
 case 15:
 SeExprYY_RULE_SETUP
-#line 98 "src/SeExpr/SeExprParserLex.l"
+#line 80 "src/SeExpr/SeExprParserLex.l"
 { return ModEq; }
 	SeExprYY_BREAK
 case 16:
 SeExprYY_RULE_SETUP
-#line 99 "src/SeExpr/SeExprParserLex.l"
+#line 81 "src/SeExpr/SeExprParserLex.l"
 { return ExpEq; }
 	SeExprYY_BREAK
 case 17:
 SeExprYY_RULE_SETUP
-#line 101 "src/SeExpr/SeExprParserLex.l"
+#line 83 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = M_PI; return NUMBER; }
 	SeExprYY_BREAK
 case 18:
 SeExprYY_RULE_SETUP
-#line 102 "src/SeExpr/SeExprParserLex.l"
+#line 84 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = M_E; return NUMBER; }
 	SeExprYY_BREAK
 case 19:
 SeExprYY_RULE_SETUP
-#line 103 "src/SeExpr/SeExprParserLex.l"
+#line 85 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = 0; return NUMBER; }
 	SeExprYY_BREAK
 case 20:
 SeExprYY_RULE_SETUP
-#line 104 "src/SeExpr/SeExprParserLex.l"
+#line 86 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = 1; return NUMBER; }
 	SeExprYY_BREAK
 case 21:
 SeExprYY_RULE_SETUP
-#line 105 "src/SeExpr/SeExprParserLex.l"
+#line 87 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = 2; return NUMBER; }
 	SeExprYY_BREAK
 case 22:
 SeExprYY_RULE_SETUP
-#line 106 "src/SeExpr/SeExprParserLex.l"
+#line 88 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = 3; return NUMBER; }
 	SeExprYY_BREAK
 case 23:
 SeExprYY_RULE_SETUP
-#line 108 "src/SeExpr/SeExprParserLex.l"
+#line 90 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.d = atof(SeExprtext); return NUMBER; }
 	SeExprYY_BREAK
 case 24:
 SeExprYY_RULE_SETUP
-#line 109 "src/SeExpr/SeExprParserLex.l"
+#line 91 "src/SeExpr/SeExprParserLex.l"
 { /* match quoted string, allow embedded quote, \" */
 			  SeExprlval.s = strdup(&SeExprtext[1]); 
                           stringTokens->push_back(SeExprlval.s); 
@@ -1004,7 +986,7 @@ SeExprYY_RULE_SETUP
 	SeExprYY_BREAK
 case 25:
 SeExprYY_RULE_SETUP
-#line 114 "src/SeExpr/SeExprParserLex.l"
+#line 96 "src/SeExpr/SeExprParserLex.l"
 { /* match quoted string, allow embedded quote, \' */
 			  SeExprlval.s = strdup(&SeExprtext[1]); 
                           stringTokens->push_back(SeExprlval.s); 
@@ -1013,51 +995,51 @@ SeExprYY_RULE_SETUP
 	SeExprYY_BREAK
 case 26:
 SeExprYY_RULE_SETUP
-#line 119 "src/SeExpr/SeExprParserLex.l"
+#line 101 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.s = strdup(&SeExprtext[1]); stringTokens->push_back(SeExprlval.s); return VAR; }
 	SeExprYY_BREAK
 case 27:
 SeExprYY_RULE_SETUP
-#line 120 "src/SeExpr/SeExprParserLex.l"
+#line 102 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.s = strdup(&SeExprtext[1]); stringTokens->push_back(SeExprlval.s); return VAR; }
 	SeExprYY_BREAK
 case 28:
 SeExprYY_RULE_SETUP
-#line 121 "src/SeExpr/SeExprParserLex.l"
+#line 103 "src/SeExpr/SeExprParserLex.l"
 { SeExprlval.s = strdup(SeExprtext); stringTokens->push_back(SeExprlval.s); return NAME; }
 	SeExprYY_BREAK
 case 29:
 SeExprYY_RULE_SETUP
-#line 123 "src/SeExpr/SeExprParserLex.l"
+#line 105 "src/SeExpr/SeExprParserLex.l"
 /* ignore quoted newline */;
 	SeExprYY_BREAK
 case 30:
 SeExprYY_RULE_SETUP
-#line 124 "src/SeExpr/SeExprParserLex.l"
+#line 106 "src/SeExpr/SeExprParserLex.l"
 /* ignore quoted tab */;
 	SeExprYY_BREAK
 case 31:
 /* rule 31 can match eol */
 SeExprYY_RULE_SETUP
-#line 125 "src/SeExpr/SeExprParserLex.l"
+#line 107 "src/SeExpr/SeExprParserLex.l"
 /* ignore whitespace */;
 	SeExprYY_BREAK
 case 32:
 SeExprYY_RULE_SETUP
-#line 126 "src/SeExpr/SeExprParserLex.l"
+#line 108 "src/SeExpr/SeExprParserLex.l"
 /* skip trailing comment (up to end of line) */;
 	SeExprYY_BREAK
 case 33:
 SeExprYY_RULE_SETUP
-#line 128 "src/SeExpr/SeExprParserLex.l"
+#line 110 "src/SeExpr/SeExprParserLex.l"
 { return SeExprtext[0]; }
 	SeExprYY_BREAK
 case 34:
 SeExprYY_RULE_SETUP
-#line 130 "src/SeExpr/SeExprParserLex.l"
+#line 112 "src/SeExpr/SeExprParserLex.l"
 ECHO;
 	SeExprYY_BREAK
-#line 1061 "SeExprParserLexIn.cpp"
+#line 1043 "SeExprParserLexIn.cpp"
 case SeExprYY_STATE_EOF(INITIAL):
 	SeExprterminate();
 
@@ -2017,7 +1999,7 @@ void SeExprfree (void * ptr )
 
 #define SeExprYYTABLES_NAME "SeExprtables"
 
-#line 130 "src/SeExpr/SeExprParserLex.l"
+#line 112 "src/SeExpr/SeExprParserLex.l"
 
 
 

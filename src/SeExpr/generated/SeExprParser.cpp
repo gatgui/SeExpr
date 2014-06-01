@@ -122,7 +122,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 36 "src/SeExpr/SeExprParser.y"
+#line 18 "src/SeExpr/SeExprParser.y"
 
 #ifndef MAKEDEPEND
 #include <algorithm>
@@ -199,7 +199,7 @@ inline void Forget(SeExprNode* n)
 
 #if ! defined SeExprYYSTYPE && ! defined SeExprYYSTYPE_IS_DECLARED
 typedef union SeExprYYSTYPE
-#line 92 "src/SeExpr/SeExprParser.y"
+#line 74 "src/SeExpr/SeExprParser.y"
 {
     SeExprNode* n; /* a node is returned for all non-terminals to
 		      build the parse tree from the leaves up. */
@@ -458,7 +458,7 @@ union SeExpralloc
 /* SeExprYYNNTS -- Number of nonterminals.  */
 #define SeExprYYNNTS  11
 /* SeExprYYNRULES -- Number of rules.  */
-#define SeExprYYNRULES  60
+#define SeExprYYNRULES  59
 /* SeExprYYNRULES -- Number of states.  */
 #define SeExprYYNSTATES  139
 
@@ -509,11 +509,10 @@ static const SeExprtype_uint8 SeExprprhs[] =
 {
        0,     0,     3,     6,     8,     9,    11,    13,    16,    18,
       23,    28,    33,    38,    43,    48,    53,    58,    63,    68,
-      73,    78,    83,    88,    89,    98,    99,   104,   107,   111,
-     119,   124,   130,   134,   138,   142,   146,   150,   154,   158,
-     162,   165,   168,   171,   174,   178,   182,   186,   190,   194,
-     198,   203,   210,   212,   214,   216,   217,   219,   221,   225,
-     227
+      73,    78,    83,    88,    97,    98,   103,   106,   110,   118,
+     123,   129,   133,   137,   141,   145,   149,   153,   157,   161,
+     164,   167,   170,   173,   177,   181,   185,   189,   193,   197,
+     202,   209,   211,   213,   215,   216,   218,   220,   224,   226
 };
 
 /* SeExprYYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -527,33 +526,32 @@ static const SeExprtype_int8 SeExprrhs[] =
       51,    39,    -1,     5,    38,    51,    39,    -1,     5,     9,
       51,    39,    -1,     5,    10,    51,    39,    -1,     5,    11,
       51,    39,    -1,     5,    12,    51,    39,    -1,     5,    13,
-      51,    39,    -1,     5,    14,    51,    39,    -1,    -1,     3,
-      15,    51,    16,    40,    46,    41,    50,    -1,    -1,     4,
-      40,    46,    41,    -1,     4,    49,    -1,    15,    51,    16,
-      -1,    37,    51,    42,    51,    42,    51,    43,    -1,    51,
-      37,    51,    43,    -1,    51,    19,    51,    18,    51,    -1,
-      51,    20,    51,    -1,    51,    21,    51,    -1,    51,    23,
-      51,    -1,    51,    22,    51,    -1,    51,    24,    51,    -1,
-      51,    25,    51,    -1,    51,    27,    51,    -1,    51,    26,
-      51,    -1,    28,    51,    -1,    29,    51,    -1,    33,    51,
-      -1,    34,    51,    -1,    51,    28,    51,    -1,    51,    29,
-      51,    -1,    51,    30,    51,    -1,    51,    31,    51,    -1,
-      51,    32,    51,    -1,    51,    36,    51,    -1,     5,    15,
-      52,    16,    -1,    51,    17,     5,    15,    52,    16,    -1,
-       6,    -1,     5,    -1,     8,    -1,    -1,    53,    -1,    54,
-      -1,    53,    42,    54,    -1,    51,    -1,     7,    -1
+      51,    39,    -1,     5,    14,    51,    39,    -1,     3,    15,
+      51,    16,    40,    46,    41,    50,    -1,    -1,     4,    40,
+      46,    41,    -1,     4,    49,    -1,    15,    51,    16,    -1,
+      37,    51,    42,    51,    42,    51,    43,    -1,    51,    37,
+      51,    43,    -1,    51,    19,    51,    18,    51,    -1,    51,
+      20,    51,    -1,    51,    21,    51,    -1,    51,    23,    51,
+      -1,    51,    22,    51,    -1,    51,    24,    51,    -1,    51,
+      25,    51,    -1,    51,    27,    51,    -1,    51,    26,    51,
+      -1,    28,    51,    -1,    29,    51,    -1,    33,    51,    -1,
+      34,    51,    -1,    51,    28,    51,    -1,    51,    29,    51,
+      -1,    51,    30,    51,    -1,    51,    31,    51,    -1,    51,
+      32,    51,    -1,    51,    36,    51,    -1,     5,    15,    52,
+      16,    -1,    51,    17,     5,    15,    52,    16,    -1,     6,
+      -1,     5,    -1,     8,    -1,    -1,    53,    -1,    54,    -1,
+      53,    42,    54,    -1,    51,    -1,     7,    -1
 };
 
 /* SeExprYYRLINE[SeExprYYN] -- source line where rule number SeExprYYN was defined.  */
-static const SeExprtype_uint16 SeExprrline[] =
+static const SeExprtype_uint8 SeExprrline[] =
 {
-       0,   137,   137,   138,   143,   144,   148,   149,   154,   155,
-     156,   159,   162,   165,   168,   171,   174,   175,   178,   181,
-     184,   187,   190,   193,   197,   202,   203,   204,   209,   210,
-     211,   212,   213,   214,   215,   216,   217,   218,   219,   220,
-     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
-     231,   234,   239,   240,   241,   246,   247,   252,   253,   257,
-     258
+       0,   119,   119,   120,   125,   126,   130,   131,   136,   137,
+     138,   141,   144,   147,   150,   153,   156,   157,   160,   163,
+     166,   169,   172,   178,   183,   184,   185,   190,   191,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     215,   220,   221,   222,   227,   228,   233,   234,   238,   239
 };
 #endif
 
@@ -590,11 +588,10 @@ static const SeExprtype_uint8 SeExprr1[] =
 {
        0,    44,    45,    45,    46,    46,    47,    47,    48,    48,
       48,    48,    48,    48,    48,    48,    48,    48,    48,    48,
-      48,    48,    48,    48,    49,    50,    50,    50,    51,    51,
+      48,    48,    48,    49,    50,    50,    50,    51,    51,    51,
       51,    51,    51,    51,    51,    51,    51,    51,    51,    51,
       51,    51,    51,    51,    51,    51,    51,    51,    51,    51,
-      51,    51,    51,    51,    51,    52,    52,    53,    53,    54,
-      54
+      51,    51,    51,    51,    52,    52,    53,    53,    54,    54
 };
 
 /* SeExprYYR2[SeExprYYN] -- Number of symbols composing right hand side of rule SeExprYYN.  */
@@ -602,11 +599,10 @@ static const SeExprtype_uint8 SeExprr2[] =
 {
        0,     2,     2,     1,     0,     1,     1,     2,     1,     4,
        4,     4,     4,     4,     4,     4,     4,     4,     4,     4,
-       4,     4,     4,     0,     8,     0,     4,     2,     3,     7,
-       4,     5,     3,     3,     3,     3,     3,     3,     3,     3,
-       2,     2,     2,     2,     3,     3,     3,     3,     3,     3,
-       4,     6,     1,     1,     1,     0,     1,     1,     3,     1,
-       1
+       4,     4,     4,     8,     0,     4,     2,     3,     7,     4,
+       5,     3,     3,     3,     3,     3,     3,     3,     3,     2,
+       2,     2,     2,     3,     3,     3,     3,     3,     3,     4,
+       6,     1,     1,     1,     0,     1,     1,     3,     1,     1
 };
 
 /* SeExprYYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -614,20 +610,20 @@ static const SeExprtype_uint8 SeExprr2[] =
    means the default is an error.  */
 static const SeExprtype_uint8 SeExprdefact[] =
 {
-       0,     0,    53,    52,    54,     0,     0,     0,     0,     0,
+       0,     0,    52,    51,    53,     0,     0,     0,     0,     0,
        0,     0,     0,     6,     8,     3,     0,     0,     0,     0,
-       0,     0,     0,    55,     0,     0,     0,     0,     0,     0,
-       0,     0,    53,    52,     0,    40,    41,    42,    43,     0,
+       0,     0,     0,    54,     0,     0,     0,     0,     0,     0,
+       0,     0,    52,    51,     0,    39,    40,    41,    42,     0,
        1,     7,     2,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    60,    59,     0,
-      56,    57,     0,     0,     0,     0,     0,     0,     0,     0,
-      28,     0,     0,     0,    32,    33,    35,    34,    36,    37,
-      39,    38,    44,    45,    46,    47,    48,    49,     0,     0,
-      17,    18,    19,    20,    21,    22,    50,     0,    16,    10,
-      11,    12,    13,    14,    15,     9,     0,    55,     0,    30,
-       4,    58,     0,     0,    31,     0,     0,     0,     5,     0,
-      51,    25,    29,     0,    24,     4,    27,     0,    26
+       0,     0,     0,     0,     0,     0,     0,    59,    58,     0,
+      55,    56,     0,     0,     0,     0,     0,     0,     0,     0,
+      27,     0,     0,     0,    31,    32,    34,    33,    35,    36,
+      38,    37,    43,    44,    45,    46,    47,    48,     0,     0,
+      17,    18,    19,    20,    21,    22,    49,     0,    16,    10,
+      11,    12,    13,    14,    15,     9,     0,    54,     0,    29,
+       4,    57,     0,     0,    30,     0,     0,     0,     5,     0,
+      50,    24,    28,     0,    23,     4,    26,     0,    25
 };
 
 /* SeExprYYDEFGOTO[NTERM-NUM].  */
@@ -1672,327 +1668,327 @@ SeExprreduce:
   switch (SeExprn)
     {
         case 2:
-#line 137 "src/SeExpr/SeExprParser.y"
+#line 119 "src/SeExpr/SeExprParser.y"
     { ParseResult = NODE2((SeExprloc).first_column,(SeExprloc).last_column,BlockNode, (SeExprvsp[(1) - (2)].n), (SeExprvsp[(2) - (2)].n)); }
     break;
 
   case 3:
-#line 138 "src/SeExpr/SeExprParser.y"
+#line 120 "src/SeExpr/SeExprParser.y"
     { ParseResult = (SeExprvsp[(1) - (1)].n); }
     break;
 
   case 4:
-#line 143 "src/SeExpr/SeExprParser.y"
+#line 125 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE((SeExprloc).first_column,(SeExprloc).last_column,Node); /* create empty node */; }
     break;
 
   case 5:
-#line 144 "src/SeExpr/SeExprParser.y"
+#line 126 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (1)].n); }
     break;
 
   case 6:
-#line 148 "src/SeExpr/SeExprParser.y"
+#line 130 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,Node, (SeExprvsp[(1) - (1)].n)); /* create var list */}
     break;
 
   case 7:
-#line 149 "src/SeExpr/SeExprParser.y"
+#line 131 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (2)].n); (SeExprvsp[(1) - (2)].n)->addChild((SeExprvsp[(2) - (2)].n)); /* add to list */}
     break;
 
   case 8:
-#line 154 "src/SeExpr/SeExprParser.y"
+#line 136 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (1)].n); }
     break;
 
   case 9:
-#line 155 "src/SeExpr/SeExprParser.y"
+#line 137 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), (SeExprvsp[(3) - (4)].n));  }
     break;
 
   case 10:
-#line 156 "src/SeExpr/SeExprParser.y"
+#line 138 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,AddNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 11:
-#line 159 "src/SeExpr/SeExprParser.y"
+#line 141 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,SubNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 12:
-#line 162 "src/SeExpr/SeExprParser.y"
+#line 144 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,MulNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 13:
-#line 165 "src/SeExpr/SeExprParser.y"
+#line 147 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,DivNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 14:
-#line 168 "src/SeExpr/SeExprParser.y"
+#line 150 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,ExpNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 15:
-#line 171 "src/SeExpr/SeExprParser.y"
+#line 153 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,ModNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 16:
-#line 174 "src/SeExpr/SeExprParser.y"
+#line 156 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), (SeExprvsp[(3) - (4)].n));  }
     break;
 
   case 17:
-#line 175 "src/SeExpr/SeExprParser.y"
+#line 157 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,AddNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 18:
-#line 178 "src/SeExpr/SeExprParser.y"
+#line 160 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,SubNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 19:
-#line 181 "src/SeExpr/SeExprParser.y"
+#line 163 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,MulNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 20:
-#line 184 "src/SeExpr/SeExprParser.y"
+#line 166 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,DivNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 21:
-#line 187 "src/SeExpr/SeExprParser.y"
+#line 169 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,ExpNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
   case 22:
-#line 190 "src/SeExpr/SeExprParser.y"
+#line 172 "src/SeExpr/SeExprParser.y"
     {SeExprNode* varNode=NODE1((SeExprlsp[(1) - (4)]).first_column,(SeExprlsp[(1) - (4)]).first_column,VarNode, (SeExprvsp[(1) - (4)].s));
                                 SeExprNode* opNode=NODE2((SeExprlsp[(3) - (4)]).first_column,(SeExprlsp[(3) - (4)]).first_column,ModNode,varNode,(SeExprvsp[(3) - (4)].n));
                                 (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AssignNode, (SeExprvsp[(1) - (4)].s), opNode);}
     break;
 
-  case 24:
-#line 198 "src/SeExpr/SeExprParser.y"
+  case 23:
+#line 179 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE3((SeExprloc).first_column,(SeExprloc).last_column,IfThenElseNode, (SeExprvsp[(3) - (8)].n), (SeExprvsp[(6) - (8)].n), (SeExprvsp[(8) - (8)].n)); }
     break;
 
-  case 25:
-#line 202 "src/SeExpr/SeExprParser.y"
+  case 24:
+#line 183 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE((SeExprloc).first_column,(SeExprloc).last_column,Node); /* create empty node */ }
     break;
 
-  case 26:
-#line 203 "src/SeExpr/SeExprParser.y"
+  case 25:
+#line 184 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(3) - (4)].n); }
     break;
 
-  case 27:
-#line 204 "src/SeExpr/SeExprParser.y"
+  case 26:
+#line 185 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(2) - (2)].n); }
     break;
 
-  case 28:
-#line 209 "src/SeExpr/SeExprParser.y"
+  case 27:
+#line 190 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(2) - (3)].n); }
     break;
 
-  case 29:
-#line 210 "src/SeExpr/SeExprParser.y"
+  case 28:
+#line 191 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE3((SeExprloc).first_column,(SeExprloc).last_column,VecNode, (SeExprvsp[(2) - (7)].n), (SeExprvsp[(4) - (7)].n), (SeExprvsp[(6) - (7)].n)); }
     break;
 
-  case 30:
-#line 211 "src/SeExpr/SeExprParser.y"
+  case 29:
+#line 192 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,SubscriptNode, (SeExprvsp[(1) - (4)].n), (SeExprvsp[(3) - (4)].n)); }
     break;
 
-  case 31:
-#line 212 "src/SeExpr/SeExprParser.y"
+  case 30:
+#line 193 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE3((SeExprloc).first_column,(SeExprloc).last_column,CondNode, (SeExprvsp[(1) - (5)].n), (SeExprvsp[(3) - (5)].n), (SeExprvsp[(5) - (5)].n)); }
     break;
 
-  case 32:
-#line 213 "src/SeExpr/SeExprParser.y"
+  case 31:
+#line 194 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,OrNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 33:
-#line 214 "src/SeExpr/SeExprParser.y"
+  case 32:
+#line 195 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AndNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 34:
-#line 215 "src/SeExpr/SeExprParser.y"
+  case 33:
+#line 196 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,EqNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 35:
-#line 216 "src/SeExpr/SeExprParser.y"
+  case 34:
+#line 197 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,NeNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 36:
-#line 217 "src/SeExpr/SeExprParser.y"
+  case 35:
+#line 198 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,LtNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 37:
-#line 218 "src/SeExpr/SeExprParser.y"
+  case 36:
+#line 199 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,GtNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 38:
-#line 219 "src/SeExpr/SeExprParser.y"
+  case 37:
+#line 200 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,LeNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 39:
-#line 220 "src/SeExpr/SeExprParser.y"
+  case 38:
+#line 201 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,GeNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 40:
-#line 221 "src/SeExpr/SeExprParser.y"
+  case 39:
+#line 202 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(2) - (2)].n); }
     break;
 
-  case 41:
-#line 222 "src/SeExpr/SeExprParser.y"
+  case 40:
+#line 203 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,NegNode, (SeExprvsp[(2) - (2)].n)); }
     break;
 
-  case 42:
-#line 223 "src/SeExpr/SeExprParser.y"
+  case 41:
+#line 204 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,NotNode, (SeExprvsp[(2) - (2)].n)); }
     break;
 
-  case 43:
-#line 224 "src/SeExpr/SeExprParser.y"
+  case 42:
+#line 205 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,InvertNode, (SeExprvsp[(2) - (2)].n)); }
     break;
 
-  case 44:
-#line 225 "src/SeExpr/SeExprParser.y"
+  case 43:
+#line 206 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,AddNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 45:
-#line 226 "src/SeExpr/SeExprParser.y"
+  case 44:
+#line 207 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,SubNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 46:
-#line 227 "src/SeExpr/SeExprParser.y"
+  case 45:
+#line 208 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,MulNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 47:
-#line 228 "src/SeExpr/SeExprParser.y"
+  case 46:
+#line 209 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,DivNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 48:
-#line 229 "src/SeExpr/SeExprParser.y"
+  case 47:
+#line 210 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,ModNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 49:
-#line 230 "src/SeExpr/SeExprParser.y"
+  case 48:
+#line 211 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE2((SeExprloc).first_column,(SeExprloc).last_column,ExpNode, (SeExprvsp[(1) - (3)].n), (SeExprvsp[(3) - (3)].n)); }
     break;
 
-  case 50:
-#line 231 "src/SeExpr/SeExprParser.y"
+  case 49:
+#line 212 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,FuncNode, (SeExprvsp[(1) - (4)].s)); 
 				  // add args directly and discard arg list node
 				  (SeExprval.n)->addChildren((SeExprvsp[(3) - (4)].n)); Forget((SeExprvsp[(3) - (4)].n)); }
     break;
 
-  case 51:
-#line 235 "src/SeExpr/SeExprParser.y"
+  case 50:
+#line 216 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,FuncNode, (SeExprvsp[(3) - (6)].s)); 
 				  (SeExprval.n)->addChild((SeExprvsp[(1) - (6)].n));
 				  // add args directly and discard arg list node
 				  (SeExprval.n)->addChildren((SeExprvsp[(5) - (6)].n)); Forget((SeExprvsp[(5) - (6)].n)); }
     break;
 
+  case 51:
+#line 220 "src/SeExpr/SeExprParser.y"
+    { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,VarNode, (SeExprvsp[(1) - (1)].s)); }
+    break;
+
   case 52:
-#line 239 "src/SeExpr/SeExprParser.y"
+#line 221 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,VarNode, (SeExprvsp[(1) - (1)].s)); }
     break;
 
   case 53:
-#line 240 "src/SeExpr/SeExprParser.y"
-    { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,VarNode, (SeExprvsp[(1) - (1)].s)); }
-    break;
-
-  case 54:
-#line 241 "src/SeExpr/SeExprParser.y"
+#line 222 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,NumNode, (SeExprvsp[(1) - (1)].d)); /*printf("line %d",@$.last_column);*/}
     break;
 
-  case 55:
-#line 246 "src/SeExpr/SeExprParser.y"
+  case 54:
+#line 227 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE((SeExprloc).first_column,(SeExprloc).last_column,Node); /* create empty node */}
     break;
 
-  case 56:
-#line 247 "src/SeExpr/SeExprParser.y"
+  case 55:
+#line 228 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (1)].n); }
     break;
 
-  case 57:
-#line 252 "src/SeExpr/SeExprParser.y"
+  case 56:
+#line 233 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,Node, (SeExprvsp[(1) - (1)].n)); /* create arg list */}
     break;
 
-  case 58:
-#line 253 "src/SeExpr/SeExprParser.y"
+  case 57:
+#line 234 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (3)].n); (SeExprvsp[(1) - (3)].n)->addChild((SeExprvsp[(3) - (3)].n)); /* add to list */}
     break;
 
-  case 59:
-#line 257 "src/SeExpr/SeExprParser.y"
+  case 58:
+#line 238 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = (SeExprvsp[(1) - (1)].n); }
     break;
 
-  case 60:
-#line 258 "src/SeExpr/SeExprParser.y"
+  case 59:
+#line 239 "src/SeExpr/SeExprParser.y"
     { (SeExprval.n) = NODE1((SeExprloc).first_column,(SeExprloc).last_column,StrNode, (SeExprvsp[(1) - (1)].s));}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1996 "y.tab.c"
+#line 1992 "y.tab.c"
       default: break;
     }
   SeExprYY_SYMBOL_PRINT ("-> $$ =", SeExprr1[SeExprn], &SeExprval, &SeExprloc);
@@ -2212,7 +2208,7 @@ SeExprreturn:
 }
 
 
-#line 261 "src/SeExpr/SeExprParser.y"
+#line 242 "src/SeExpr/SeExprParser.y"
 
 
       /* SeExprerror - Report an error.  This is called by the parser.

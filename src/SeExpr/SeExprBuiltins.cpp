@@ -1,43 +1,25 @@
 /*
- SEEXPR SOFTWARE
- Copyright 2011 Disney Enterprises, Inc. All rights reserved
- 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are
- met:
- 
- * Redistributions of source code must retain the above copyright
- notice, this list of conditions and the following disclaimer.
- 
- * Redistributions in binary form must reproduce the above copyright
- notice, this list of conditions and the following disclaimer in
- the documentation and/or other materials provided with the
- distribution.
- 
- * The names "Disney", "Walt Disney Pictures", "Walt Disney Animation
- Studios" or the names of its contributors may NOT be used to
- endorse or promote products derived from this software without
- specific prior written permission from Walt Disney Pictures.
- 
- Disclaimer: THIS SOFTWARE IS PROVIDED BY WALT DISNEY PICTURES AND
- CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
- BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
- FOR A PARTICULAR PURPOSE, NONINFRINGEMENT AND TITLE ARE DISCLAIMED.
- IN NO EVENT SHALL WALT DISNEY PICTURES, THE COPYRIGHT HOLDER OR
- CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND BASED ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+* Copyright Disney Enterprises, Inc.  All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License
+* and the following modification to it: Section 6 Trademarks.
+* deleted and replaced with:
+*
+* 6. Trademarks. This License does not grant permission to use the
+* trade names, trademarks, service marks, or product names of the
+* Licensor and its affiliates, except as required for reproducing
+* the content of the NOTICE file.
+*
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
 */
 
 #define __STDC_LIMIT_MACROS
 #include <cassert>
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
-#include <limits.h>
+#include <limits>
 #include <algorithm>
 #include <cfloat>
 #include "SeExprFunc.h"
@@ -49,20 +31,6 @@
 #include "SeNoise.h"
 
 namespace SeExpr {
-
-
-namespace {
-    // helper functions used by perlin()
-    inline double fade(double t) { return t*t*t*(t*(t*6-15)+10); }
-    inline double lerp(double t, double a, double b) { return a+t*(b-a); }
-    inline double grad(int hash, double x, double y, double z) {
-	int h = hash & 15;              // CONVERT LO 4 BITS OF HASH CODE
-	double u = h<8 ? x : y,         // INTO 12 GRADIENT DIRECTIONS.
-	    v = h<4 ? y : h==12||h==14 ? x : z;
-	return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
-    }
-}
-
 
 static const char* fabs_docstring="float abs(float x)\nabsolute value of x";
 
@@ -141,25 +109,27 @@ static const char* vturbulence_docstring="vector vturbulence(vector v,int octave
 
     double gamma(double x, double g)
     {
-	return pow(x, 1/g);
+	return std::pow(std::max(x, 0.0), 1.0/g);
     }
     static const char* gamma_docstring="float gamma(float x, float g)\nGamma correction of x with gamma factor g";
 
 
     double bias(double x, double b)
     {
-	static double C = 1/log(0.5);
-	return pow(x, log(b) * C);
+	const double C = 1.0/std::log(0.5);
+	return std::pow(std::max(x, 0.0), std::log(b) * C);
     }
     static const char* bias_docstring="float bias(float x, float g)\nVariation of gamma where values less than 0.5 pull the curve down\nand values greater than 0.5 pull the curve up\npow(x,log(b)/log(0.5))";
 
 
     double contrast(double x, double c)
     {
+        if(c <= 0) return .5; // avoid log(0)
+        x = clamp(x, 0.0, 1.0);
 	if (x < 0.5) return     0.5 * bias(1-c,     2*x);
 	else	 return 1 - 0.5 * bias(1-c, 2 - 2*x);
     }
-    static const char* contrast_docstring="float contrast(float x,float x)\nAdjust the contrast.&nbsp; For c from 0 to 0.5, the contrast is decreased.&nbsp; For c &gt; 0.5, the contrast is increased.";
+    static const char* contrast_docstring="float contrast(float x,float x)\nAdjust the contrast.&nbsp; For c from 0 to 0.5, the contrast is decreased.&nbsp; For c &gt; 0.5, the contrast is increased.\nNOTE: x values outside the range [0,1] are clamped.";
 
 
     double boxstep(double x, double a)
@@ -868,7 +838,7 @@ static const char* vnoise_docstring=
 	SeVec3d thiscell(floor(p[0])+0.5, floor(p[1])+0.5,
 			 floor(p[2])+0.5);
 
-	f1 = 1000;
+	f1 = std::numeric_limits<double>::max();
 	SeVec3d* pos = voronoi_points(data, thiscell, jitter);
 	SeVec3d* end = pos + 27;
 
@@ -890,7 +860,8 @@ static const char* vnoise_docstring=
 	// from Advanced Renderman, page 258
 	SeVec3d thiscell(floor(p[0])+0.5, floor(p[1])+0.5,
 			 floor(p[2])+0.5);
-	f1 = f2 = 1000;
+	f1 = f2 = std::numeric_limits<double>::max();
+
 	SeVec3d* pos = voronoi_points(data, thiscell, jitter);
 	SeVec3d* end = pos + 27;
 
@@ -963,7 +934,8 @@ static const char* vnoise_docstring=
     }
     const static char* voronoi_docstring=
         "float voronoi(vector v, int type=1,float jitter=0.5, float fbmScale=0, int fbmOctaves=4,float fbmLacunarity=2, float fbmGain=.5)\n"
-        "voronoi is a cellular noise pattern. It is a jittered variant of cellnoise.";
+        "voronoi is a cellular noise pattern. It is a jittered variant of cellnoise.\n"
+        "NOTE: This does not necessarily return [0,1] value, because it can return arbitrary distance.";
 
 
     SeVec3d cvoronoiFn(VoronoiPointData& data, int n, const SeVec3d* args)
