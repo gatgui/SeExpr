@@ -1,6 +1,13 @@
-build
-.build
-release
-debug
+*~
+/build
+/Linux-*
+/Darwin-*
+*#*#
+*~
+CMakeCache.txt
+/.build
+/release
+/debug
+excons.cache
 *.dblite
 *_moc.cpp

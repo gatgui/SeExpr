@@ -47,7 +47,6 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
-typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -154,12 +153,7 @@ typedef unsigned int flex_uint32_t;
 typedef struct SeExprSpec_buffer_state *SeExprSpecYY_BUFFER_STATE;
 #endif
 
-#ifndef SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
-#define SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
-typedef size_t SeExprSpec_size_t;
-#endif
-
-extern SeExprSpec_size_t SeExprSpecleng;
+extern int SeExprSpecleng;
 
 extern FILE *SeExprSpecin, *SeExprSpecout;
 
@@ -185,6 +179,11 @@ extern FILE *SeExprSpecin, *SeExprSpecout;
 
 #define unput(c) SeExprSpecunput( c, (SeExprSpectext_ptr)  )
 
+#ifndef SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
+#define SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
+typedef size_t SeExprSpec_size_t;
+#endif
+
 #ifndef SeExprSpecYY_STRUCT_SeExprSpecYY_BUFFER_STATE
 #define SeExprSpecYY_STRUCT_SeExprSpecYY_BUFFER_STATE
 struct SeExprSpec_buffer_state
@@ -202,7 +201,7 @@ struct SeExprSpec_buffer_state
 	/* Number of characters read into SeExprSpec_ch_buf, not including EOB
 	 * characters.
 	 */
-	SeExprSpec_size_t SeExprSpec_n_chars;
+	int SeExprSpec_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -272,8 +271,8 @@ static SeExprSpecYY_BUFFER_STATE * SeExprSpec_buffer_stack = 0; /**< Stack as an
 
 /* SeExprSpec_hold_char holds the character lost when SeExprSpectext is formed. */
 static char SeExprSpec_hold_char;
-static SeExprSpec_size_t SeExprSpec_n_chars;		/* number of characters read into SeExprSpec_ch_buf */
-SeExprSpec_size_t SeExprSpecleng;
+static int SeExprSpec_n_chars;		/* number of characters read into SeExprSpec_ch_buf */
+int SeExprSpecleng;
 
 /* Points to current character in buffer. */
 static char *SeExprSpec_c_buf_p = (char *) 0;
@@ -301,7 +300,7 @@ static void SeExprSpec_init_buffer (SeExprSpecYY_BUFFER_STATE b,FILE *file  );
 
 SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_buffer (char *base,SeExprSpec_size_t size  );
 SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_string (SeExprSpecconst char *SeExprSpec_str  );
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes (SeExprSpecconst char *bytes,SeExprSpec_size_t len  );
+SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes (SeExprSpecconst char *bytes,int len  );
 
 void *SeExprSpecalloc (SeExprSpec_size_t  );
 void *SeExprSpecrealloc (void *,SeExprSpec_size_t  );
@@ -359,7 +358,7 @@ static void SeExprSpec_fatal_error (SeExprSpecconst char msg[]  );
  */
 #define SeExprSpecYY_DO_BEFORE_ACTION \
 	(SeExprSpectext_ptr) = SeExprSpec_bp; \
-	SeExprSpecleng = (SeExprSpec_size_t) (SeExprSpec_cp - SeExprSpec_bp); \
+	SeExprSpecleng = (size_t) (SeExprSpec_cp - SeExprSpec_bp); \
 	(SeExprSpec_hold_char) = *SeExprSpec_cp; \
 	*SeExprSpec_cp = '\0'; \
 	(SeExprSpec_c_buf_p) = SeExprSpec_cp;
@@ -543,7 +542,7 @@ int SeExprSpec_flex_debug = 0;
 #define SeExprSpecYY_MORE_ADJ 0
 #define SeExprSpecYY_RESTORE_SeExprSpecYY_MORE_OFFSET
 char *SeExprSpectext;
-#line 1 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 1 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 /*
 * Copyright Disney Enterprises, Inc.  All rights reserved.
 *
@@ -563,7 +562,7 @@ char *SeExprSpectext;
 /* Don't generate SeExprSpecwrap since everything is in one string */
 /* Don't generate unput since it's unused and gcc complains... */
 /* Don't worry about interactive and using isatty(). Fixes Windows compile. */
-#line 26 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 26 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 #ifndef MAKEDEPEND
 #    include <ctype.h>
 #    include <string.h>
@@ -592,7 +591,7 @@ static int lineNumber=0; // not used
 static std::vector<std::pair<int,int> >* comments=0;
 
 extern char* specRegisterToken(char* tok);
-void specResetCounters(std::vector<std::pair<int,int> >& commentsIn){
+void resetCounters(std::vector<std::pair<int,int> >& commentsIn){
    columnNumber=lineNumber=0;
    comments=&commentsIn;
 }
@@ -605,7 +604,7 @@ int SeExprSpecpos(); // forward declare
     columnNumber+=SeExprSpecleng;\
     SeExprSpeclloc.last_column=columnNumber;SeExprSpeclloc.last_line=lineNumber;} 
 
-#line 609 "SeExprSpecParserLexIn.cpp"
+#line 608 "SeExprSpecParserLexIn.cpp"
 
 #define INITIAL 0
 
@@ -644,7 +643,7 @@ FILE *SeExprSpecget_out (void );
 
 void SeExprSpecset_out  (FILE * out_str  );
 
-SeExprSpec_size_t SeExprSpecget_leng (void );
+int SeExprSpecget_leng (void );
 
 char *SeExprSpecget_text (void );
 
@@ -692,7 +691,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( SeExprSpectext, SeExprSpecleng, 1, SeExprSpecout )
+#define ECHO do { if (fwrite( SeExprSpectext, SeExprSpecleng, 1, SeExprSpecout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or SeExprSpecYY_NULL,
@@ -703,7 +702,7 @@ static int input (void );
 	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_is_interactive ) \
 		{ \
 		int c = '*'; \
-		SeExprSpec_size_t n; \
+		unsigned n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( SeExprSpecin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -785,9 +784,9 @@ SeExprSpecYY_DECL
 	register char *SeExprSpec_cp, *SeExprSpec_bp;
 	register int SeExprSpec_act;
     
-#line 74 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 74 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 
-#line 791 "SeExprSpecParserLexIn.cpp"
+#line 790 "SeExprSpecParserLexIn.cpp"
 
 	if ( !(SeExprSpec_init) )
 		{
@@ -868,122 +867,122 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 SeExprSpecYY_RULE_SETUP
-#line 75 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 75 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 
 	SeExprSpecYY_BREAK
 case 2:
 SeExprSpecYY_RULE_SETUP
-#line 77 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 77 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return IF; }
 	SeExprSpecYY_BREAK
 case 3:
 SeExprSpecYY_RULE_SETUP
-#line 78 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 78 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return ELSE; }
 	SeExprSpecYY_BREAK
 case 4:
 SeExprSpecYY_RULE_SETUP
-#line 80 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 80 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return OR; }
 	SeExprSpecYY_BREAK
 case 5:
 SeExprSpecYY_RULE_SETUP
-#line 81 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 81 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return AND; }
 	SeExprSpecYY_BREAK
 case 6:
 SeExprSpecYY_RULE_SETUP
-#line 82 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 82 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return EQ; }
 	SeExprSpecYY_BREAK
 case 7:
 SeExprSpecYY_RULE_SETUP
-#line 83 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 83 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return NE; }
 	SeExprSpecYY_BREAK
 case 8:
 SeExprSpecYY_RULE_SETUP
-#line 84 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 84 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return LE; }
 	SeExprSpecYY_BREAK
 case 9:
 SeExprSpecYY_RULE_SETUP
-#line 85 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 85 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return GE; }
 	SeExprSpecYY_BREAK
 case 10:
 SeExprSpecYY_RULE_SETUP
-#line 86 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 86 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return ARROW; }
 	SeExprSpecYY_BREAK
 case 11:
 SeExprSpecYY_RULE_SETUP
-#line 87 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 87 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return AddEq; }
 	SeExprSpecYY_BREAK
 case 12:
 SeExprSpecYY_RULE_SETUP
-#line 88 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 88 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return SubEq; }
 	SeExprSpecYY_BREAK
 case 13:
 SeExprSpecYY_RULE_SETUP
-#line 89 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 89 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return MultEq; }
 	SeExprSpecYY_BREAK
 case 14:
 SeExprSpecYY_RULE_SETUP
-#line 90 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 90 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return DivEq; }
 	SeExprSpecYY_BREAK
 case 15:
 SeExprSpecYY_RULE_SETUP
-#line 91 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 91 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return ModEq; }
 	SeExprSpecYY_BREAK
 case 16:
 SeExprSpecYY_RULE_SETUP
-#line 92 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 92 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return ExpEq; }
 	SeExprSpecYY_BREAK
 case 17:
 SeExprSpecYY_RULE_SETUP
-#line 94 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 94 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = M_PI; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 18:
 SeExprSpecYY_RULE_SETUP
-#line 95 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 95 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = M_E; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 19:
 SeExprSpecYY_RULE_SETUP
-#line 96 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 96 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = 0; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 20:
 SeExprSpecYY_RULE_SETUP
-#line 97 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 97 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = 1; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 21:
 SeExprSpecYY_RULE_SETUP
-#line 98 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 98 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = 2; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 22:
 SeExprSpecYY_RULE_SETUP
-#line 99 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 99 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = 3; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 23:
 SeExprSpecYY_RULE_SETUP
-#line 101 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 101 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.d = atof(SeExprSpectext); return NUMBER; }
 	SeExprSpecYY_BREAK
 case 24:
 SeExprSpecYY_RULE_SETUP
-#line 102 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 102 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { /* match quoted string, allow embedded quote, \" */
 			  SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); 
 			  SeExprSpeclval.s[strlen(SeExprSpeclval.s)-1] = '\0';
@@ -991,7 +990,7 @@ SeExprSpecYY_RULE_SETUP
 	SeExprSpecYY_BREAK
 case 25:
 SeExprSpecYY_RULE_SETUP
-#line 106 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 106 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { /* match quoted string, allow embedded quote, \' */
 			  SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); 
 			  SeExprSpeclval.s[strlen(SeExprSpeclval.s)-1] = '\0';
@@ -999,53 +998,53 @@ SeExprSpecYY_RULE_SETUP
 	SeExprSpecYY_BREAK
 case 26:
 SeExprSpecYY_RULE_SETUP
-#line 110 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 110 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); return VAR; }
 	SeExprSpecYY_BREAK
 case 27:
 SeExprSpecYY_RULE_SETUP
-#line 111 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 111 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); return VAR; }
 	SeExprSpecYY_BREAK
 case 28:
 SeExprSpecYY_RULE_SETUP
-#line 112 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 112 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { SeExprSpeclval.s = specRegisterToken(SeExprSpectext); return NAME; }
 	SeExprSpecYY_BREAK
 case 29:
 SeExprSpecYY_RULE_SETUP
-#line 114 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 114 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 /* ignore quoted newline */;
 	SeExprSpecYY_BREAK
 case 30:
 SeExprSpecYY_RULE_SETUP
-#line 115 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 115 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 /* ignore quoted tab */;
 	SeExprSpecYY_BREAK
 case 31:
 /* rule 31 can match eol */
 SeExprSpecYY_RULE_SETUP
-#line 116 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 116 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 /* ignore whitespace */;
 	SeExprSpecYY_BREAK
 case 32:
 SeExprSpecYY_RULE_SETUP
-#line 117 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 117 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { /* match comment */ 
                          int startPos=SeExprSpecpos(),endPos=SeExprSpecpos()+strlen(&SeExprSpectext[1])+1;
                           comments->push_back(std::pair<int,int>(startPos,endPos));}
 	SeExprSpecYY_BREAK
 case 33:
 SeExprSpecYY_RULE_SETUP
-#line 122 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 122 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 { return SeExprSpectext[0]; }
 	SeExprSpecYY_BREAK
 case 34:
 SeExprSpecYY_RULE_SETUP
-#line 124 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 124 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 ECHO;
 	SeExprSpecYY_BREAK
-#line 1049 "SeExprSpecParserLexIn.cpp"
+#line 1048 "SeExprSpecParserLexIn.cpp"
 case SeExprSpecYY_STATE_EOF(INITIAL):
 	SeExprSpecterminate();
 
@@ -1232,7 +1231,7 @@ static int SeExprSpec_get_next_buffer (void)
 
 	else
 		{
-			SeExprSpec_size_t num_to_read =
+			int num_to_read =
 			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1246,7 +1245,7 @@ static int SeExprSpec_get_next_buffer (void)
 
 			if ( b->SeExprSpec_is_our_buffer )
 				{
-				SeExprSpec_size_t new_size = b->SeExprSpec_buf_size * 2;
+				int new_size = b->SeExprSpec_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->SeExprSpec_buf_size += b->SeExprSpec_buf_size / 8;
@@ -1277,7 +1276,7 @@ static int SeExprSpec_get_next_buffer (void)
 
 		/* Read in more data. */
 		SeExprSpecYY_INPUT( (&SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[number_to_move]),
-			(SeExprSpec_n_chars), num_to_read );
+			(SeExprSpec_n_chars), (size_t) num_to_read );
 
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars = (SeExprSpec_n_chars);
 		}
@@ -1399,7 +1398,7 @@ static int SeExprSpec_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			SeExprSpec_size_t offset = (SeExprSpec_c_buf_p) - (SeExprSpectext_ptr);
+			int offset = (SeExprSpec_c_buf_p) - (SeExprSpectext_ptr);
 			++(SeExprSpec_c_buf_p);
 
 			switch ( SeExprSpec_get_next_buffer(  ) )
@@ -1423,7 +1422,7 @@ static int SeExprSpec_get_next_buffer (void)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( SeExprSpecwrap( ) )
-						return 0;
+						return EOF;
 
 					if ( ! (SeExprSpec_did_buffer_switch_on_eof) )
 						SeExprSpecYY_NEW_FILE;
@@ -1671,7 +1670,7 @@ void SeExprSpecpop_buffer_state (void)
  */
 static void SeExprSpecensure_buffer_stack (void)
 {
-	SeExprSpec_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(SeExprSpec_buffer_stack)) {
 
@@ -1768,11 +1767,12 @@ SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_string (SeExprSpecconst char * SeExprS
  * 
  * @return the newly allocated buffer state object.
  */
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes  (SeExprSpecconst char * SeExprSpecbytes, SeExprSpec_size_t  _SeExprSpecbytes_len )
+SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes  (SeExprSpecconst char * SeExprSpecbytes, int  _SeExprSpecbytes_len )
 {
 	SeExprSpecYY_BUFFER_STATE b;
 	char *buf;
-	SeExprSpec_size_t n, i;
+	SeExprSpec_size_t n;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _SeExprSpecbytes_len + 2;
@@ -1854,7 +1854,7 @@ FILE *SeExprSpecget_out  (void)
 /** Get the length of the current token.
  * 
  */
-SeExprSpec_size_t SeExprSpecget_leng  (void)
+int SeExprSpecget_leng  (void)
 {
         return SeExprSpecleng;
 }
@@ -2002,7 +2002,7 @@ void SeExprSpecfree (void * ptr )
 
 #define SeExprSpecYYTABLES_NAME "SeExprSpectables"
 
-#line 124 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 124 "/home/fahome/jberlin/projects/SeExpr.linux/src/SeExprEditor/SeExprSpecParserLex.l"
 
 
 
