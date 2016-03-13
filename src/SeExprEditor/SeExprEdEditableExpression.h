@@ -23,7 +23,7 @@
 #include <vector>
 #include <string>
 
-class SeExprEdEditable;
+struct SeExprEdEditable;
 
 /// Factors a SeExpr into an editable expression with controls (i.e. value boxes, curve boxes)
 class SeExprEdEditableExpression{

@@ -33,12 +33,12 @@ class QLabel;
 class SeExprEdColorCurve;
 class QHBoxLayout;
 class SeExprEdCSwatchFrame;
-class SeExprEdEditable;
-class SeExprEdStringEditable;
-class SeExprEdVectorEditable;
-class SeExprEdNumberEditable;
-class SeExprEdAnimCurveEditable;
-class SeExprEdColorSwatchEditable;
+struct SeExprEdEditable;
+struct SeExprEdStringEditable;
+struct SeExprEdVectorEditable;
+struct SeExprEdNumberEditable;
+struct SeExprEdAnimCurveEditable;
+struct SeExprEdColorSwatchEditable;
 class SeExprEdColorSwatchWidget;
 template<class TVAL> struct SeExprEdGenericCurveEditable;
 typedef SeExprEdGenericCurveEditable<SeVec3d> SeExprEdColorCurveEditable;
@@ -262,7 +262,7 @@ private slots:
 };
 
 /// Anim curve control
-class SeExprEdGraphPreview;
+struct SeExprEdGraphPreview;
 class SeExprEdAnimCurveControl:public SeExprEdControl
 {
     Q_OBJECT;
