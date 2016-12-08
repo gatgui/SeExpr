@@ -1,5 +1,7 @@
+import os
 import sys
 import glob
+import subprocess
 import excons
 from excons.tools import gl
 from excons.tools import dl
@@ -19,16 +21,19 @@ else:
   defs = ["SEEXPR_WIN32"]
 
 # Editor
+buildEditor = True
+
 def GenerateMOC(hdr):
-   import os
-   import subprocess
+   global buildEditor
+   
    dn, bn = os.path.split(hdr)
    bn, ext = os.path.splitext(bn)
    cmd = "moc \"%s/%s%s\" -o \"%s/%s_moc.cpp\"" % (dn, bn, ext, dn, bn)
    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
    out, _ = p.communicate()
    if p.returncode != 0:
-      raise Exception("MOC failed for %s" % hdr)
+      excons.WarnOnce("MOC failed for %s. SeExprEditor won't be built." % hdr)
+      buildEditor = False
 
 def RequireQt(env):
    if sys.platform == "darwin":
@@ -61,6 +66,8 @@ qtmochdrs = ["SeExprEdBrowser.h",
 
 for hdr in qtmochdrs:
    GenerateMOC("src/SeExprEditor/%s" % hdr)
+   if not buildEditor:
+      break
 
 eddefs = []
 if libtype == "staticlib":
@@ -72,24 +79,26 @@ if libtype == "staticlib":
 
 # Declare targets
 prjs = [
-  {"name": "SeExpr",
-   "type": libtype,
-   "defs": defs,
-   "incdirs": ["src/SeExpr", "src/SeExpr/generated"],
-   "srcs": glob.glob("src/SeExpr/*.cpp") + glob.glob("src/SeExpr/generated/*.cpp"),
-   "custom": ([] if libtype == "staticlib" else [dl.Require, threads.Require]),
-   "install": {"include": glob.glob("src/SeExpr/*.h")}
-  },
-  {"name": "SeExprEditor",
-   "type": "program",
-   "defs": eddefs,
-   "incdirs": ["src/SeExpr", "src/SeExprEditor", "src/SeExprEditor/generated"],
-   "srcs": glob.glob("src/SeExprEditor/*.cpp") + glob.glob("src/SeExprEditor/generated/*.cpp"),
-   "libs": ["SeExpr"],
-   "custom": edrequires
-  }
+   {  "name": "SeExpr",
+      "type": libtype,
+      "defs": defs,
+      "incdirs": ["src/SeExpr", "src/SeExpr/generated"],
+      "srcs": glob.glob("src/SeExpr/*.cpp") + glob.glob("src/SeExpr/generated/*.cpp"),
+      "custom": ([] if libtype == "staticlib" else [dl.Require, threads.Require]),
+      "install": {"include": glob.glob("src/SeExpr/*.h")}
+   }
 ]
+
+if buildEditor:
+   prjs.append({"name": "SeExprEditor",
+                "type": "program",
+                "defs": eddefs,
+                "incdirs": ["src/SeExpr", "src/SeExprEditor", "src/SeExprEditor/generated"],
+                "srcs": glob.glob("src/SeExprEditor/*.cpp") + glob.glob("src/SeExprEditor/generated/*.cpp"),
+                "libs": ["SeExpr"],
+                "custom": edrequires})
 
 excons.DeclareTargets(env, prjs)
 
 Default("SeExpr")
+
