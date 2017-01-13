@@ -7,33 +7,18 @@ from excons.tools import gl
 from excons.tools import dl
 from excons.tools import threads
 
-env = excons.MakeBaseEnv()
+# Check if editor is required
+buildEditor = ("editor" in COMMAND_LINE_TARGETS or "SeExprEditor" in COMMAND_LINE_TARGETS)
 
-# Library
-if not sys.platform == "win32":
-  libtype = ("staticlib" if excons.GetArgument("static", "0", int) != 0 else "sharedlib")
-  defs = []
-  env.Append(CPPFLAGS=" -msse4.1")
-  if sys.platform == "darwin":
-     env.Append(CPPFLAGS=" -Wno-unneeded-internal-declaration")
-else:
-  libtype = "staticlib"
-  defs = ["SEEXPR_WIN32"]
-
-# Editor
-buildEditor = True
-
-def GenerateMOC(hdr):
-   global buildEditor
-   
-   dn, bn = os.path.split(hdr)
-   bn, ext = os.path.splitext(bn)
-   cmd = "moc \"%s/%s%s\" -o \"%s/%s_moc.cpp\"" % (dn, bn, ext, dn, bn)
+def GenerateMOC(target, source, env):
+   cmd = "moc \"%s\" -o \"%s\"" % (source[0], target[0])
    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
    out, _ = p.communicate()
    if p.returncode != 0:
-      excons.WarnOnce("MOC failed for %s. SeExprEditor won't be built." % hdr)
-      buildEditor = False
+      excons.WarnOnce("MOC generation failed for '%s'. SeExprEditor won't build." % target[0])
+      excons.WarnOnce(out.strip())
+   
+   return None
 
 def RequireQt(env):
    if sys.platform == "darwin":
@@ -51,54 +36,70 @@ def RequireQt(env):
          env.Append(LIBPATH = [qtlib])
       env.Append(LIBS = ["QtCore", "QtGui", "QtOpenGL"])
 
-qtmochdrs = ["SeExprEdBrowser.h",
-             "SeExprEdColorCurve.h",
-             "SeExprEdColorSwatchWidget.h",
-             "SeExprEdControlCollection.h",
-             "SeExprEdControl.h",
-             "SeExprEdCurve.h",
-             "SeExprEdDialog.h",
-             "SeExprEditor.h",
-             "SeExprEdFileDialog.h",
-             "SeExprEdGrapher2d.h",
-             "SeExprEdPopupDocumentation.h",
-             "SeExprEdShortEdit.h"]
 
-for hdr in qtmochdrs:
-   GenerateMOC("src/SeExprEditor/%s" % hdr)
-   if not buildEditor:
-      break
+env = excons.MakeBaseEnv()
 
-eddefs = []
-if libtype == "staticlib":
-   eddefs.append("SeExprEditor_BUILT_AS_STATIC")
-
-edrequires = [gl.Require, RequireQt]
-if libtype == "staticlib":
-   edrequires.extend([dl.Require, threads.Require])
+# Library
+libdefs = []
+if not sys.platform == "win32":
+  env.Append(CPPFLAGS=" -msse4.1")
+  if sys.platform == "darwin":
+     env.Append(CPPFLAGS=" -Wno-unneeded-internal-declaration")
+else:
+  libdefs.append("SEEXPR_WIN32")
+libincs = ["src/SeExpr", "src/SeExpr/generated"]
+libsrcs = glob.glob("src/SeExpr/*.cpp") + glob.glob("src/SeExpr/generated/*.cpp")
 
 # Declare targets
 prjs = [
-   {  "name": "SeExpr",
-      "type": libtype,
-      "defs": defs,
-      "incdirs": ["src/SeExpr", "src/SeExpr/generated"],
-      "srcs": glob.glob("src/SeExpr/*.cpp") + glob.glob("src/SeExpr/generated/*.cpp"),
-      "custom": ([] if libtype == "staticlib" else [dl.Require, threads.Require]),
-      "install": {"include": glob.glob("src/SeExpr/*.h")}
+   {  "name": "SeExpr_s",
+      "type": "staticlib",
+      "defs": libdefs,
+      "incdirs": libincs,
+      "srcs": libsrcs
    }
 ]
 
+if sys.platform != "win32":
+  prjs.append({"name": "SeExpr",
+               "type": "sharedlib",
+                "defs": libdefs,
+                "incdirs": libincs,
+                "srcs": libsrcs,
+                "custom": [dl.Require, threads.Require]})
+
 if buildEditor:
+   env["BUILDERS"]["GenerateMOC"] = Builder(action=Action(GenerateMOC, "Generating $TARGET ..."), suffix="_moc.cpp")
+
+   srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/SeExprEditor/*.cpp"))
+   srcs += glob.glob("src/SeExprEditor/generated/*.cpp")
+
+   qtmochdrs = ["src/SeExprEditor/SeExprEdBrowser.h",
+                "src/SeExprEditor/SeExprEdColorCurve.h",
+                "src/SeExprEditor/SeExprEdColorSwatchWidget.h",
+                "src/SeExprEditor/SeExprEdControl.h",
+                "src/SeExprEditor/SeExprEdControlCollection.h",
+                "src/SeExprEditor/SeExprEdCurve.h",
+                "src/SeExprEditor/SeExprEdDialog.h",
+                "src/SeExprEditor/SeExprEdFileDialog.h",
+                "src/SeExprEditor/SeExprEdGrapher2d.h",
+                "src/SeExprEditor/SeExprEditor.h",
+                "src/SeExprEditor/SeExprEdPopupDocumentation.h",
+                "src/SeExprEditor/SeExprEdShortEdit.h"]
+   qtmocsrcs = map(lambda x: str(env.GenerateMOC(x)[0]), qtmochdrs)
+
    prjs.append({"name": "SeExprEditor",
+                "alias": "editor",
                 "type": "program",
-                "defs": eddefs,
+                "defs": ["SeExprEditor_BUILT_AS_STATIC"],
                 "incdirs": ["src/SeExpr", "src/SeExprEditor", "src/SeExprEditor/generated"],
-                "srcs": glob.glob("src/SeExprEditor/*.cpp") + glob.glob("src/SeExprEditor/generated/*.cpp"),
-                "libs": ["SeExpr"],
-                "custom": edrequires})
+                "srcs": qtmocsrcs + srcs,
+                "libs": ["SeExpr_s"],
+                "custom": [gl.Require, RequireQt, dl.Require, threads.Require]})
 
-excons.DeclareTargets(env, prjs)
+targets = excons.DeclareTargets(env, prjs)
 
-Default("SeExpr")
-
+insthdrs = env.Install(excons.OutputBaseDirectory() + "/include", glob.glob("src/SeExpr/*.h"))
+env.Depends(targets["SeExpr_s"], insthdrs)
+if "SeExpr" in targets:
+   env.Depends(targets["SeExpr"], insthdrs)
