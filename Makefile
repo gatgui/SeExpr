@@ -1,35 +1,58 @@
-#!/usr/bin/env make
-SH ?= sh
-uname_S := $(shell $(SH) -c 'uname -s || echo system')
-uname_R := $(shell $(SH) -c 'uname -r | cut -d- -f1 || echo release')
-uname_M := $(shell $(SH) -c 'uname -m || echo cpu')
+-include Makefile.config
+
+# External commands
+CMAKE ?= cmake
+CLANG_FORMAT ?= clang-format
+FIND ?= find
+MKDIR ?= mkdir -p
+PYTHON ?= python
+RM_R ?= rm -fr
+XARGS ?= xargs
+
+## Path and build flags
 FLAVOR ?= optimize
+#prefix ?= /usr/local
+#libdir ?= lib
 
-platformdir ?= $(uname_S)-$(uname_R)-$(uname_M)-$(FLAVOR)
-builddir ?= $(CURDIR)/build/$(platformdir)
+## Temporary staging directory
+# DESTDIR =
+## Specified by `git make-pkg` when building .pkg files
+# mac_pkg =
 
-prefix ?= $(CURDIR)/$(platformdir)
-#DESTDIR =
+ifdef prefix
+    CMAKE_ARGS += -DCMAKE_INSTALL_PREFIX=$(prefix)
+endif
+ifdef libdir
+    CMAKE_ARGS += -DCMAKE_INSTALL_LIBDIR=$(libdir)
+endif
+ifdef FLAVOR
+    CMAKE_ARGS += -DFLAVOR=$(FLAVOR)
+endif
 
-CMAKE_FLAGS ?= -DCMAKE_INSTALL_PREFIX=$(prefix)
+export CXX
+export DESTDIR
+export prefix
 
-# The default target in this Makefile is...
-all::
+all:
+	$(MKDIR) build/$(FLAVOR)
+	cd build/$(FLAVOR) && $(CMAKE) $(CMAKE_ARGS) $(EXTRA_CMAKE_ARGS) ../..
+	$(MAKE) -C build/$(FLAVOR) all
+
+clean:
+	$(RM_R) build/$(FLAVOR) Linux-*
 
 install: all
-	$(MAKE) -C $(builddir) DESTDIR=$(DESTDIR) install
+	$(MAKE) -C build/$(FLAVOR) install
 
-$(builddir)/stamp: $(CMAKE_FILES)
-	mkdir -p $(builddir)
-	cd $(builddir) && cmake $(CMAKE_FLAGS) ../..
-	touch $@
+format:
+	$(FIND) $(CURDIR)/src -name '*.cpp' | $(XARGS) $(CLANG_FORMAT) -i
+	$(FIND) $(CURDIR)/src -name '*.h' | $(XARGS) $(CLANG_FORMAT) -i
 
-all:: $(builddir)/stamp
-	$(MAKE) -C $(builddir) $(MAKEARGS) all
+test: install
+	$(MAKE) -C build/$(FLAVOR) test
 
-clean: $(builddir)/stamp
-	$(MAKE) -C $(builddir) $(MAKEARGS) clean
+# TODO: run this via cmake
+imagetest: install
+	$(PYTHON) src/tests/imageTestsReportNew.py runall
 
-.PHONY: all
-.PHONY: clean
-.PHONY: install
+precommit: format

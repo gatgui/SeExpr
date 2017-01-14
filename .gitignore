@@ -1,10 +1,13 @@
 *~
+.DS_Store
 /build
 /Linux-*
 /Darwin-*
 *#*#
 *~
 CMakeCache.txt
+src/SeExpr/parser
+src/SeExprEditor/generated
 /.build
 /release
 /debug
