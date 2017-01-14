@@ -38,7 +38,7 @@
 # define SeExprSpecYYTOKENTYPE
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum SeExprSpectokentype {
+   enum SeExpr2Spectokentype {
      IF = 258,
      ELSE = 259,
      NAME = 260,
@@ -88,21 +88,21 @@
 
 #if ! defined SeExprSpecYYSTYPE && ! defined SeExprSpecYYSTYPE_IS_DECLARED
 typedef union SeExprSpecYYSTYPE
-#line 242 "src/SeExprEditor/SeExprSpecParser.y"
+#line 271 "src/ui/ExprSpecParser.y"
 {
-    SeExprSpecNode* n;
+    ExprSpecNode* n;
     double d;      // return value for number tokens
     char* s;       /* return value for name tokens.  Note: UNLIKE the regular parser, this is not strdup()'dthe string */
 }
 /* Line 1529 of yacc.c.  */
 #line 99 "y.tab.h"
 	SeExprSpecYYSTYPE;
-# define SeExprSpecstype SeExprSpecYYSTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2Specstype SeExprSpecYYSTYPE /* obsolescent; will be withdrawn */
 # define SeExprSpecYYSTYPE_IS_DECLARED 1
 # define SeExprSpecYYSTYPE_IS_TRIVIAL 1
 #endif
 
-extern SeExprSpecYYSTYPE SeExprSpeclval;
+extern SeExprSpecYYSTYPE SeExpr2Speclval;
 
 #if ! defined SeExprSpecYYLTYPE && ! defined SeExprSpecYYLTYPE_IS_DECLARED
 typedef struct SeExprSpecYYLTYPE
@@ -112,9 +112,9 @@ typedef struct SeExprSpecYYLTYPE
   int last_line;
   int last_column;
 } SeExprSpecYYLTYPE;
-# define SeExprSpecltype SeExprSpecYYLTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2Specltype SeExprSpecYYLTYPE /* obsolescent; will be withdrawn */
 # define SeExprSpecYYLTYPE_IS_DECLARED 1
 # define SeExprSpecYYLTYPE_IS_TRIVIAL 1
 #endif
 
-extern SeExprSpecYYLTYPE SeExprSpeclloc;
+extern SeExprSpecYYLTYPE SeExpr2Speclloc;

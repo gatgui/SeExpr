@@ -38,74 +38,96 @@
 # define SeExprYYTOKENTYPE
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum SeExprtokentype {
+   enum SeExpr2tokentype {
      IF = 258,
      ELSE = 259,
-     NAME = 260,
-     VAR = 261,
-     STR = 262,
-     NUMBER = 263,
-     AddEq = 264,
-     SubEq = 265,
-     MultEq = 266,
-     DivEq = 267,
-     ExpEq = 268,
-     ModEq = 269,
-     ARROW = 270,
-     OR = 271,
-     AND = 272,
-     NE = 273,
-     EQ = 274,
-     GE = 275,
-     LE = 276,
-     UNARY = 277
+     EXTERN = 260,
+     DEF = 261,
+     FLOATPOINT = 262,
+     STRING = 263,
+     NAME = 264,
+     VAR = 265,
+     STR = 266,
+     NUMBER = 267,
+     LIFETIME_CONSTANT = 268,
+     LIFETIME_UNIFORM = 269,
+     LIFETIME_VARYING = 270,
+     LIFETIME_ERROR = 271,
+     AddEq = 272,
+     SubEq = 273,
+     MultEq = 274,
+     DivEq = 275,
+     ExpEq = 276,
+     ModEq = 277,
+     ARROW = 278,
+     OR = 279,
+     AND = 280,
+     NE = 281,
+     EQ = 282,
+     SEEXPR_GE = 283,
+     SEEXPR_LE = 284,
+     UNARY = 285
    };
 #endif
 /* Tokens.  */
 #define IF 258
 #define ELSE 259
-#define NAME 260
-#define VAR 261
-#define STR 262
-#define NUMBER 263
-#define AddEq 264
-#define SubEq 265
-#define MultEq 266
-#define DivEq 267
-#define ExpEq 268
-#define ModEq 269
-#define ARROW 270
-#define OR 271
-#define AND 272
-#define NE 273
-#define EQ 274
-#define GE 275
-#define LE 276
-#define UNARY 277
+#define EXTERN 260
+#define DEF 261
+#define FLOATPOINT 262
+#define STRING 263
+#define NAME 264
+#define VAR 265
+#define STR 266
+#define NUMBER 267
+#define LIFETIME_CONSTANT 268
+#define LIFETIME_UNIFORM 269
+#define LIFETIME_VARYING 270
+#define LIFETIME_ERROR 271
+#define AddEq 272
+#define SubEq 273
+#define MultEq 274
+#define DivEq 275
+#define ExpEq 276
+#define ModEq 277
+#define ARROW 278
+#define OR 279
+#define AND 280
+#define NE 281
+#define EQ 282
+#define SEEXPR_GE 283
+#define SEEXPR_LE 284
+#define UNARY 285
 
 
 
 
 #if ! defined SeExprYYSTYPE && ! defined SeExprYYSTYPE_IS_DECLARED
 typedef union SeExprYYSTYPE
-#line 74 "src/SeExpr/SeExprParser.y"
+#line 77 "src/SeExpr/ExprParser.y"
 {
-    SeExprNode* n; /* a node is returned for all non-terminals to
+    SeExpr2::ExprNode* n; /* a node is returned for all non-terminals to
 		      build the parse tree from the leaves up. */
     double d;      // return value for number tokens
     char* s;       /* return value for name tokens.  Note: the string
 		      is allocated with strdup() in the lexer and must
 		      be freed with free() */
+    struct {
+        SeExpr2::ExprType::Type     type;
+        int                  dim;
+        SeExpr2::ExprType::Lifetime lifetime;
+    } t;  // return value for types
+    SeExpr2::ExprType::Lifetime l; // return value for lifetime qualifiers
 }
 /* Line 1529 of yacc.c.  */
-#line 102 "y.tab.h"
+#line 124 "y.tab.h"
 	SeExprYYSTYPE;
-# define SeExprstype SeExprYYSTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2stype SeExprYYSTYPE /* obsolescent; will be withdrawn */
 # define SeExprYYSTYPE_IS_DECLARED 1
 # define SeExprYYSTYPE_IS_TRIVIAL 1
 #endif
 
-extern SeExprYYSTYPE SeExprlval;
+extern SeExprYYSTYPE SeExpr2lval;
 
 #if ! defined SeExprYYLTYPE && ! defined SeExprYYLTYPE_IS_DECLARED
 typedef struct SeExprYYLTYPE
@@ -115,9 +137,9 @@ typedef struct SeExprYYLTYPE
   int last_line;
   int last_column;
 } SeExprYYLTYPE;
-# define SeExprltype SeExprYYLTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2ltype SeExprYYLTYPE /* obsolescent; will be withdrawn */
 # define SeExprYYLTYPE_IS_DECLARED 1
 # define SeExprYYLTYPE_IS_TRIVIAL 1
 #endif
 
-extern SeExprYYLTYPE SeExprlloc;
+extern SeExprYYLTYPE SeExpr2lloc;

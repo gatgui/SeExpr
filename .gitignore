@@ -6,11 +6,10 @@
 *#*#
 *~
 CMakeCache.txt
-src/SeExpr/parser
-src/SeExprEditor/generated
 /.build
 /release
 /debug
 excons.cache
 *.dblite
 *_moc.cpp
+src/SeExpr/ExprConfig.h

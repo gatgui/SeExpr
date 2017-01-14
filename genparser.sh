@@ -1,17 +1,17 @@
 #!/usr/bin/env sh
 
-flex -oSeExprParserLexIn.cpp src/SeExpr/SeExprParserLex.l
-sed -e "s/SeExprwrap(n)/SeExprwrap()/g" -e "s/yy/SeExpr/g" -e "s/YY/SeExprYY/g"  SeExprParserLexIn.cpp | tee SeExprParserLex.cpp src/SeExpr/generated/SeExprParserLex.cpp > /dev/null
-bison "--defines" "--verbose" "--fixed-output-files" "-p" "SeExpr" "src/SeExpr/SeExprParser.y"
-sed -e "s/yy/SeExpr/g" -e "s/YY/SeExprYY/g" y.tab.h | tee SeExprParser.tab.h src/SeExpr/generated/SeExprParser.tab.h > /dev/null
-sed -e "s/yy/SeExpr/g" -e "s/YY/SeExprYY/g" y.tab.c | tee SeExprParser.cpp  "src/SeExpr/generated/SeExprParser.cpp" > /dev/null
+flex -oExprParserLexIn.cpp src/SeExpr/ExprParserLex.l
+sed -e "s/SeExprwrap(n)/SeExprwrap()/g" -e "s/yy/SeExpr2/g" -e "s/YY/SeExprYY/g"  ExprParserLexIn.cpp | tee ExprParserLex.cpp src/SeExpr/generated/ExprParserLex.cpp > /dev/null
+bison "--defines" "--verbose" "--fixed-output-files" "-p" "SeExpr2" "src/SeExpr/ExprParser.y"
+sed -e "s/yy/SeExpr2/g" -e "s/YY/SeExprYY/g" y.tab.h | tee ExprParser.tab.h src/SeExpr/generated/ExprParser.tab.h > /dev/null
+sed -e "s/yy/SeExpr2/g" -e "s/YY/SeExprYY/g" y.tab.c | tee ExprParser.cpp  "src/SeExpr/generated/ExprParser.cpp" > /dev/null
 
-flex -oSeExprSpecParserLexIn.cpp src/SeExprEditor/SeExprSpecParserLex.l
-sed -e "s/SeExprSpecwrap(n)/SeExprSpecwrap()/g" -e "s/yy/SeExprSpec/g" -e "s/YY/SeExprSpecYY/g"  SeExprSpecParserLexIn.cpp | tee SeExprSpecParserLex.cpp src/SeExprEditor/generated/SeExprSpecParserLex.cpp > /dev/null
-bison "--defines" "--verbose" "--fixed-output-files" "-p" "SeExprSpec" "src/SeExprEditor/SeExprSpecParser.y"
-sed -e "s/yy/SeExprSpec/g" -e "s/YY/SeExprSpecYY/g" y.tab.h | tee SeExprSpecParser.tab.h src/SeExprEditor/generated/SeExprSpecParser.tab.h > /dev/null
-sed -e "s/yy/SeExprSpec/g" -e "s/YY/SeExprSpecYY/g" y.tab.c | tee SeExprSpecParser.cpp  "src/SeExprEditor/generated/SeExprSpecParser.cpp" > /dev/null
+flex -oExprSpecParserLexIn.cpp src/ui/ExprSpecParserLex.l
+sed -e "s/SeExprSpecwrap(n)/SeExprSpecwrap()/g" -e "s/yy/SeExpr2Spec/g" -e "s/YY/SeExprSpecYY/g"  ExprSpecParserLexIn.cpp | tee ExprSpecParserLex.cpp src/ui/generated/ExprSpecParserLex.cpp > /dev/null
+bison "--defines" "--verbose" "--fixed-output-files" "-p" "SeExpr2Spec" "src/ui/ExprSpecParser.y"
+sed -e "s/yy/SeExpr2Spec/g" -e "s/YY/SeExprSpecYY/g" y.tab.h | tee ExprSpecParser.tab.h src/ui/generated/ExprSpecParser.tab.h > /dev/null
+sed -e "s/yy/SeExpr2Spec/g" -e "s/YY/SeExprSpecYY/g" y.tab.c | tee ExprSpecParser.cpp  "src/ui/generated/ExprSpecParser.cpp" > /dev/null
 
 rm y.*
-rm SeExprParser*
-rm SeExprSpecParser*
+rm ExprParser*
+rm ExprSpecParser*

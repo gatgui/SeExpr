@@ -1,6 +1,6 @@
-#line 2 "SeExprSpecParserLexIn.cpp"
+#line 2 "ExprSpecParserLexIn.cpp"
 
-#line 4 "SeExprSpecParserLexIn.cpp"
+#line 4 "ExprSpecParserLexIn.cpp"
 
 #define  SeExprSpecYY_INT_ALIGNED short int
 
@@ -104,9 +104,9 @@ typedef unsigned int flex_uint32_t;
 #endif	/* ! __cplusplus */
 
 #ifdef SeExprSpecYY_USE_CONST
-#define SeExprSpecconst const
+#define SeExpr2Specconst const
 #else
-#define SeExprSpecconst
+#define SeExpr2Specconst
 #endif
 
 /* Returned upon end-of-file. */
@@ -123,20 +123,20 @@ typedef unsigned int flex_uint32_t;
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
-#define BEGIN (SeExprSpec_start) = 1 + 2 *
+#define BEGIN (SeExpr2Spec_start) = 1 + 2 *
 
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The SeExprSpecYYSTATE alias is for lex
  * compatibility.
  */
-#define SeExprSpecYY_START (((SeExprSpec_start) - 1) / 2)
+#define SeExprSpecYY_START (((SeExpr2Spec_start) - 1) / 2)
 #define SeExprSpecYYSTATE SeExprSpecYY_START
 
 /* Action number for EOF rule of a given start state. */
 #define SeExprSpecYY_STATE_EOF(state) (SeExprSpecYY_END_OF_BUFFER + state + 1)
 
 /* Special action meaning "start processing a new file". */
-#define SeExprSpecYY_NEW_FILE SeExprSpecrestart(SeExprSpecin  )
+#define SeExprSpecYY_NEW_FILE SeExpr2Specrestart(SeExpr2Specin  )
 
 #define SeExprSpecYY_END_OF_BUFFER_CHAR 0
 
@@ -147,21 +147,21 @@ typedef unsigned int flex_uint32_t;
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
  */
-#define SeExprSpecYY_STATE_BUF_SIZE   ((SeExprSpecYY_BUF_SIZE + 2) * sizeof(SeExprSpec_state_type))
+#define SeExprSpecYY_STATE_BUF_SIZE   ((SeExprSpecYY_BUF_SIZE + 2) * sizeof(SeExpr2Spec_state_type))
 
 #ifndef SeExprSpecYY_TYPEDEF_SeExprSpecYY_BUFFER_STATE
 #define SeExprSpecYY_TYPEDEF_SeExprSpecYY_BUFFER_STATE
-typedef struct SeExprSpec_buffer_state *SeExprSpecYY_BUFFER_STATE;
+typedef struct SeExpr2Spec_buffer_state *SeExprSpecYY_BUFFER_STATE;
 #endif
 
 #ifndef SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
 #define SeExprSpecYY_TYPEDEF_SeExprSpecYY_SIZE_T
-typedef size_t SeExprSpec_size_t;
+typedef size_t SeExpr2Spec_size_t;
 #endif
 
-extern SeExprSpec_size_t SeExprSpecleng;
+extern SeExpr2Spec_size_t SeExpr2Specleng;
 
-extern FILE *SeExprSpecin, *SeExprSpecout;
+extern FILE *SeExpr2Specin, *SeExpr2Specout;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -170,68 +170,68 @@ extern FILE *SeExprSpecin, *SeExprSpecout;
     #define SeExprSpecYY_LESS_LINENO(n)
     
 /* Return all but the first "n" matched characters back to the input stream. */
-#define SeExprSpecless(n) \
+#define SeExpr2Specless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up SeExprSpectext. */ \
-        int SeExprSpecless_macro_arg = (n); \
-        SeExprSpecYY_LESS_LINENO(SeExprSpecless_macro_arg);\
-		*SeExprSpec_cp = (SeExprSpec_hold_char); \
+		/* Undo effects of setting up SeExpr2Spectext. */ \
+        int SeExpr2Specless_macro_arg = (n); \
+        SeExprSpecYY_LESS_LINENO(SeExpr2Specless_macro_arg);\
+		*SeExpr2Spec_cp = (SeExpr2Spec_hold_char); \
 		SeExprSpecYY_RESTORE_SeExprSpecYY_MORE_OFFSET \
-		(SeExprSpec_c_buf_p) = SeExprSpec_cp = SeExprSpec_bp + SeExprSpecless_macro_arg - SeExprSpecYY_MORE_ADJ; \
-		SeExprSpecYY_DO_BEFORE_ACTION; /* set up SeExprSpectext again */ \
+		(SeExpr2Spec_c_buf_p) = SeExpr2Spec_cp = SeExpr2Spec_bp + SeExpr2Specless_macro_arg - SeExprSpecYY_MORE_ADJ; \
+		SeExprSpecYY_DO_BEFORE_ACTION; /* set up SeExpr2Spectext again */ \
 		} \
 	while ( 0 )
 
-#define unput(c) SeExprSpecunput( c, (SeExprSpectext_ptr)  )
+#define unput(c) SeExpr2Specunput( c, (SeExpr2Spectext_ptr)  )
 
 #ifndef SeExprSpecYY_STRUCT_SeExprSpecYY_BUFFER_STATE
 #define SeExprSpecYY_STRUCT_SeExprSpecYY_BUFFER_STATE
-struct SeExprSpec_buffer_state
+struct SeExpr2Spec_buffer_state
 	{
-	FILE *SeExprSpec_input_file;
+	FILE *SeExpr2Spec_input_file;
 
-	char *SeExprSpec_ch_buf;		/* input buffer */
-	char *SeExprSpec_buf_pos;		/* current position in input buffer */
+	char *SeExpr2Spec_ch_buf;		/* input buffer */
+	char *SeExpr2Spec_buf_pos;		/* current position in input buffer */
 
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	SeExprSpec_size_t SeExprSpec_buf_size;
+	SeExpr2Spec_size_t SeExpr2Spec_buf_size;
 
-	/* Number of characters read into SeExprSpec_ch_buf, not including EOB
+	/* Number of characters read into SeExpr2Spec_ch_buf, not including EOB
 	 * characters.
 	 */
-	SeExprSpec_size_t SeExprSpec_n_chars;
+	SeExpr2Spec_size_t SeExpr2Spec_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
 	 * delete it.
 	 */
-	int SeExprSpec_is_our_buffer;
+	int SeExpr2Spec_is_our_buffer;
 
 	/* Whether this is an "interactive" input source; if so, and
 	 * if we're using stdio for input, then we want to use getc()
 	 * instead of fread(), to make sure we stop fetching input after
 	 * each newline.
 	 */
-	int SeExprSpec_is_interactive;
+	int SeExpr2Spec_is_interactive;
 
 	/* Whether we're considered to be at the beginning of a line.
 	 * If so, '^' rules will be active on the next match, otherwise
 	 * not.
 	 */
-	int SeExprSpec_at_bol;
+	int SeExpr2Spec_at_bol;
 
-    int SeExprSpec_bs_lineno; /**< The line count. */
-    int SeExprSpec_bs_column; /**< The column count. */
+    int SeExpr2Spec_bs_lineno; /**< The line count. */
+    int SeExpr2Spec_bs_column; /**< The column count. */
     
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
-	int SeExprSpec_fill_buffer;
+	int SeExpr2Spec_fill_buffer;
 
-	int SeExprSpec_buffer_status;
+	int SeExpr2Spec_buffer_status;
 
 #define SeExprSpecYY_BUFFER_NEW 0
 #define SeExprSpecYY_BUFFER_NORMAL 1
@@ -242,8 +242,8 @@ struct SeExprSpec_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via SeExprSpecrestart()), so that the user can continue scanning by
-	 * just pointing SeExprSpecin at a new input file.
+	 * (via SeExpr2Specrestart()), so that the user can continue scanning by
+	 * just pointing SeExpr2Specin at a new input file.
 	 */
 #define SeExprSpecYY_BUFFER_EOF_PENDING 2
 
@@ -251,9 +251,9 @@ struct SeExprSpec_buffer_state
 #endif /* !SeExprSpecYY_STRUCT_SeExprSpecYY_BUFFER_STATE */
 
 /* Stack of input buffers. */
-static size_t SeExprSpec_buffer_stack_top = 0; /**< index of top of stack. */
-static size_t SeExprSpec_buffer_stack_max = 0; /**< capacity of stack. */
-static SeExprSpecYY_BUFFER_STATE * SeExprSpec_buffer_stack = 0; /**< Stack as an array. */
+static size_t SeExpr2Spec_buffer_stack_top = 0; /**< index of top of stack. */
+static size_t SeExpr2Spec_buffer_stack_max = 0; /**< capacity of stack. */
+static SeExprSpecYY_BUFFER_STATE * SeExpr2Spec_buffer_stack = 0; /**< Stack as an array. */
 
 /* We provide macros for accessing buffer states in case in the
  * future we want to put the buffer states in a more general
@@ -261,119 +261,119 @@ static SeExprSpecYY_BUFFER_STATE * SeExprSpec_buffer_stack = 0; /**< Stack as an
  *
  * Returns the top of the stack, or NULL.
  */
-#define SeExprSpecYY_CURRENT_BUFFER ( (SeExprSpec_buffer_stack) \
-                          ? (SeExprSpec_buffer_stack)[(SeExprSpec_buffer_stack_top)] \
+#define SeExprSpecYY_CURRENT_BUFFER ( (SeExpr2Spec_buffer_stack) \
+                          ? (SeExpr2Spec_buffer_stack)[(SeExpr2Spec_buffer_stack_top)] \
                           : NULL)
 
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
-#define SeExprSpecYY_CURRENT_BUFFER_LVALUE (SeExprSpec_buffer_stack)[(SeExprSpec_buffer_stack_top)]
+#define SeExprSpecYY_CURRENT_BUFFER_LVALUE (SeExpr2Spec_buffer_stack)[(SeExpr2Spec_buffer_stack_top)]
 
-/* SeExprSpec_hold_char holds the character lost when SeExprSpectext is formed. */
-static char SeExprSpec_hold_char;
-static SeExprSpec_size_t SeExprSpec_n_chars;		/* number of characters read into SeExprSpec_ch_buf */
-SeExprSpec_size_t SeExprSpecleng;
+/* SeExpr2Spec_hold_char holds the character lost when SeExpr2Spectext is formed. */
+static char SeExpr2Spec_hold_char;
+static SeExpr2Spec_size_t SeExpr2Spec_n_chars;		/* number of characters read into SeExpr2Spec_ch_buf */
+SeExpr2Spec_size_t SeExpr2Specleng;
 
 /* Points to current character in buffer. */
-static char *SeExprSpec_c_buf_p = (char *) 0;
-static int SeExprSpec_init = 0;		/* whether we need to initialize */
-static int SeExprSpec_start = 0;	/* start state number */
+static char *SeExpr2Spec_c_buf_p = (char *) 0;
+static int SeExpr2Spec_init = 0;		/* whether we need to initialize */
+static int SeExpr2Spec_start = 0;	/* start state number */
 
-/* Flag which is used to allow SeExprSpecwrap()'s to do buffer switches
- * instead of setting up a fresh SeExprSpecin.  A bit of a hack ...
+/* Flag which is used to allow SeExpr2Specwrap()'s to do buffer switches
+ * instead of setting up a fresh SeExpr2Specin.  A bit of a hack ...
  */
-static int SeExprSpec_did_buffer_switch_on_eof;
+static int SeExpr2Spec_did_buffer_switch_on_eof;
 
-void SeExprSpecrestart (FILE *input_file  );
-void SeExprSpec_switch_to_buffer (SeExprSpecYY_BUFFER_STATE new_buffer  );
-SeExprSpecYY_BUFFER_STATE SeExprSpec_create_buffer (FILE *file,int size  );
-void SeExprSpec_delete_buffer (SeExprSpecYY_BUFFER_STATE b  );
-void SeExprSpec_flush_buffer (SeExprSpecYY_BUFFER_STATE b  );
-void SeExprSpecpush_buffer_state (SeExprSpecYY_BUFFER_STATE new_buffer  );
-void SeExprSpecpop_buffer_state (void );
+void SeExpr2Specrestart (FILE *input_file  );
+void SeExpr2Spec_switch_to_buffer (SeExprSpecYY_BUFFER_STATE new_buffer  );
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_create_buffer (FILE *file,int size  );
+void SeExpr2Spec_delete_buffer (SeExprSpecYY_BUFFER_STATE b  );
+void SeExpr2Spec_flush_buffer (SeExprSpecYY_BUFFER_STATE b  );
+void SeExpr2Specpush_buffer_state (SeExprSpecYY_BUFFER_STATE new_buffer  );
+void SeExpr2Specpop_buffer_state (void );
 
-static void SeExprSpecensure_buffer_stack (void );
-static void SeExprSpec_load_buffer_state (void );
-static void SeExprSpec_init_buffer (SeExprSpecYY_BUFFER_STATE b,FILE *file  );
+static void SeExpr2Specensure_buffer_stack (void );
+static void SeExpr2Spec_load_buffer_state (void );
+static void SeExpr2Spec_init_buffer (SeExprSpecYY_BUFFER_STATE b,FILE *file  );
 
-#define SeExprSpecYY_FLUSH_BUFFER SeExprSpec_flush_buffer(SeExprSpecYY_CURRENT_BUFFER )
+#define SeExprSpecYY_FLUSH_BUFFER SeExpr2Spec_flush_buffer(SeExprSpecYY_CURRENT_BUFFER )
 
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_buffer (char *base,SeExprSpec_size_t size  );
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_string (SeExprSpecconst char *SeExprSpec_str  );
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes (SeExprSpecconst char *bytes,SeExprSpec_size_t len  );
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_buffer (char *base,SeExpr2Spec_size_t size  );
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_string (SeExpr2Specconst char *SeExpr2Spec_str  );
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_bytes (SeExpr2Specconst char *bytes,SeExpr2Spec_size_t len  );
 
-void *SeExprSpecalloc (SeExprSpec_size_t  );
-void *SeExprSpecrealloc (void *,SeExprSpec_size_t  );
-void SeExprSpecfree (void *  );
+void *SeExpr2Specalloc (SeExpr2Spec_size_t  );
+void *SeExpr2Specrealloc (void *,SeExpr2Spec_size_t  );
+void SeExpr2Specfree (void *  );
 
-#define SeExprSpec_new_buffer SeExprSpec_create_buffer
+#define SeExpr2Spec_new_buffer SeExpr2Spec_create_buffer
 
-#define SeExprSpec_set_interactive(is_interactive) \
+#define SeExpr2Spec_set_interactive(is_interactive) \
 	{ \
 	if ( ! SeExprSpecYY_CURRENT_BUFFER ){ \
-        SeExprSpecensure_buffer_stack (); \
+        SeExpr2Specensure_buffer_stack (); \
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE =    \
-            SeExprSpec_create_buffer(SeExprSpecin,SeExprSpecYY_BUF_SIZE ); \
+            SeExpr2Spec_create_buffer(SeExpr2Specin,SeExprSpecYY_BUF_SIZE ); \
 	} \
-	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_is_interactive = is_interactive; \
+	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_is_interactive = is_interactive; \
 	}
 
-#define SeExprSpec_set_bol(at_bol) \
+#define SeExpr2Spec_set_bol(at_bol) \
 	{ \
 	if ( ! SeExprSpecYY_CURRENT_BUFFER ){\
-        SeExprSpecensure_buffer_stack (); \
+        SeExpr2Specensure_buffer_stack (); \
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE =    \
-            SeExprSpec_create_buffer(SeExprSpecin,SeExprSpecYY_BUF_SIZE ); \
+            SeExpr2Spec_create_buffer(SeExpr2Specin,SeExprSpecYY_BUF_SIZE ); \
 	} \
-	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_at_bol = at_bol; \
+	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_at_bol = at_bol; \
 	}
 
-#define SeExprSpecYY_AT_BOL() (SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_at_bol)
+#define SeExprSpecYY_AT_BOL() (SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_at_bol)
 
 /* Begin user sect3 */
 
-#define SeExprSpecwrap(n) 1
+#define SeExpr2Specwrap(n) 1
 #define SeExprSpecYY_SKIP_SeExprSpecYYWRAP
 
 typedef unsigned char SeExprSpecYY_CHAR;
 
-FILE *SeExprSpecin = (FILE *) 0, *SeExprSpecout = (FILE *) 0;
+FILE *SeExpr2Specin = (FILE *) 0, *SeExpr2Specout = (FILE *) 0;
 
-typedef int SeExprSpec_state_type;
+typedef int SeExpr2Spec_state_type;
 
-extern int SeExprSpeclineno;
+extern int SeExpr2Speclineno;
 
-int SeExprSpeclineno = 1;
+int SeExpr2Speclineno = 1;
 
-extern char *SeExprSpectext;
-#define SeExprSpectext_ptr SeExprSpectext
+extern char *SeExpr2Spectext;
+#define SeExpr2Spectext_ptr SeExpr2Spectext
 
-static SeExprSpec_state_type SeExprSpec_get_previous_state (void );
-static SeExprSpec_state_type SeExprSpec_try_NUL_trans (SeExprSpec_state_type current_state  );
-static int SeExprSpec_get_next_buffer (void );
-static void SeExprSpec_fatal_error (SeExprSpecconst char msg[]  );
+static SeExpr2Spec_state_type SeExpr2Spec_get_previous_state (void );
+static SeExpr2Spec_state_type SeExpr2Spec_try_NUL_trans (SeExpr2Spec_state_type current_state  );
+static int SeExpr2Spec_get_next_buffer (void );
+static void SeExpr2Spec_fatal_error (SeExpr2Specconst char msg[]  );
 
 /* Done after the current pattern has been matched and before the
- * corresponding action - sets up SeExprSpectext.
+ * corresponding action - sets up SeExpr2Spectext.
  */
 #define SeExprSpecYY_DO_BEFORE_ACTION \
-	(SeExprSpectext_ptr) = SeExprSpec_bp; \
-	SeExprSpecleng = (SeExprSpec_size_t) (SeExprSpec_cp - SeExprSpec_bp); \
-	(SeExprSpec_hold_char) = *SeExprSpec_cp; \
-	*SeExprSpec_cp = '\0'; \
-	(SeExprSpec_c_buf_p) = SeExprSpec_cp;
+	(SeExpr2Spectext_ptr) = SeExpr2Spec_bp; \
+	SeExpr2Specleng = (SeExpr2Spec_size_t) (SeExpr2Spec_cp - SeExpr2Spec_bp); \
+	(SeExpr2Spec_hold_char) = *SeExpr2Spec_cp; \
+	*SeExpr2Spec_cp = '\0'; \
+	(SeExpr2Spec_c_buf_p) = SeExpr2Spec_cp;
 
 #define SeExprSpecYY_NUM_RULES 34
 #define SeExprSpecYY_END_OF_BUFFER 35
 /* This struct is not used in this scanner,
    but its presence is necessary. */
-struct SeExprSpec_trans_info
+struct SeExpr2Spec_trans_info
 	{
-	flex_int32_t SeExprSpec_verify;
-	flex_int32_t SeExprSpec_nxt;
+	flex_int32_t SeExpr2Spec_verify;
+	flex_int32_t SeExpr2Spec_nxt;
 	};
-static SeExprSpecconst flex_int16_t SeExprSpec_accept[115] =
+static SeExpr2Specconst flex_int16_t SeExpr2Spec_accept[115] =
     {   0,
         0,    0,   35,   33,   31,   31,   33,   33,   32,   33,
        33,   33,   33,   33,   33,   33,   33,   33,   23,   33,
@@ -390,7 +390,7 @@ static SeExprSpecconst flex_int16_t SeExprSpec_accept[115] =
         1,   28,   21,    0
     } ;
 
-static SeExprSpecconst flex_int32_t SeExprSpec_ec[256] =
+static SeExpr2Specconst flex_int32_t SeExpr2Spec_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -422,7 +422,7 @@ static SeExprSpecconst flex_int32_t SeExprSpec_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static SeExprSpecconst flex_int32_t SeExprSpec_meta[49] =
+static SeExpr2Specconst flex_int32_t SeExpr2Spec_meta[49] =
     {   0,
         1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    3,    1,    3,    3,    4,    1,    1,
@@ -431,7 +431,7 @@ static SeExprSpecconst flex_int32_t SeExprSpec_meta[49] =
         5,    5,    5,    5,    5,    5,    5,    1
     } ;
 
-static SeExprSpecconst flex_int16_t SeExprSpec_base[123] =
+static SeExpr2Specconst flex_int16_t SeExpr2Spec_base[123] =
     {   0,
         0,    0,  193,  194,  194,  194,  171,   44,  161,    0,
       169,  180,   40,  167,  166,   30,   37,  165,   41,  164,
@@ -449,7 +449,7 @@ static SeExprSpecconst flex_int16_t SeExprSpec_base[123] =
        68,  151
     } ;
 
-static SeExprSpecconst flex_int16_t SeExprSpec_def[123] =
+static SeExpr2Specconst flex_int16_t SeExpr2Spec_def[123] =
     {   0,
       114,    1,  114,  114,  114,  114,  114,  115,  116,  117,
       114,  114,  118,  114,  114,  114,  114,  114,  114,  114,
@@ -467,7 +467,7 @@ static SeExprSpecconst flex_int16_t SeExprSpec_def[123] =
       114,  114
     } ;
 
-static SeExprSpecconst flex_int16_t SeExprSpec_nxt[243] =
+static SeExpr2Specconst flex_int16_t SeExpr2Spec_nxt[243] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   19,    4,    4,   20,
@@ -498,7 +498,7 @@ static SeExprSpecconst flex_int16_t SeExprSpec_nxt[243] =
       114,  114
     } ;
 
-static SeExprSpecconst flex_int16_t SeExprSpec_chk[243] =
+static SeExpr2Specconst flex_int16_t SeExpr2Spec_chk[243] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -529,21 +529,21 @@ static SeExprSpecconst flex_int16_t SeExprSpec_chk[243] =
       114,  114
     } ;
 
-static SeExprSpec_state_type SeExprSpec_last_accepting_state;
-static char *SeExprSpec_last_accepting_cpos;
+static SeExpr2Spec_state_type SeExpr2Spec_last_accepting_state;
+static char *SeExpr2Spec_last_accepting_cpos;
 
-extern int SeExprSpec_flex_debug;
-int SeExprSpec_flex_debug = 0;
+extern int SeExpr2Spec_flex_debug;
+int SeExpr2Spec_flex_debug = 0;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
  */
 #define REJECT reject_used_but_not_detected
-#define SeExprSpecmore() SeExprSpecmore_used_but_not_detected
+#define SeExpr2Specmore() SeExpr2Specmore_used_but_not_detected
 #define SeExprSpecYY_MORE_ADJ 0
 #define SeExprSpecYY_RESTORE_SeExprSpecYY_MORE_OFFSET
-char *SeExprSpectext;
-#line 1 "src/SeExprEditor/SeExprSpecParserLex.l"
+char *SeExpr2Spectext;
+#line 1 "src/ui/ExprSpecParserLex.l"
 /*
 * Copyright Disney Enterprises, Inc.  All rights reserved.
 *
@@ -560,10 +560,10 @@ char *SeExprSpectext;
 * You may obtain a copy of the License at
 * http://www.apache.org/licenses/LICENSE-2.0
 */
-/* Don't generate SeExprSpecwrap since everything is in one string */
+/* Don't generate SeExpr2Specwrap since everything is in one string */
 /* Don't generate unput since it's unused and gcc complains... */
 /* Don't worry about interactive and using isatty(). Fixes Windows compile. */
-#line 26 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 26 "src/ui/ExprSpecParserLex.l"
 #ifndef MAKEDEPEND
 #    include <ctype.h>
 #    include <string.h>
@@ -572,9 +572,7 @@ char *SeExprSpectext;
 #    include <math.h>
 #endif
 
-//#include "SePlatform.h"
-//#include "SeExprSpecParser.h"
-#include "SeExprSpecType.h"
+#include "ExprSpecType.h"
 
 #ifdef SEEXPR_WIN32
 #    define SeExprSpecYY_NO_UNISTD_H
@@ -582,7 +580,7 @@ char *SeExprSpectext;
 #endif
 
 #ifndef MAKEDEPEND
-#    include "SeExprSpecParser.tab.h"
+#    include "ExprSpecParser.tab.h"
 #endif
 
 // TODO: make this thread safe
@@ -597,15 +595,15 @@ void specResetCounters(std::vector<std::pair<int,int> >& commentsIn){
    comments=&commentsIn;
 }
 
-int SeExprSpecpos(); // forward declare
+int SeExpr2Specpos(); // forward declare
 
 
 #define SeExprSpecYY_USER_ACTION { \
-    SeExprSpeclloc.first_line=lineNumber;SeExprSpeclloc.first_column=columnNumber; \
-    columnNumber+=SeExprSpecleng;\
-    SeExprSpeclloc.last_column=columnNumber;SeExprSpeclloc.last_line=lineNumber;} 
+    SeExpr2Speclloc.first_line=lineNumber;SeExpr2Speclloc.first_column=columnNumber; \
+    columnNumber+=SeExpr2Specleng;\
+    SeExpr2Speclloc.last_column=columnNumber;SeExpr2Speclloc.last_line=lineNumber;} 
 
-#line 609 "SeExprSpecParserLexIn.cpp"
+#line 607 "ExprSpecParserLexIn.cpp"
 
 #define INITIAL 0
 
@@ -621,36 +619,36 @@ int SeExprSpecpos(); // forward declare
 #define SeExprSpecYY_EXTRA_TYPE void *
 #endif
 
-static int SeExprSpec_init_globals (void );
+static int SeExpr2Spec_init_globals (void );
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int SeExprSpeclex_destroy (void );
+int SeExpr2Speclex_destroy (void );
 
-int SeExprSpecget_debug (void );
+int SeExpr2Specget_debug (void );
 
-void SeExprSpecset_debug (int debug_flag  );
+void SeExpr2Specset_debug (int debug_flag  );
 
-SeExprSpecYY_EXTRA_TYPE SeExprSpecget_extra (void );
+SeExprSpecYY_EXTRA_TYPE SeExpr2Specget_extra (void );
 
-void SeExprSpecset_extra (SeExprSpecYY_EXTRA_TYPE user_defined  );
+void SeExpr2Specset_extra (SeExprSpecYY_EXTRA_TYPE user_defined  );
 
-FILE *SeExprSpecget_in (void );
+FILE *SeExpr2Specget_in (void );
 
-void SeExprSpecset_in  (FILE * in_str  );
+void SeExpr2Specset_in  (FILE * in_str  );
 
-FILE *SeExprSpecget_out (void );
+FILE *SeExpr2Specget_out (void );
 
-void SeExprSpecset_out  (FILE * out_str  );
+void SeExpr2Specset_out  (FILE * out_str  );
 
-SeExprSpec_size_t SeExprSpecget_leng (void );
+SeExpr2Spec_size_t SeExpr2Specget_leng (void );
 
-char *SeExprSpecget_text (void );
+char *SeExpr2Specget_text (void );
 
-int SeExprSpecget_lineno (void );
+int SeExpr2Specget_lineno (void );
 
-void SeExprSpecset_lineno (int line_number  );
+void SeExpr2Specset_lineno (int line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -658,24 +656,24 @@ void SeExprSpecset_lineno (int line_number  );
 
 #ifndef SeExprSpecYY_SKIP_SeExprSpecYYWRAP
 #ifdef __cplusplus
-extern "C" int SeExprSpecwrap (void );
+extern "C" int SeExpr2Specwrap (void );
 #else
-extern int SeExprSpecwrap (void );
+extern int SeExpr2Specwrap (void );
 #endif
 #endif
 
-#ifndef SeExprSpectext_ptr
-static void SeExprSpec_flex_strncpy (char *,SeExprSpecconst char *,int );
+#ifndef SeExpr2Spectext_ptr
+static void SeExpr2Spec_flex_strncpy (char *,SeExpr2Specconst char *,int );
 #endif
 
 #ifdef SeExprSpecYY_NEED_STRLEN
-static int SeExprSpec_flex_strlen (SeExprSpecconst char * );
+static int SeExpr2Spec_flex_strlen (SeExpr2Specconst char * );
 #endif
 
 #ifndef SeExprSpecYY_NO_INPUT
 
 #ifdef __cplusplus
-static int SeExprSpecinput (void );
+static int SeExpr2Specinput (void );
 #else
 static int input (void );
 #endif
@@ -692,7 +690,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( SeExprSpectext, SeExprSpecleng, 1, SeExprSpecout )
+#define ECHO fwrite( SeExpr2Spectext, SeExpr2Specleng, 1, SeExpr2Specout )
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or SeExprSpecYY_NULL,
@@ -700,23 +698,23 @@ static int input (void );
  */
 #ifndef SeExprSpecYY_INPUT
 #define SeExprSpecYY_INPUT(buf,result,max_size) \
-	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_is_interactive ) \
+	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_is_interactive ) \
 		{ \
 		int c = '*'; \
-		SeExprSpec_size_t n; \
+		SeExpr2Spec_size_t n; \
 		for ( n = 0; n < max_size && \
-			     (c = getc( SeExprSpecin )) != EOF && c != '\n'; ++n ) \
+			     (c = getc( SeExpr2Specin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
 		if ( c == '\n' ) \
 			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( SeExprSpecin ) ) \
+		if ( c == EOF && ferror( SeExpr2Specin ) ) \
 			SeExprSpecYY_FATAL_ERROR( "input in flex scanner failed" ); \
 		result = n; \
 		} \
 	else \
 		{ \
 		errno=0; \
-		while ( (result = fread(buf, 1, max_size, SeExprSpecin))==0 && ferror(SeExprSpecin)) \
+		while ( (result = fread(buf, 1, max_size, SeExpr2Specin))==0 && ferror(SeExpr2Specin)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
@@ -724,19 +722,19 @@ static int input (void );
 				break; \
 				} \
 			errno=0; \
-			clearerr(SeExprSpecin); \
+			clearerr(SeExpr2Specin); \
 			} \
 		}\
 \
 
 #endif
 
-/* No semi-colon after return; correct usage is to write "SeExprSpecterminate();" -
+/* No semi-colon after return; correct usage is to write "SeExpr2Specterminate();" -
  * we don't want an extra ';' after the "return" because that will cause
  * some compilers to complain about unreachable statements.
  */
-#ifndef SeExprSpecterminate
-#define SeExprSpecterminate() return SeExprSpecYY_NULL
+#ifndef SeExpr2Specterminate
+#define SeExpr2Specterminate() return SeExprSpecYY_NULL
 #endif
 
 /* Number of entries by which start-condition stack grows. */
@@ -746,7 +744,7 @@ static int input (void );
 
 /* Report a fatal error. */
 #ifndef SeExprSpecYY_FATAL_ERROR
-#define SeExprSpecYY_FATAL_ERROR(msg) SeExprSpec_fatal_error( msg )
+#define SeExprSpecYY_FATAL_ERROR(msg) SeExpr2Spec_fatal_error( msg )
 #endif
 
 /* end tables serialization structures and prototypes */
@@ -757,12 +755,12 @@ static int input (void );
 #ifndef SeExprSpecYY_DECL
 #define SeExprSpecYY_DECL_IS_OURS 1
 
-extern int SeExprSpeclex (void);
+extern int SeExpr2Speclex (void);
 
-#define SeExprSpecYY_DECL int SeExprSpeclex (void)
+#define SeExprSpecYY_DECL int SeExpr2Speclex (void)
 #endif /* !SeExprSpecYY_DECL */
 
-/* Code executed at the beginning of each rule, after SeExprSpectext and SeExprSpecleng
+/* Code executed at the beginning of each rule, after SeExpr2Spectext and SeExpr2Specleng
  * have been set up.
  */
 #ifndef SeExprSpecYY_USER_ACTION
@@ -781,393 +779,393 @@ extern int SeExprSpeclex (void);
  */
 SeExprSpecYY_DECL
 {
-	register SeExprSpec_state_type SeExprSpec_current_state;
-	register char *SeExprSpec_cp, *SeExprSpec_bp;
-	register int SeExprSpec_act;
+	register SeExpr2Spec_state_type SeExpr2Spec_current_state;
+	register char *SeExpr2Spec_cp, *SeExpr2Spec_bp;
+	register int SeExpr2Spec_act;
     
-#line 74 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 72 "src/ui/ExprSpecParserLex.l"
 
-#line 791 "SeExprSpecParserLexIn.cpp"
+#line 789 "ExprSpecParserLexIn.cpp"
 
-	if ( !(SeExprSpec_init) )
+	if ( !(SeExpr2Spec_init) )
 		{
-		(SeExprSpec_init) = 1;
+		(SeExpr2Spec_init) = 1;
 
 #ifdef SeExprSpecYY_USER_INIT
 		SeExprSpecYY_USER_INIT;
 #endif
 
-		if ( ! (SeExprSpec_start) )
-			(SeExprSpec_start) = 1;	/* first start state */
+		if ( ! (SeExpr2Spec_start) )
+			(SeExpr2Spec_start) = 1;	/* first start state */
 
-		if ( ! SeExprSpecin )
-			SeExprSpecin = stdin;
+		if ( ! SeExpr2Specin )
+			SeExpr2Specin = stdin;
 
-		if ( ! SeExprSpecout )
-			SeExprSpecout = stdout;
+		if ( ! SeExpr2Specout )
+			SeExpr2Specout = stdout;
 
 		if ( ! SeExprSpecYY_CURRENT_BUFFER ) {
-			SeExprSpecensure_buffer_stack ();
+			SeExpr2Specensure_buffer_stack ();
 			SeExprSpecYY_CURRENT_BUFFER_LVALUE =
-				SeExprSpec_create_buffer(SeExprSpecin,SeExprSpecYY_BUF_SIZE );
+				SeExpr2Spec_create_buffer(SeExpr2Specin,SeExprSpecYY_BUF_SIZE );
 		}
 
-		SeExprSpec_load_buffer_state( );
+		SeExpr2Spec_load_buffer_state( );
 		}
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
-		SeExprSpec_cp = (SeExprSpec_c_buf_p);
+		SeExpr2Spec_cp = (SeExpr2Spec_c_buf_p);
 
-		/* Support of SeExprSpectext. */
-		*SeExprSpec_cp = (SeExprSpec_hold_char);
+		/* Support of SeExpr2Spectext. */
+		*SeExpr2Spec_cp = (SeExpr2Spec_hold_char);
 
-		/* SeExprSpec_bp points to the position in SeExprSpec_ch_buf of the start of
+		/* SeExpr2Spec_bp points to the position in SeExpr2Spec_ch_buf of the start of
 		 * the current run.
 		 */
-		SeExprSpec_bp = SeExprSpec_cp;
+		SeExpr2Spec_bp = SeExpr2Spec_cp;
 
-		SeExprSpec_current_state = (SeExprSpec_start);
-SeExprSpec_match:
+		SeExpr2Spec_current_state = (SeExpr2Spec_start);
+SeExpr2Spec_match:
 		do
 			{
-			register SeExprSpecYY_CHAR SeExprSpec_c = SeExprSpec_ec[SeExprSpecYY_SC_TO_UI(*SeExprSpec_cp)];
-			if ( SeExprSpec_accept[SeExprSpec_current_state] )
+			register SeExprSpecYY_CHAR SeExpr2Spec_c = SeExpr2Spec_ec[SeExprSpecYY_SC_TO_UI(*SeExpr2Spec_cp)];
+			if ( SeExpr2Spec_accept[SeExpr2Spec_current_state] )
 				{
-				(SeExprSpec_last_accepting_state) = SeExprSpec_current_state;
-				(SeExprSpec_last_accepting_cpos) = SeExprSpec_cp;
+				(SeExpr2Spec_last_accepting_state) = SeExpr2Spec_current_state;
+				(SeExpr2Spec_last_accepting_cpos) = SeExpr2Spec_cp;
 				}
-			while ( SeExprSpec_chk[SeExprSpec_base[SeExprSpec_current_state] + SeExprSpec_c] != SeExprSpec_current_state )
+			while ( SeExpr2Spec_chk[SeExpr2Spec_base[SeExpr2Spec_current_state] + SeExpr2Spec_c] != SeExpr2Spec_current_state )
 				{
-				SeExprSpec_current_state = (int) SeExprSpec_def[SeExprSpec_current_state];
-				if ( SeExprSpec_current_state >= 115 )
-					SeExprSpec_c = SeExprSpec_meta[(unsigned int) SeExprSpec_c];
+				SeExpr2Spec_current_state = (int) SeExpr2Spec_def[SeExpr2Spec_current_state];
+				if ( SeExpr2Spec_current_state >= 115 )
+					SeExpr2Spec_c = SeExpr2Spec_meta[(unsigned int) SeExpr2Spec_c];
 				}
-			SeExprSpec_current_state = SeExprSpec_nxt[SeExprSpec_base[SeExprSpec_current_state] + (unsigned int) SeExprSpec_c];
-			++SeExprSpec_cp;
+			SeExpr2Spec_current_state = SeExpr2Spec_nxt[SeExpr2Spec_base[SeExpr2Spec_current_state] + (unsigned int) SeExpr2Spec_c];
+			++SeExpr2Spec_cp;
 			}
-		while ( SeExprSpec_current_state != 114 );
-		SeExprSpec_cp = (SeExprSpec_last_accepting_cpos);
-		SeExprSpec_current_state = (SeExprSpec_last_accepting_state);
+		while ( SeExpr2Spec_current_state != 114 );
+		SeExpr2Spec_cp = (SeExpr2Spec_last_accepting_cpos);
+		SeExpr2Spec_current_state = (SeExpr2Spec_last_accepting_state);
 
-SeExprSpec_find_action:
-		SeExprSpec_act = SeExprSpec_accept[SeExprSpec_current_state];
+SeExpr2Spec_find_action:
+		SeExpr2Spec_act = SeExpr2Spec_accept[SeExpr2Spec_current_state];
 
 		SeExprSpecYY_DO_BEFORE_ACTION;
 
 do_action:	/* This label is used only to access EOF actions. */
 
-		switch ( SeExprSpec_act )
+		switch ( SeExpr2Spec_act )
 	{ /* beginning of action switch */
 			case 0: /* must back up */
 			/* undo the effects of SeExprSpecYY_DO_BEFORE_ACTION */
-			*SeExprSpec_cp = (SeExprSpec_hold_char);
-			SeExprSpec_cp = (SeExprSpec_last_accepting_cpos);
-			SeExprSpec_current_state = (SeExprSpec_last_accepting_state);
-			goto SeExprSpec_find_action;
+			*SeExpr2Spec_cp = (SeExpr2Spec_hold_char);
+			SeExpr2Spec_cp = (SeExpr2Spec_last_accepting_cpos);
+			SeExpr2Spec_current_state = (SeExpr2Spec_last_accepting_state);
+			goto SeExpr2Spec_find_action;
 
 case 1:
 SeExprSpecYY_RULE_SETUP
-#line 75 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 73 "src/ui/ExprSpecParserLex.l"
 
 	SeExprSpecYY_BREAK
 case 2:
 SeExprSpecYY_RULE_SETUP
-#line 77 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 75 "src/ui/ExprSpecParserLex.l"
 { return IF; }
 	SeExprSpecYY_BREAK
 case 3:
 SeExprSpecYY_RULE_SETUP
-#line 78 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 76 "src/ui/ExprSpecParserLex.l"
 { return ELSE; }
 	SeExprSpecYY_BREAK
 case 4:
 SeExprSpecYY_RULE_SETUP
-#line 80 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 78 "src/ui/ExprSpecParserLex.l"
 { return OR; }
 	SeExprSpecYY_BREAK
 case 5:
 SeExprSpecYY_RULE_SETUP
-#line 81 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 79 "src/ui/ExprSpecParserLex.l"
 { return AND; }
 	SeExprSpecYY_BREAK
 case 6:
 SeExprSpecYY_RULE_SETUP
-#line 82 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 80 "src/ui/ExprSpecParserLex.l"
 { return EQ; }
 	SeExprSpecYY_BREAK
 case 7:
 SeExprSpecYY_RULE_SETUP
-#line 83 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 81 "src/ui/ExprSpecParserLex.l"
 { return NE; }
 	SeExprSpecYY_BREAK
 case 8:
 SeExprSpecYY_RULE_SETUP
-#line 84 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 82 "src/ui/ExprSpecParserLex.l"
 { return LE; }
 	SeExprSpecYY_BREAK
 case 9:
 SeExprSpecYY_RULE_SETUP
-#line 85 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 83 "src/ui/ExprSpecParserLex.l"
 { return GE; }
 	SeExprSpecYY_BREAK
 case 10:
 SeExprSpecYY_RULE_SETUP
-#line 86 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 84 "src/ui/ExprSpecParserLex.l"
 { return ARROW; }
 	SeExprSpecYY_BREAK
 case 11:
 SeExprSpecYY_RULE_SETUP
-#line 87 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 85 "src/ui/ExprSpecParserLex.l"
 { return AddEq; }
 	SeExprSpecYY_BREAK
 case 12:
 SeExprSpecYY_RULE_SETUP
-#line 88 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 86 "src/ui/ExprSpecParserLex.l"
 { return SubEq; }
 	SeExprSpecYY_BREAK
 case 13:
 SeExprSpecYY_RULE_SETUP
-#line 89 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 87 "src/ui/ExprSpecParserLex.l"
 { return MultEq; }
 	SeExprSpecYY_BREAK
 case 14:
 SeExprSpecYY_RULE_SETUP
-#line 90 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 88 "src/ui/ExprSpecParserLex.l"
 { return DivEq; }
 	SeExprSpecYY_BREAK
 case 15:
 SeExprSpecYY_RULE_SETUP
-#line 91 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 89 "src/ui/ExprSpecParserLex.l"
 { return ModEq; }
 	SeExprSpecYY_BREAK
 case 16:
 SeExprSpecYY_RULE_SETUP
-#line 92 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 90 "src/ui/ExprSpecParserLex.l"
 { return ExpEq; }
 	SeExprSpecYY_BREAK
 case 17:
 SeExprSpecYY_RULE_SETUP
-#line 94 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = M_PI; return NUMBER; }
+#line 92 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = M_PI; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 18:
 SeExprSpecYY_RULE_SETUP
-#line 95 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = M_E; return NUMBER; }
+#line 93 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = M_E; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 19:
 SeExprSpecYY_RULE_SETUP
-#line 96 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = 0; return NUMBER; }
+#line 94 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = 0; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 20:
 SeExprSpecYY_RULE_SETUP
-#line 97 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = 1; return NUMBER; }
+#line 95 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = 1; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 21:
 SeExprSpecYY_RULE_SETUP
-#line 98 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = 2; return NUMBER; }
+#line 96 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = 2; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 22:
 SeExprSpecYY_RULE_SETUP
-#line 99 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = 3; return NUMBER; }
+#line 97 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = 3; return NUMBER; }
 	SeExprSpecYY_BREAK
 case 23:
 SeExprSpecYY_RULE_SETUP
-#line 101 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.d = atof(SeExprSpectext); return NUMBER; }
+#line 99 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.d = atof(SeExpr2Spectext); return NUMBER; }
 	SeExprSpecYY_BREAK
 case 24:
 SeExprSpecYY_RULE_SETUP
-#line 102 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 100 "src/ui/ExprSpecParserLex.l"
 { /* match quoted string, allow embedded quote, \" */
-			  SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); 
-			  SeExprSpeclval.s[strlen(SeExprSpeclval.s)-1] = '\0';
+			  SeExpr2Speclval.s = specRegisterToken(&SeExpr2Spectext[1]); 
+			  SeExpr2Speclval.s[strlen(SeExpr2Speclval.s)-1] = '\0';
                           return STR; }
 	SeExprSpecYY_BREAK
 case 25:
 SeExprSpecYY_RULE_SETUP
-#line 106 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 104 "src/ui/ExprSpecParserLex.l"
 { /* match quoted string, allow embedded quote, \' */
-			  SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); 
-			  SeExprSpeclval.s[strlen(SeExprSpeclval.s)-1] = '\0';
+			  SeExpr2Speclval.s = specRegisterToken(&SeExpr2Spectext[1]); 
+			  SeExpr2Speclval.s[strlen(SeExpr2Speclval.s)-1] = '\0';
                           return STR; }
 	SeExprSpecYY_BREAK
 case 26:
 SeExprSpecYY_RULE_SETUP
-#line 110 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); return VAR; }
+#line 108 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.s = specRegisterToken(&SeExpr2Spectext[1]); return VAR; }
 	SeExprSpecYY_BREAK
 case 27:
 SeExprSpecYY_RULE_SETUP
-#line 111 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.s = specRegisterToken(&SeExprSpectext[1]); return VAR; }
+#line 109 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.s = specRegisterToken(&SeExpr2Spectext[1]); return VAR; }
 	SeExprSpecYY_BREAK
 case 28:
 SeExprSpecYY_RULE_SETUP
-#line 112 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ SeExprSpeclval.s = specRegisterToken(SeExprSpectext); return NAME; }
+#line 110 "src/ui/ExprSpecParserLex.l"
+{ SeExpr2Speclval.s = specRegisterToken(SeExpr2Spectext); return NAME; }
 	SeExprSpecYY_BREAK
 case 29:
 SeExprSpecYY_RULE_SETUP
-#line 114 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 112 "src/ui/ExprSpecParserLex.l"
 /* ignore quoted newline */;
 	SeExprSpecYY_BREAK
 case 30:
 SeExprSpecYY_RULE_SETUP
-#line 115 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 113 "src/ui/ExprSpecParserLex.l"
 /* ignore quoted tab */;
 	SeExprSpecYY_BREAK
 case 31:
 /* rule 31 can match eol */
 SeExprSpecYY_RULE_SETUP
-#line 116 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 114 "src/ui/ExprSpecParserLex.l"
 /* ignore whitespace */;
 	SeExprSpecYY_BREAK
 case 32:
 SeExprSpecYY_RULE_SETUP
-#line 117 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 115 "src/ui/ExprSpecParserLex.l"
 { /* match comment */ 
-                         int startPos=SeExprSpecpos(),endPos=SeExprSpecpos()+strlen(&SeExprSpectext[1])+1;
+                         int startPos=SeExpr2Specpos(),endPos=SeExpr2Specpos()+strlen(&SeExpr2Spectext[1])+1;
                           comments->push_back(std::pair<int,int>(startPos,endPos));}
 	SeExprSpecYY_BREAK
 case 33:
 SeExprSpecYY_RULE_SETUP
-#line 122 "src/SeExprEditor/SeExprSpecParserLex.l"
-{ return SeExprSpectext[0]; }
+#line 120 "src/ui/ExprSpecParserLex.l"
+{ return SeExpr2Spectext[0]; }
 	SeExprSpecYY_BREAK
 case 34:
 SeExprSpecYY_RULE_SETUP
-#line 124 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 122 "src/ui/ExprSpecParserLex.l"
 ECHO;
 	SeExprSpecYY_BREAK
-#line 1049 "SeExprSpecParserLexIn.cpp"
+#line 1047 "ExprSpecParserLexIn.cpp"
 case SeExprSpecYY_STATE_EOF(INITIAL):
-	SeExprSpecterminate();
+	SeExpr2Specterminate();
 
 	case SeExprSpecYY_END_OF_BUFFER:
 		{
 		/* Amount of text matched not including the EOB char. */
-		int SeExprSpec_amount_of_matched_text = (int) (SeExprSpec_cp - (SeExprSpectext_ptr)) - 1;
+		int SeExpr2Spec_amount_of_matched_text = (int) (SeExpr2Spec_cp - (SeExpr2Spectext_ptr)) - 1;
 
 		/* Undo the effects of SeExprSpecYY_DO_BEFORE_ACTION. */
-		*SeExprSpec_cp = (SeExprSpec_hold_char);
+		*SeExpr2Spec_cp = (SeExpr2Spec_hold_char);
 		SeExprSpecYY_RESTORE_SeExprSpecYY_MORE_OFFSET
 
-		if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buffer_status == SeExprSpecYY_BUFFER_NEW )
+		if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buffer_status == SeExprSpecYY_BUFFER_NEW )
 			{
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
-			 * just pointed SeExprSpecin at a new source and called
-			 * SeExprSpeclex().  If so, then we have to assure
+			 * just pointed SeExpr2Specin at a new source and called
+			 * SeExpr2Speclex().  If so, then we have to assure
 			 * consistency between SeExprSpecYY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
 			 * back-up) that will match for the new input source.
 			 */
-			(SeExprSpec_n_chars) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars;
-			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_input_file = SeExprSpecin;
-			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buffer_status = SeExprSpecYY_BUFFER_NORMAL;
+			(SeExpr2Spec_n_chars) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars;
+			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_input_file = SeExpr2Specin;
+			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buffer_status = SeExprSpecYY_BUFFER_NORMAL;
 			}
 
-		/* Note that here we test for SeExprSpec_c_buf_p "<=" to the position
-		 * of the first EOB in the buffer, since SeExprSpec_c_buf_p will
+		/* Note that here we test for SeExpr2Spec_c_buf_p "<=" to the position
+		 * of the first EOB in the buffer, since SeExpr2Spec_c_buf_p will
 		 * already have been incremented past the NUL character
 		 * (since all states make transitions on EOB to the
 		 * end-of-buffer state).  Contrast this with the test
 		 * in input().
 		 */
-		if ( (SeExprSpec_c_buf_p) <= &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars)] )
+		if ( (SeExpr2Spec_c_buf_p) <= &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars)] )
 			{ /* This was really a NUL. */
-			SeExprSpec_state_type SeExprSpec_next_state;
+			SeExpr2Spec_state_type SeExpr2Spec_next_state;
 
-			(SeExprSpec_c_buf_p) = (SeExprSpectext_ptr) + SeExprSpec_amount_of_matched_text;
+			(SeExpr2Spec_c_buf_p) = (SeExpr2Spectext_ptr) + SeExpr2Spec_amount_of_matched_text;
 
-			SeExprSpec_current_state = SeExprSpec_get_previous_state(  );
+			SeExpr2Spec_current_state = SeExpr2Spec_get_previous_state(  );
 
 			/* Okay, we're now positioned to make the NUL
 			 * transition.  We couldn't have
-			 * SeExprSpec_get_previous_state() go ahead and do it
+			 * SeExpr2Spec_get_previous_state() go ahead and do it
 			 * for us because it doesn't know how to deal
 			 * with the possibility of jamming (and we don't
 			 * want to build jamming into it because then it
 			 * will run more slowly).
 			 */
 
-			SeExprSpec_next_state = SeExprSpec_try_NUL_trans( SeExprSpec_current_state );
+			SeExpr2Spec_next_state = SeExpr2Spec_try_NUL_trans( SeExpr2Spec_current_state );
 
-			SeExprSpec_bp = (SeExprSpectext_ptr) + SeExprSpecYY_MORE_ADJ;
+			SeExpr2Spec_bp = (SeExpr2Spectext_ptr) + SeExprSpecYY_MORE_ADJ;
 
-			if ( SeExprSpec_next_state )
+			if ( SeExpr2Spec_next_state )
 				{
 				/* Consume the NUL. */
-				SeExprSpec_cp = ++(SeExprSpec_c_buf_p);
-				SeExprSpec_current_state = SeExprSpec_next_state;
-				goto SeExprSpec_match;
+				SeExpr2Spec_cp = ++(SeExpr2Spec_c_buf_p);
+				SeExpr2Spec_current_state = SeExpr2Spec_next_state;
+				goto SeExpr2Spec_match;
 				}
 
 			else
 				{
-				SeExprSpec_cp = (SeExprSpec_last_accepting_cpos);
-				SeExprSpec_current_state = (SeExprSpec_last_accepting_state);
-				goto SeExprSpec_find_action;
+				SeExpr2Spec_cp = (SeExpr2Spec_last_accepting_cpos);
+				SeExpr2Spec_current_state = (SeExpr2Spec_last_accepting_state);
+				goto SeExpr2Spec_find_action;
 				}
 			}
 
-		else switch ( SeExprSpec_get_next_buffer(  ) )
+		else switch ( SeExpr2Spec_get_next_buffer(  ) )
 			{
 			case EOB_ACT_END_OF_FILE:
 				{
-				(SeExprSpec_did_buffer_switch_on_eof) = 0;
+				(SeExpr2Spec_did_buffer_switch_on_eof) = 0;
 
-				if ( SeExprSpecwrap( ) )
+				if ( SeExpr2Specwrap( ) )
 					{
 					/* Note: because we've taken care in
-					 * SeExprSpec_get_next_buffer() to have set up
-					 * SeExprSpectext, we can now set up
-					 * SeExprSpec_c_buf_p so that if some total
+					 * SeExpr2Spec_get_next_buffer() to have set up
+					 * SeExpr2Spectext, we can now set up
+					 * SeExpr2Spec_c_buf_p so that if some total
 					 * hoser (like flex itself) wants to
 					 * call the scanner after we return the
 					 * SeExprSpecYY_NULL, it'll still work - another
 					 * SeExprSpecYY_NULL will get returned.
 					 */
-					(SeExprSpec_c_buf_p) = (SeExprSpectext_ptr) + SeExprSpecYY_MORE_ADJ;
+					(SeExpr2Spec_c_buf_p) = (SeExpr2Spectext_ptr) + SeExprSpecYY_MORE_ADJ;
 
-					SeExprSpec_act = SeExprSpecYY_STATE_EOF(SeExprSpecYY_START);
+					SeExpr2Spec_act = SeExprSpecYY_STATE_EOF(SeExprSpecYY_START);
 					goto do_action;
 					}
 
 				else
 					{
-					if ( ! (SeExprSpec_did_buffer_switch_on_eof) )
+					if ( ! (SeExpr2Spec_did_buffer_switch_on_eof) )
 						SeExprSpecYY_NEW_FILE;
 					}
 				break;
 				}
 
 			case EOB_ACT_CONTINUE_SCAN:
-				(SeExprSpec_c_buf_p) =
-					(SeExprSpectext_ptr) + SeExprSpec_amount_of_matched_text;
+				(SeExpr2Spec_c_buf_p) =
+					(SeExpr2Spectext_ptr) + SeExpr2Spec_amount_of_matched_text;
 
-				SeExprSpec_current_state = SeExprSpec_get_previous_state(  );
+				SeExpr2Spec_current_state = SeExpr2Spec_get_previous_state(  );
 
-				SeExprSpec_cp = (SeExprSpec_c_buf_p);
-				SeExprSpec_bp = (SeExprSpectext_ptr) + SeExprSpecYY_MORE_ADJ;
-				goto SeExprSpec_match;
+				SeExpr2Spec_cp = (SeExpr2Spec_c_buf_p);
+				SeExpr2Spec_bp = (SeExpr2Spectext_ptr) + SeExprSpecYY_MORE_ADJ;
+				goto SeExpr2Spec_match;
 
 			case EOB_ACT_LAST_MATCH:
-				(SeExprSpec_c_buf_p) =
-				&SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars)];
+				(SeExpr2Spec_c_buf_p) =
+				&SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars)];
 
-				SeExprSpec_current_state = SeExprSpec_get_previous_state(  );
+				SeExpr2Spec_current_state = SeExpr2Spec_get_previous_state(  );
 
-				SeExprSpec_cp = (SeExprSpec_c_buf_p);
-				SeExprSpec_bp = (SeExprSpectext_ptr) + SeExprSpecYY_MORE_ADJ;
-				goto SeExprSpec_find_action;
+				SeExpr2Spec_cp = (SeExpr2Spec_c_buf_p);
+				SeExpr2Spec_bp = (SeExpr2Spectext_ptr) + SeExprSpecYY_MORE_ADJ;
+				goto SeExpr2Spec_find_action;
 			}
 		break;
 		}
@@ -1177,29 +1175,29 @@ case SeExprSpecYY_STATE_EOF(INITIAL):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-} /* end of SeExprSpeclex */
+} /* end of SeExpr2Speclex */
 
-/* SeExprSpec_get_next_buffer - try to read in a new buffer
+/* SeExpr2Spec_get_next_buffer - try to read in a new buffer
  *
  * Returns a code representing an action:
  *	EOB_ACT_LAST_MATCH -
  *	EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *	EOB_ACT_END_OF_FILE - end of file
  */
-static int SeExprSpec_get_next_buffer (void)
+static int SeExpr2Spec_get_next_buffer (void)
 {
-    	register char *dest = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf;
-	register char *source = (SeExprSpectext_ptr);
+    	register char *dest = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf;
+	register char *source = (SeExpr2Spectext_ptr);
 	register int number_to_move, i;
 	int ret_val;
 
-	if ( (SeExprSpec_c_buf_p) > &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars) + 1] )
+	if ( (SeExpr2Spec_c_buf_p) > &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars) + 1] )
 		SeExprSpecYY_FATAL_ERROR(
 		"fatal flex scanner internal error--end of buffer missed" );
 
-	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_fill_buffer == 0 )
+	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_fill_buffer == 0 )
 		{ /* Don't try to fill the buffer, so this is an EOF. */
-		if ( (SeExprSpec_c_buf_p) - (SeExprSpectext_ptr) - SeExprSpecYY_MORE_ADJ == 1 )
+		if ( (SeExpr2Spec_c_buf_p) - (SeExpr2Spectext_ptr) - SeExprSpecYY_MORE_ADJ == 1 )
 			{
 			/* We matched a single character, the EOB, so
 			 * treat this as a final EOF.
@@ -1219,21 +1217,21 @@ static int SeExprSpec_get_next_buffer (void)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) ((SeExprSpec_c_buf_p) - (SeExprSpectext_ptr)) - 1;
+	number_to_move = (int) ((SeExpr2Spec_c_buf_p) - (SeExpr2Spectext_ptr)) - 1;
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
 
-	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buffer_status == SeExprSpecYY_BUFFER_EOF_PENDING )
+	if ( SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buffer_status == SeExprSpecYY_BUFFER_EOF_PENDING )
 		/* don't do the read, it's not guaranteed to return an EOF,
 		 * just force an EOF
 		 */
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars = (SeExprSpec_n_chars) = 0;
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars = (SeExpr2Spec_n_chars) = 0;
 
 	else
 		{
-			SeExprSpec_size_t num_to_read =
-			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_size - number_to_move - 1;
+			SeExpr2Spec_size_t num_to_read =
+			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
@@ -1241,33 +1239,33 @@ static int SeExprSpec_get_next_buffer (void)
 			/* just a shorter name for the current buffer */
 			SeExprSpecYY_BUFFER_STATE b = SeExprSpecYY_CURRENT_BUFFER;
 
-			int SeExprSpec_c_buf_p_offset =
-				(int) ((SeExprSpec_c_buf_p) - b->SeExprSpec_ch_buf);
+			int SeExpr2Spec_c_buf_p_offset =
+				(int) ((SeExpr2Spec_c_buf_p) - b->SeExpr2Spec_ch_buf);
 
-			if ( b->SeExprSpec_is_our_buffer )
+			if ( b->SeExpr2Spec_is_our_buffer )
 				{
-				SeExprSpec_size_t new_size = b->SeExprSpec_buf_size * 2;
+				SeExpr2Spec_size_t new_size = b->SeExpr2Spec_buf_size * 2;
 
 				if ( new_size <= 0 )
-					b->SeExprSpec_buf_size += b->SeExprSpec_buf_size / 8;
+					b->SeExpr2Spec_buf_size += b->SeExpr2Spec_buf_size / 8;
 				else
-					b->SeExprSpec_buf_size *= 2;
+					b->SeExpr2Spec_buf_size *= 2;
 
-				b->SeExprSpec_ch_buf = (char *)
+				b->SeExpr2Spec_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					SeExprSpecrealloc((void *) b->SeExprSpec_ch_buf,b->SeExprSpec_buf_size + 2  );
+					SeExpr2Specrealloc((void *) b->SeExpr2Spec_ch_buf,b->SeExpr2Spec_buf_size + 2  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
-				b->SeExprSpec_ch_buf = 0;
+				b->SeExpr2Spec_ch_buf = 0;
 
-			if ( ! b->SeExprSpec_ch_buf )
+			if ( ! b->SeExpr2Spec_ch_buf )
 				SeExprSpecYY_FATAL_ERROR(
 				"fatal error - scanner input buffer overflow" );
 
-			(SeExprSpec_c_buf_p) = &b->SeExprSpec_ch_buf[SeExprSpec_c_buf_p_offset];
+			(SeExpr2Spec_c_buf_p) = &b->SeExpr2Spec_ch_buf[SeExpr2Spec_c_buf_p_offset];
 
-			num_to_read = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_size -
+			num_to_read = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_size -
 						number_to_move - 1;
 
 			}
@@ -1276,24 +1274,24 @@ static int SeExprSpec_get_next_buffer (void)
 			num_to_read = SeExprSpecYY_READ_BUF_SIZE;
 
 		/* Read in more data. */
-		SeExprSpecYY_INPUT( (&SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[number_to_move]),
-			(SeExprSpec_n_chars), num_to_read );
+		SeExprSpecYY_INPUT( (&SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[number_to_move]),
+			(SeExpr2Spec_n_chars), num_to_read );
 
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars = (SeExprSpec_n_chars);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars = (SeExpr2Spec_n_chars);
 		}
 
-	if ( (SeExprSpec_n_chars) == 0 )
+	if ( (SeExpr2Spec_n_chars) == 0 )
 		{
 		if ( number_to_move == SeExprSpecYY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			SeExprSpecrestart(SeExprSpecin  );
+			SeExpr2Specrestart(SeExpr2Specin  );
 			}
 
 		else
 			{
 			ret_val = EOB_ACT_LAST_MATCH;
-			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buffer_status =
+			SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buffer_status =
 				SeExprSpecYY_BUFFER_EOF_PENDING;
 			}
 		}
@@ -1301,83 +1299,83 @@ static int SeExprSpec_get_next_buffer (void)
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((SeExprSpec_size_t) ((SeExprSpec_n_chars) + number_to_move) > SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_size) {
+	if ((SeExpr2Spec_size_t) ((SeExpr2Spec_n_chars) + number_to_move) > SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		SeExprSpec_size_t new_size = (SeExprSpec_n_chars) + number_to_move + ((SeExprSpec_n_chars) >> 1);
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf = (char *) SeExprSpecrealloc((void *) SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf,new_size  );
-		if ( ! SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf )
-			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpec_get_next_buffer()" );
+		SeExpr2Spec_size_t new_size = (SeExpr2Spec_n_chars) + number_to_move + ((SeExpr2Spec_n_chars) >> 1);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf = (char *) SeExpr2Specrealloc((void *) SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf,new_size  );
+		if ( ! SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf )
+			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Spec_get_next_buffer()" );
 	}
 
-	(SeExprSpec_n_chars) += number_to_move;
-	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars)] = SeExprSpecYY_END_OF_BUFFER_CHAR;
-	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars) + 1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
+	(SeExpr2Spec_n_chars) += number_to_move;
+	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars)] = SeExprSpecYY_END_OF_BUFFER_CHAR;
+	SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars) + 1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
 
-	(SeExprSpectext_ptr) = &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[0];
+	(SeExpr2Spectext_ptr) = &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[0];
 
 	return ret_val;
 }
 
-/* SeExprSpec_get_previous_state - get the state just before the EOB char was reached */
+/* SeExpr2Spec_get_previous_state - get the state just before the EOB char was reached */
 
-    static SeExprSpec_state_type SeExprSpec_get_previous_state (void)
+    static SeExpr2Spec_state_type SeExpr2Spec_get_previous_state (void)
 {
-	register SeExprSpec_state_type SeExprSpec_current_state;
-	register char *SeExprSpec_cp;
+	register SeExpr2Spec_state_type SeExpr2Spec_current_state;
+	register char *SeExpr2Spec_cp;
     
-	SeExprSpec_current_state = (SeExprSpec_start);
+	SeExpr2Spec_current_state = (SeExpr2Spec_start);
 
-	for ( SeExprSpec_cp = (SeExprSpectext_ptr) + SeExprSpecYY_MORE_ADJ; SeExprSpec_cp < (SeExprSpec_c_buf_p); ++SeExprSpec_cp )
+	for ( SeExpr2Spec_cp = (SeExpr2Spectext_ptr) + SeExprSpecYY_MORE_ADJ; SeExpr2Spec_cp < (SeExpr2Spec_c_buf_p); ++SeExpr2Spec_cp )
 		{
-		register SeExprSpecYY_CHAR SeExprSpec_c = (*SeExprSpec_cp ? SeExprSpec_ec[SeExprSpecYY_SC_TO_UI(*SeExprSpec_cp)] : 1);
-		if ( SeExprSpec_accept[SeExprSpec_current_state] )
+		register SeExprSpecYY_CHAR SeExpr2Spec_c = (*SeExpr2Spec_cp ? SeExpr2Spec_ec[SeExprSpecYY_SC_TO_UI(*SeExpr2Spec_cp)] : 1);
+		if ( SeExpr2Spec_accept[SeExpr2Spec_current_state] )
 			{
-			(SeExprSpec_last_accepting_state) = SeExprSpec_current_state;
-			(SeExprSpec_last_accepting_cpos) = SeExprSpec_cp;
+			(SeExpr2Spec_last_accepting_state) = SeExpr2Spec_current_state;
+			(SeExpr2Spec_last_accepting_cpos) = SeExpr2Spec_cp;
 			}
-		while ( SeExprSpec_chk[SeExprSpec_base[SeExprSpec_current_state] + SeExprSpec_c] != SeExprSpec_current_state )
+		while ( SeExpr2Spec_chk[SeExpr2Spec_base[SeExpr2Spec_current_state] + SeExpr2Spec_c] != SeExpr2Spec_current_state )
 			{
-			SeExprSpec_current_state = (int) SeExprSpec_def[SeExprSpec_current_state];
-			if ( SeExprSpec_current_state >= 115 )
-				SeExprSpec_c = SeExprSpec_meta[(unsigned int) SeExprSpec_c];
+			SeExpr2Spec_current_state = (int) SeExpr2Spec_def[SeExpr2Spec_current_state];
+			if ( SeExpr2Spec_current_state >= 115 )
+				SeExpr2Spec_c = SeExpr2Spec_meta[(unsigned int) SeExpr2Spec_c];
 			}
-		SeExprSpec_current_state = SeExprSpec_nxt[SeExprSpec_base[SeExprSpec_current_state] + (unsigned int) SeExprSpec_c];
+		SeExpr2Spec_current_state = SeExpr2Spec_nxt[SeExpr2Spec_base[SeExpr2Spec_current_state] + (unsigned int) SeExpr2Spec_c];
 		}
 
-	return SeExprSpec_current_state;
+	return SeExpr2Spec_current_state;
 }
 
-/* SeExprSpec_try_NUL_trans - try to make a transition on the NUL character
+/* SeExpr2Spec_try_NUL_trans - try to make a transition on the NUL character
  *
  * synopsis
- *	next_state = SeExprSpec_try_NUL_trans( current_state );
+ *	next_state = SeExpr2Spec_try_NUL_trans( current_state );
  */
-    static SeExprSpec_state_type SeExprSpec_try_NUL_trans  (SeExprSpec_state_type SeExprSpec_current_state )
+    static SeExpr2Spec_state_type SeExpr2Spec_try_NUL_trans  (SeExpr2Spec_state_type SeExpr2Spec_current_state )
 {
-	register int SeExprSpec_is_jam;
-    	register char *SeExprSpec_cp = (SeExprSpec_c_buf_p);
+	register int SeExpr2Spec_is_jam;
+    	register char *SeExpr2Spec_cp = (SeExpr2Spec_c_buf_p);
 
-	register SeExprSpecYY_CHAR SeExprSpec_c = 1;
-	if ( SeExprSpec_accept[SeExprSpec_current_state] )
+	register SeExprSpecYY_CHAR SeExpr2Spec_c = 1;
+	if ( SeExpr2Spec_accept[SeExpr2Spec_current_state] )
 		{
-		(SeExprSpec_last_accepting_state) = SeExprSpec_current_state;
-		(SeExprSpec_last_accepting_cpos) = SeExprSpec_cp;
+		(SeExpr2Spec_last_accepting_state) = SeExpr2Spec_current_state;
+		(SeExpr2Spec_last_accepting_cpos) = SeExpr2Spec_cp;
 		}
-	while ( SeExprSpec_chk[SeExprSpec_base[SeExprSpec_current_state] + SeExprSpec_c] != SeExprSpec_current_state )
+	while ( SeExpr2Spec_chk[SeExpr2Spec_base[SeExpr2Spec_current_state] + SeExpr2Spec_c] != SeExpr2Spec_current_state )
 		{
-		SeExprSpec_current_state = (int) SeExprSpec_def[SeExprSpec_current_state];
-		if ( SeExprSpec_current_state >= 115 )
-			SeExprSpec_c = SeExprSpec_meta[(unsigned int) SeExprSpec_c];
+		SeExpr2Spec_current_state = (int) SeExpr2Spec_def[SeExpr2Spec_current_state];
+		if ( SeExpr2Spec_current_state >= 115 )
+			SeExpr2Spec_c = SeExpr2Spec_meta[(unsigned int) SeExpr2Spec_c];
 		}
-	SeExprSpec_current_state = SeExprSpec_nxt[SeExprSpec_base[SeExprSpec_current_state] + (unsigned int) SeExprSpec_c];
-	SeExprSpec_is_jam = (SeExprSpec_current_state == 114);
+	SeExpr2Spec_current_state = SeExpr2Spec_nxt[SeExpr2Spec_base[SeExpr2Spec_current_state] + (unsigned int) SeExpr2Spec_c];
+	SeExpr2Spec_is_jam = (SeExpr2Spec_current_state == 114);
 
-	return SeExprSpec_is_jam ? 0 : SeExprSpec_current_state;
+	return SeExpr2Spec_is_jam ? 0 : SeExpr2Spec_current_state;
 }
 
 #ifndef SeExprSpecYY_NO_INPUT
 #ifdef __cplusplus
-    static int SeExprSpecinput (void)
+    static int SeExpr2Specinput (void)
 #else
     static int input  (void)
 #endif
@@ -1385,27 +1383,27 @@ static int SeExprSpec_get_next_buffer (void)
 {
 	int c;
     
-	*(SeExprSpec_c_buf_p) = (SeExprSpec_hold_char);
+	*(SeExpr2Spec_c_buf_p) = (SeExpr2Spec_hold_char);
 
-	if ( *(SeExprSpec_c_buf_p) == SeExprSpecYY_END_OF_BUFFER_CHAR )
+	if ( *(SeExpr2Spec_c_buf_p) == SeExprSpecYY_END_OF_BUFFER_CHAR )
 		{
-		/* SeExprSpec_c_buf_p now points to the character we want to return.
+		/* SeExpr2Spec_c_buf_p now points to the character we want to return.
 		 * If this occurs *before* the EOB characters, then it's a
 		 * valid NUL; if not, then we've hit the end of the buffer.
 		 */
-		if ( (SeExprSpec_c_buf_p) < &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_ch_buf[(SeExprSpec_n_chars)] )
+		if ( (SeExpr2Spec_c_buf_p) < &SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_ch_buf[(SeExpr2Spec_n_chars)] )
 			/* This was really a NUL. */
-			*(SeExprSpec_c_buf_p) = '\0';
+			*(SeExpr2Spec_c_buf_p) = '\0';
 
 		else
 			{ /* need more input */
-			SeExprSpec_size_t offset = (SeExprSpec_c_buf_p) - (SeExprSpectext_ptr);
-			++(SeExprSpec_c_buf_p);
+			SeExpr2Spec_size_t offset = (SeExpr2Spec_c_buf_p) - (SeExpr2Spectext_ptr);
+			++(SeExpr2Spec_c_buf_p);
 
-			switch ( SeExprSpec_get_next_buffer(  ) )
+			switch ( SeExpr2Spec_get_next_buffer(  ) )
 				{
 				case EOB_ACT_LAST_MATCH:
-					/* This happens because SeExprSpec_g_n_b()
+					/* This happens because SeExpr2Spec_g_n_b()
 					 * sees that we've accumulated a
 					 * token and flags that we need to
 					 * try matching the token before
@@ -1416,34 +1414,34 @@ static int SeExprSpec_get_next_buffer (void)
 					 */
 
 					/* Reset buffer status. */
-					SeExprSpecrestart(SeExprSpecin );
+					SeExpr2Specrestart(SeExpr2Specin );
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( SeExprSpecwrap( ) )
+					if ( SeExpr2Specwrap( ) )
 						return 0;
 
-					if ( ! (SeExprSpec_did_buffer_switch_on_eof) )
+					if ( ! (SeExpr2Spec_did_buffer_switch_on_eof) )
 						SeExprSpecYY_NEW_FILE;
 #ifdef __cplusplus
-					return SeExprSpecinput();
+					return SeExpr2Specinput();
 #else
 					return input();
 #endif
 					}
 
 				case EOB_ACT_CONTINUE_SCAN:
-					(SeExprSpec_c_buf_p) = (SeExprSpectext_ptr) + offset;
+					(SeExpr2Spec_c_buf_p) = (SeExpr2Spectext_ptr) + offset;
 					break;
 				}
 			}
 		}
 
-	c = *(unsigned char *) (SeExprSpec_c_buf_p);	/* cast for 8-bit char's */
-	*(SeExprSpec_c_buf_p) = '\0';	/* preserve SeExprSpectext */
-	(SeExprSpec_hold_char) = *++(SeExprSpec_c_buf_p);
+	c = *(unsigned char *) (SeExpr2Spec_c_buf_p);	/* cast for 8-bit char's */
+	*(SeExpr2Spec_c_buf_p) = '\0';	/* preserve SeExpr2Spectext */
+	(SeExpr2Spec_hold_char) = *++(SeExpr2Spec_c_buf_p);
 
 	return c;
 }
@@ -1454,60 +1452,60 @@ static int SeExprSpec_get_next_buffer (void)
  * 
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void SeExprSpecrestart  (FILE * input_file )
+    void SeExpr2Specrestart  (FILE * input_file )
 {
     
 	if ( ! SeExprSpecYY_CURRENT_BUFFER ){
-        SeExprSpecensure_buffer_stack ();
+        SeExpr2Specensure_buffer_stack ();
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE =
-            SeExprSpec_create_buffer(SeExprSpecin,SeExprSpecYY_BUF_SIZE );
+            SeExpr2Spec_create_buffer(SeExpr2Specin,SeExprSpecYY_BUF_SIZE );
 	}
 
-	SeExprSpec_init_buffer(SeExprSpecYY_CURRENT_BUFFER,input_file );
-	SeExprSpec_load_buffer_state( );
+	SeExpr2Spec_init_buffer(SeExprSpecYY_CURRENT_BUFFER,input_file );
+	SeExpr2Spec_load_buffer_state( );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * 
  */
-    void SeExprSpec_switch_to_buffer  (SeExprSpecYY_BUFFER_STATE  new_buffer )
+    void SeExpr2Spec_switch_to_buffer  (SeExprSpecYY_BUFFER_STATE  new_buffer )
 {
     
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		SeExprSpecpop_buffer_state();
-	 *		SeExprSpecpush_buffer_state(new_buffer);
+	 *		SeExpr2Specpop_buffer_state();
+	 *		SeExpr2Specpush_buffer_state(new_buffer);
      */
-	SeExprSpecensure_buffer_stack ();
+	SeExpr2Specensure_buffer_stack ();
 	if ( SeExprSpecYY_CURRENT_BUFFER == new_buffer )
 		return;
 
 	if ( SeExprSpecYY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
-		*(SeExprSpec_c_buf_p) = (SeExprSpec_hold_char);
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_pos = (SeExprSpec_c_buf_p);
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars = (SeExprSpec_n_chars);
+		*(SeExpr2Spec_c_buf_p) = (SeExpr2Spec_hold_char);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_pos = (SeExpr2Spec_c_buf_p);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars = (SeExpr2Spec_n_chars);
 		}
 
 	SeExprSpecYY_CURRENT_BUFFER_LVALUE = new_buffer;
-	SeExprSpec_load_buffer_state( );
+	SeExpr2Spec_load_buffer_state( );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (SeExprSpecwrap()) processing, but the only time this flag
-	 * is looked at is after SeExprSpecwrap() is called, so it's safe
+	 * EOF (SeExpr2Specwrap()) processing, but the only time this flag
+	 * is looked at is after SeExpr2Specwrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
-	(SeExprSpec_did_buffer_switch_on_eof) = 1;
+	(SeExpr2Spec_did_buffer_switch_on_eof) = 1;
 }
 
-static void SeExprSpec_load_buffer_state  (void)
+static void SeExpr2Spec_load_buffer_state  (void)
 {
-    	(SeExprSpec_n_chars) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars;
-	(SeExprSpectext_ptr) = (SeExprSpec_c_buf_p) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_pos;
-	SeExprSpecin = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_input_file;
-	(SeExprSpec_hold_char) = *(SeExprSpec_c_buf_p);
+    	(SeExpr2Spec_n_chars) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars;
+	(SeExpr2Spectext_ptr) = (SeExpr2Spec_c_buf_p) = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_pos;
+	SeExpr2Specin = SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_input_file;
+	(SeExpr2Spec_hold_char) = *(SeExpr2Spec_c_buf_p);
 }
 
 /** Allocate and initialize an input buffer state.
@@ -1516,35 +1514,35 @@ static void SeExprSpec_load_buffer_state  (void)
  * 
  * @return the allocated buffer state.
  */
-    SeExprSpecYY_BUFFER_STATE SeExprSpec_create_buffer  (FILE * file, int  size )
+    SeExprSpecYY_BUFFER_STATE SeExpr2Spec_create_buffer  (FILE * file, int  size )
 {
 	SeExprSpecYY_BUFFER_STATE b;
     
-	b = (SeExprSpecYY_BUFFER_STATE) SeExprSpecalloc(sizeof( struct SeExprSpec_buffer_state )  );
+	b = (SeExprSpecYY_BUFFER_STATE) SeExpr2Specalloc(sizeof( struct SeExpr2Spec_buffer_state )  );
 	if ( ! b )
-		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpec_create_buffer()" );
+		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Spec_create_buffer()" );
 
-	b->SeExprSpec_buf_size = size;
+	b->SeExpr2Spec_buf_size = size;
 
-	/* SeExprSpec_ch_buf has to be 2 characters longer than the size given because
+	/* SeExpr2Spec_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->SeExprSpec_ch_buf = (char *) SeExprSpecalloc(b->SeExprSpec_buf_size + 2  );
-	if ( ! b->SeExprSpec_ch_buf )
-		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpec_create_buffer()" );
+	b->SeExpr2Spec_ch_buf = (char *) SeExpr2Specalloc(b->SeExpr2Spec_buf_size + 2  );
+	if ( ! b->SeExpr2Spec_ch_buf )
+		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Spec_create_buffer()" );
 
-	b->SeExprSpec_is_our_buffer = 1;
+	b->SeExpr2Spec_is_our_buffer = 1;
 
-	SeExprSpec_init_buffer(b,file );
+	SeExpr2Spec_init_buffer(b,file );
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with SeExprSpec_create_buffer()
+ * @param b a buffer created with SeExpr2Spec_create_buffer()
  * 
  */
-    void SeExprSpec_delete_buffer (SeExprSpecYY_BUFFER_STATE  b )
+    void SeExpr2Spec_delete_buffer (SeExprSpecYY_BUFFER_STATE  b )
 {
     
 	if ( ! b )
@@ -1553,36 +1551,36 @@ static void SeExprSpec_load_buffer_state  (void)
 	if ( b == SeExprSpecYY_CURRENT_BUFFER ) /* Not sure if we should pop here. */
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE = (SeExprSpecYY_BUFFER_STATE) 0;
 
-	if ( b->SeExprSpec_is_our_buffer )
-		SeExprSpecfree((void *) b->SeExprSpec_ch_buf  );
+	if ( b->SeExpr2Spec_is_our_buffer )
+		SeExpr2Specfree((void *) b->SeExpr2Spec_ch_buf  );
 
-	SeExprSpecfree((void *) b  );
+	SeExpr2Specfree((void *) b  );
 }
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a SeExprSpecrestart() or at EOF.
+ * such as during a SeExpr2Specrestart() or at EOF.
  */
-    static void SeExprSpec_init_buffer  (SeExprSpecYY_BUFFER_STATE  b, FILE * file )
+    static void SeExpr2Spec_init_buffer  (SeExprSpecYY_BUFFER_STATE  b, FILE * file )
 
 {
 	int oerrno = errno;
     
-	SeExprSpec_flush_buffer(b );
+	SeExpr2Spec_flush_buffer(b );
 
-	b->SeExprSpec_input_file = file;
-	b->SeExprSpec_fill_buffer = 1;
+	b->SeExpr2Spec_input_file = file;
+	b->SeExpr2Spec_fill_buffer = 1;
 
-    /* If b is the current buffer, then SeExprSpec_init_buffer was _probably_
-     * called from SeExprSpecrestart() or through SeExprSpec_get_next_buffer.
+    /* If b is the current buffer, then SeExpr2Spec_init_buffer was _probably_
+     * called from SeExpr2Specrestart() or through SeExpr2Spec_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != SeExprSpecYY_CURRENT_BUFFER){
-        b->SeExprSpec_bs_lineno = 1;
-        b->SeExprSpec_bs_column = 0;
+        b->SeExpr2Spec_bs_lineno = 1;
+        b->SeExpr2Spec_bs_column = 0;
     }
 
-        b->SeExprSpec_is_interactive = 0;
+        b->SeExpr2Spec_is_interactive = 0;
     
 	errno = oerrno;
 }
@@ -1591,27 +1589,27 @@ static void SeExprSpec_load_buffer_state  (void)
  * @param b the buffer state to be flushed, usually @c SeExprSpecYY_CURRENT_BUFFER.
  * 
  */
-    void SeExprSpec_flush_buffer (SeExprSpecYY_BUFFER_STATE  b )
+    void SeExpr2Spec_flush_buffer (SeExprSpecYY_BUFFER_STATE  b )
 {
     	if ( ! b )
 		return;
 
-	b->SeExprSpec_n_chars = 0;
+	b->SeExpr2Spec_n_chars = 0;
 
 	/* We always need two end-of-buffer characters.  The first causes
 	 * a transition to the end-of-buffer state.  The second causes
 	 * a jam in that state.
 	 */
-	b->SeExprSpec_ch_buf[0] = SeExprSpecYY_END_OF_BUFFER_CHAR;
-	b->SeExprSpec_ch_buf[1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
+	b->SeExpr2Spec_ch_buf[0] = SeExprSpecYY_END_OF_BUFFER_CHAR;
+	b->SeExpr2Spec_ch_buf[1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
 
-	b->SeExprSpec_buf_pos = &b->SeExprSpec_ch_buf[0];
+	b->SeExpr2Spec_buf_pos = &b->SeExpr2Spec_ch_buf[0];
 
-	b->SeExprSpec_at_bol = 1;
-	b->SeExprSpec_buffer_status = SeExprSpecYY_BUFFER_NEW;
+	b->SeExpr2Spec_at_bol = 1;
+	b->SeExpr2Spec_buffer_status = SeExprSpecYY_BUFFER_NEW;
 
 	if ( b == SeExprSpecYY_CURRENT_BUFFER )
-		SeExprSpec_load_buffer_state( );
+		SeExpr2Spec_load_buffer_state( );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -1620,95 +1618,95 @@ static void SeExprSpec_load_buffer_state  (void)
  *  @param new_buffer The new state.
  *  
  */
-void SeExprSpecpush_buffer_state (SeExprSpecYY_BUFFER_STATE new_buffer )
+void SeExpr2Specpush_buffer_state (SeExprSpecYY_BUFFER_STATE new_buffer )
 {
     	if (new_buffer == NULL)
 		return;
 
-	SeExprSpecensure_buffer_stack();
+	SeExpr2Specensure_buffer_stack();
 
-	/* This block is copied from SeExprSpec_switch_to_buffer. */
+	/* This block is copied from SeExpr2Spec_switch_to_buffer. */
 	if ( SeExprSpecYY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
-		*(SeExprSpec_c_buf_p) = (SeExprSpec_hold_char);
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_buf_pos = (SeExprSpec_c_buf_p);
-		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExprSpec_n_chars = (SeExprSpec_n_chars);
+		*(SeExpr2Spec_c_buf_p) = (SeExpr2Spec_hold_char);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_buf_pos = (SeExpr2Spec_c_buf_p);
+		SeExprSpecYY_CURRENT_BUFFER_LVALUE->SeExpr2Spec_n_chars = (SeExpr2Spec_n_chars);
 		}
 
 	/* Only push if top exists. Otherwise, replace top. */
 	if (SeExprSpecYY_CURRENT_BUFFER)
-		(SeExprSpec_buffer_stack_top)++;
+		(SeExpr2Spec_buffer_stack_top)++;
 	SeExprSpecYY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from SeExprSpec_switch_to_buffer. */
-	SeExprSpec_load_buffer_state( );
-	(SeExprSpec_did_buffer_switch_on_eof) = 1;
+	/* copied from SeExpr2Spec_switch_to_buffer. */
+	SeExpr2Spec_load_buffer_state( );
+	(SeExpr2Spec_did_buffer_switch_on_eof) = 1;
 }
 
 /** Removes and deletes the top of the stack, if present.
  *  The next element becomes the new top.
  *  
  */
-void SeExprSpecpop_buffer_state (void)
+void SeExpr2Specpop_buffer_state (void)
 {
     	if (!SeExprSpecYY_CURRENT_BUFFER)
 		return;
 
-	SeExprSpec_delete_buffer(SeExprSpecYY_CURRENT_BUFFER );
+	SeExpr2Spec_delete_buffer(SeExprSpecYY_CURRENT_BUFFER );
 	SeExprSpecYY_CURRENT_BUFFER_LVALUE = NULL;
-	if ((SeExprSpec_buffer_stack_top) > 0)
-		--(SeExprSpec_buffer_stack_top);
+	if ((SeExpr2Spec_buffer_stack_top) > 0)
+		--(SeExpr2Spec_buffer_stack_top);
 
 	if (SeExprSpecYY_CURRENT_BUFFER) {
-		SeExprSpec_load_buffer_state( );
-		(SeExprSpec_did_buffer_switch_on_eof) = 1;
+		SeExpr2Spec_load_buffer_state( );
+		(SeExpr2Spec_did_buffer_switch_on_eof) = 1;
 	}
 }
 
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void SeExprSpecensure_buffer_stack (void)
+static void SeExpr2Specensure_buffer_stack (void)
 {
-	SeExprSpec_size_t num_to_alloc;
+	SeExpr2Spec_size_t num_to_alloc;
     
-	if (!(SeExprSpec_buffer_stack)) {
+	if (!(SeExpr2Spec_buffer_stack)) {
 
 		/* First allocation is just for 2 elements, since we don't know if this
 		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
 		 * immediate realloc on the next call.
          */
 		num_to_alloc = 1;
-		(SeExprSpec_buffer_stack) = (struct SeExprSpec_buffer_state**)SeExprSpecalloc
-								(num_to_alloc * sizeof(struct SeExprSpec_buffer_state*)
+		(SeExpr2Spec_buffer_stack) = (struct SeExpr2Spec_buffer_state**)SeExpr2Specalloc
+								(num_to_alloc * sizeof(struct SeExpr2Spec_buffer_state*)
 								);
-		if ( ! (SeExprSpec_buffer_stack) )
-			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpecensure_buffer_stack()" );
+		if ( ! (SeExpr2Spec_buffer_stack) )
+			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Specensure_buffer_stack()" );
 								  
-		memset((SeExprSpec_buffer_stack), 0, num_to_alloc * sizeof(struct SeExprSpec_buffer_state*));
+		memset((SeExpr2Spec_buffer_stack), 0, num_to_alloc * sizeof(struct SeExpr2Spec_buffer_state*));
 				
-		(SeExprSpec_buffer_stack_max) = num_to_alloc;
-		(SeExprSpec_buffer_stack_top) = 0;
+		(SeExpr2Spec_buffer_stack_max) = num_to_alloc;
+		(SeExpr2Spec_buffer_stack_top) = 0;
 		return;
 	}
 
-	if ((SeExprSpec_buffer_stack_top) >= ((SeExprSpec_buffer_stack_max)) - 1){
+	if ((SeExpr2Spec_buffer_stack_top) >= ((SeExpr2Spec_buffer_stack_max)) - 1){
 
 		/* Increase the buffer to prepare for a possible push. */
 		int grow_size = 8 /* arbitrary grow size */;
 
-		num_to_alloc = (SeExprSpec_buffer_stack_max) + grow_size;
-		(SeExprSpec_buffer_stack) = (struct SeExprSpec_buffer_state**)SeExprSpecrealloc
-								((SeExprSpec_buffer_stack),
-								num_to_alloc * sizeof(struct SeExprSpec_buffer_state*)
+		num_to_alloc = (SeExpr2Spec_buffer_stack_max) + grow_size;
+		(SeExpr2Spec_buffer_stack) = (struct SeExpr2Spec_buffer_state**)SeExpr2Specrealloc
+								((SeExpr2Spec_buffer_stack),
+								num_to_alloc * sizeof(struct SeExpr2Spec_buffer_state*)
 								);
-		if ( ! (SeExprSpec_buffer_stack) )
-			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpecensure_buffer_stack()" );
+		if ( ! (SeExpr2Spec_buffer_stack) )
+			SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Specensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
-		memset((SeExprSpec_buffer_stack) + (SeExprSpec_buffer_stack_max), 0, grow_size * sizeof(struct SeExprSpec_buffer_state*));
-		(SeExprSpec_buffer_stack_max) = num_to_alloc;
+		memset((SeExpr2Spec_buffer_stack) + (SeExpr2Spec_buffer_stack_max), 0, grow_size * sizeof(struct SeExpr2Spec_buffer_state*));
+		(SeExpr2Spec_buffer_stack_max) = num_to_alloc;
 	}
 }
 
@@ -1718,7 +1716,7 @@ static void SeExprSpecensure_buffer_stack (void)
  * 
  * @return the newly allocated buffer state object. 
  */
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_buffer  (char * base, SeExprSpec_size_t  size )
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_buffer  (char * base, SeExpr2Spec_size_t  size )
 {
 	SeExprSpecYY_BUFFER_STATE b;
     
@@ -1728,71 +1726,71 @@ SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_buffer  (char * base, SeExprSpec_size_
 		/* They forgot to leave room for the EOB's. */
 		return 0;
 
-	b = (SeExprSpecYY_BUFFER_STATE) SeExprSpecalloc(sizeof( struct SeExprSpec_buffer_state )  );
+	b = (SeExprSpecYY_BUFFER_STATE) SeExpr2Specalloc(sizeof( struct SeExpr2Spec_buffer_state )  );
 	if ( ! b )
-		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpec_scan_buffer()" );
+		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Spec_scan_buffer()" );
 
-	b->SeExprSpec_buf_size = size - 2;	/* "- 2" to take care of EOB's */
-	b->SeExprSpec_buf_pos = b->SeExprSpec_ch_buf = base;
-	b->SeExprSpec_is_our_buffer = 0;
-	b->SeExprSpec_input_file = 0;
-	b->SeExprSpec_n_chars = b->SeExprSpec_buf_size;
-	b->SeExprSpec_is_interactive = 0;
-	b->SeExprSpec_at_bol = 1;
-	b->SeExprSpec_fill_buffer = 0;
-	b->SeExprSpec_buffer_status = SeExprSpecYY_BUFFER_NEW;
+	b->SeExpr2Spec_buf_size = size - 2;	/* "- 2" to take care of EOB's */
+	b->SeExpr2Spec_buf_pos = b->SeExpr2Spec_ch_buf = base;
+	b->SeExpr2Spec_is_our_buffer = 0;
+	b->SeExpr2Spec_input_file = 0;
+	b->SeExpr2Spec_n_chars = b->SeExpr2Spec_buf_size;
+	b->SeExpr2Spec_is_interactive = 0;
+	b->SeExpr2Spec_at_bol = 1;
+	b->SeExpr2Spec_fill_buffer = 0;
+	b->SeExpr2Spec_buffer_status = SeExprSpecYY_BUFFER_NEW;
 
-	SeExprSpec_switch_to_buffer(b  );
+	SeExpr2Spec_switch_to_buffer(b  );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to SeExprSpeclex() will
+/** Setup the input buffer state to scan a string. The next call to SeExpr2Speclex() will
  * scan from a @e copy of @a str.
- * @param SeExprSpecstr a NUL-terminated string to scan
+ * @param SeExpr2Specstr a NUL-terminated string to scan
  * 
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       SeExprSpec_scan_bytes() instead.
+ *       SeExpr2Spec_scan_bytes() instead.
  */
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_string (SeExprSpecconst char * SeExprSpecstr )
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_string (SeExpr2Specconst char * SeExpr2Specstr )
 {
     
-	return SeExprSpec_scan_bytes(SeExprSpecstr,strlen(SeExprSpecstr) );
+	return SeExpr2Spec_scan_bytes(SeExpr2Specstr,strlen(SeExpr2Specstr) );
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to SeExprSpeclex() will
+/** Setup the input buffer state to scan the given bytes. The next call to SeExpr2Speclex() will
  * scan from a @e copy of @a bytes.
  * @param bytes the byte buffer to scan
  * @param len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
-SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes  (SeExprSpecconst char * SeExprSpecbytes, SeExprSpec_size_t  _SeExprSpecbytes_len )
+SeExprSpecYY_BUFFER_STATE SeExpr2Spec_scan_bytes  (SeExpr2Specconst char * SeExpr2Specbytes, SeExpr2Spec_size_t  _SeExpr2Specbytes_len )
 {
 	SeExprSpecYY_BUFFER_STATE b;
 	char *buf;
-	SeExprSpec_size_t n, i;
+	SeExpr2Spec_size_t n, i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
-	n = _SeExprSpecbytes_len + 2;
-	buf = (char *) SeExprSpecalloc(n  );
+	n = _SeExpr2Specbytes_len + 2;
+	buf = (char *) SeExpr2Specalloc(n  );
 	if ( ! buf )
-		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExprSpec_scan_bytes()" );
+		SeExprSpecYY_FATAL_ERROR( "out of dynamic memory in SeExpr2Spec_scan_bytes()" );
 
-	for ( i = 0; i < _SeExprSpecbytes_len; ++i )
-		buf[i] = SeExprSpecbytes[i];
+	for ( i = 0; i < _SeExpr2Specbytes_len; ++i )
+		buf[i] = SeExpr2Specbytes[i];
 
-	buf[_SeExprSpecbytes_len] = buf[_SeExprSpecbytes_len+1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
+	buf[_SeExpr2Specbytes_len] = buf[_SeExpr2Specbytes_len+1] = SeExprSpecYY_END_OF_BUFFER_CHAR;
 
-	b = SeExprSpec_scan_buffer(buf,n );
+	b = SeExpr2Spec_scan_buffer(buf,n );
 	if ( ! b )
-		SeExprSpecYY_FATAL_ERROR( "bad buffer in SeExprSpec_scan_bytes()" );
+		SeExprSpecYY_FATAL_ERROR( "bad buffer in SeExpr2Spec_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
 	 */
-	b->SeExprSpec_is_our_buffer = 1;
+	b->SeExpr2Spec_is_our_buffer = 1;
 
 	return b;
 }
@@ -1801,26 +1799,26 @@ SeExprSpecYY_BUFFER_STATE SeExprSpec_scan_bytes  (SeExprSpecconst char * SeExprS
 #define SeExprSpecYY_EXIT_FAILURE 2
 #endif
 
-static void SeExprSpec_fatal_error (SeExprSpecconst char* msg )
+static void SeExpr2Spec_fatal_error (SeExpr2Specconst char* msg )
 {
     	(void) fprintf( stderr, "%s\n", msg );
 	exit( SeExprSpecYY_EXIT_FAILURE );
 }
 
-/* Redefine SeExprSpecless() so it works in section 3 code. */
+/* Redefine SeExpr2Specless() so it works in section 3 code. */
 
-#undef SeExprSpecless
-#define SeExprSpecless(n) \
+#undef SeExpr2Specless
+#define SeExpr2Specless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up SeExprSpectext. */ \
-        int SeExprSpecless_macro_arg = (n); \
-        SeExprSpecYY_LESS_LINENO(SeExprSpecless_macro_arg);\
-		SeExprSpectext[SeExprSpecleng] = (SeExprSpec_hold_char); \
-		(SeExprSpec_c_buf_p) = SeExprSpectext + SeExprSpecless_macro_arg; \
-		(SeExprSpec_hold_char) = *(SeExprSpec_c_buf_p); \
-		*(SeExprSpec_c_buf_p) = '\0'; \
-		SeExprSpecleng = SeExprSpecless_macro_arg; \
+		/* Undo effects of setting up SeExpr2Spectext. */ \
+        int SeExpr2Specless_macro_arg = (n); \
+        SeExprSpecYY_LESS_LINENO(SeExpr2Specless_macro_arg);\
+		SeExpr2Spectext[SeExpr2Specleng] = (SeExpr2Spec_hold_char); \
+		(SeExpr2Spec_c_buf_p) = SeExpr2Spectext + SeExpr2Specless_macro_arg; \
+		(SeExpr2Spec_hold_char) = *(SeExpr2Spec_c_buf_p); \
+		*(SeExpr2Spec_c_buf_p) = '\0'; \
+		SeExpr2Specleng = SeExpr2Specless_macro_arg; \
 		} \
 	while ( 0 )
 
@@ -1829,127 +1827,127 @@ static void SeExprSpec_fatal_error (SeExprSpecconst char* msg )
 /** Get the current line number.
  * 
  */
-int SeExprSpecget_lineno  (void)
+int SeExpr2Specget_lineno  (void)
 {
         
-    return SeExprSpeclineno;
+    return SeExpr2Speclineno;
 }
 
 /** Get the input stream.
  * 
  */
-FILE *SeExprSpecget_in  (void)
+FILE *SeExpr2Specget_in  (void)
 {
-        return SeExprSpecin;
+        return SeExpr2Specin;
 }
 
 /** Get the output stream.
  * 
  */
-FILE *SeExprSpecget_out  (void)
+FILE *SeExpr2Specget_out  (void)
 {
-        return SeExprSpecout;
+        return SeExpr2Specout;
 }
 
 /** Get the length of the current token.
  * 
  */
-SeExprSpec_size_t SeExprSpecget_leng  (void)
+SeExpr2Spec_size_t SeExpr2Specget_leng  (void)
 {
-        return SeExprSpecleng;
+        return SeExpr2Specleng;
 }
 
 /** Get the current token.
  * 
  */
 
-char *SeExprSpecget_text  (void)
+char *SeExpr2Specget_text  (void)
 {
-        return SeExprSpectext;
+        return SeExpr2Spectext;
 }
 
 /** Set the current line number.
  * @param line_number
  * 
  */
-void SeExprSpecset_lineno (int  line_number )
+void SeExpr2Specset_lineno (int  line_number )
 {
     
-    SeExprSpeclineno = line_number;
+    SeExpr2Speclineno = line_number;
 }
 
 /** Set the input stream. This does not discard the current
  * input buffer.
  * @param in_str A readable stream.
  * 
- * @see SeExprSpec_switch_to_buffer
+ * @see SeExpr2Spec_switch_to_buffer
  */
-void SeExprSpecset_in (FILE *  in_str )
+void SeExpr2Specset_in (FILE *  in_str )
 {
-        SeExprSpecin = in_str ;
+        SeExpr2Specin = in_str ;
 }
 
-void SeExprSpecset_out (FILE *  out_str )
+void SeExpr2Specset_out (FILE *  out_str )
 {
-        SeExprSpecout = out_str ;
+        SeExpr2Specout = out_str ;
 }
 
-int SeExprSpecget_debug  (void)
+int SeExpr2Specget_debug  (void)
 {
-        return SeExprSpec_flex_debug;
+        return SeExpr2Spec_flex_debug;
 }
 
-void SeExprSpecset_debug (int  bdebug )
+void SeExpr2Specset_debug (int  bdebug )
 {
-        SeExprSpec_flex_debug = bdebug ;
+        SeExpr2Spec_flex_debug = bdebug ;
 }
 
-static int SeExprSpec_init_globals (void)
+static int SeExpr2Spec_init_globals (void)
 {
         /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from SeExprSpeclex_destroy(), so don't allocate here.
+     * This function is called from SeExpr2Speclex_destroy(), so don't allocate here.
      */
 
-    (SeExprSpec_buffer_stack) = 0;
-    (SeExprSpec_buffer_stack_top) = 0;
-    (SeExprSpec_buffer_stack_max) = 0;
-    (SeExprSpec_c_buf_p) = (char *) 0;
-    (SeExprSpec_init) = 0;
-    (SeExprSpec_start) = 0;
+    (SeExpr2Spec_buffer_stack) = 0;
+    (SeExpr2Spec_buffer_stack_top) = 0;
+    (SeExpr2Spec_buffer_stack_max) = 0;
+    (SeExpr2Spec_c_buf_p) = (char *) 0;
+    (SeExpr2Spec_init) = 0;
+    (SeExpr2Spec_start) = 0;
 
 /* Defined in main.c */
 #ifdef SeExprSpecYY_STDINIT
-    SeExprSpecin = stdin;
-    SeExprSpecout = stdout;
+    SeExpr2Specin = stdin;
+    SeExpr2Specout = stdout;
 #else
-    SeExprSpecin = (FILE *) 0;
-    SeExprSpecout = (FILE *) 0;
+    SeExpr2Specin = (FILE *) 0;
+    SeExpr2Specout = (FILE *) 0;
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * SeExprSpeclex_init()
+     * SeExpr2Speclex_init()
      */
     return 0;
 }
 
-/* SeExprSpeclex_destroy is for both reentrant and non-reentrant scanners. */
-int SeExprSpeclex_destroy  (void)
+/* SeExpr2Speclex_destroy is for both reentrant and non-reentrant scanners. */
+int SeExpr2Speclex_destroy  (void)
 {
     
     /* Pop the buffer stack, destroying each element. */
 	while(SeExprSpecYY_CURRENT_BUFFER){
-		SeExprSpec_delete_buffer(SeExprSpecYY_CURRENT_BUFFER  );
+		SeExpr2Spec_delete_buffer(SeExprSpecYY_CURRENT_BUFFER  );
 		SeExprSpecYY_CURRENT_BUFFER_LVALUE = NULL;
-		SeExprSpecpop_buffer_state();
+		SeExpr2Specpop_buffer_state();
 	}
 
 	/* Destroy the stack itself. */
-	SeExprSpecfree((SeExprSpec_buffer_stack) );
-	(SeExprSpec_buffer_stack) = NULL;
+	SeExpr2Specfree((SeExpr2Spec_buffer_stack) );
+	(SeExpr2Spec_buffer_stack) = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * SeExprSpeclex() is called, initialization will occur. */
-    SeExprSpec_init_globals( );
+     * SeExpr2Speclex() is called, initialization will occur. */
+    SeExpr2Spec_init_globals( );
 
     return 0;
 }
@@ -1958,8 +1956,8 @@ int SeExprSpeclex_destroy  (void)
  * Internal utility routines.
  */
 
-#ifndef SeExprSpectext_ptr
-static void SeExprSpec_flex_strncpy (char* s1, SeExprSpecconst char * s2, int n )
+#ifndef SeExpr2Spectext_ptr
+static void SeExpr2Spec_flex_strncpy (char* s1, SeExpr2Specconst char * s2, int n )
 {
 	register int i;
 	for ( i = 0; i < n; ++i )
@@ -1968,7 +1966,7 @@ static void SeExprSpec_flex_strncpy (char* s1, SeExprSpecconst char * s2, int n 
 #endif
 
 #ifdef SeExprSpecYY_NEED_STRLEN
-static int SeExprSpec_flex_strlen (SeExprSpecconst char * s )
+static int SeExpr2Spec_flex_strlen (SeExpr2Specconst char * s )
 {
 	register int n;
 	for ( n = 0; s[n]; ++n )
@@ -1978,12 +1976,12 @@ static int SeExprSpec_flex_strlen (SeExprSpecconst char * s )
 }
 #endif
 
-void *SeExprSpecalloc (SeExprSpec_size_t  size )
+void *SeExpr2Specalloc (SeExpr2Spec_size_t  size )
 {
 	return (void *) malloc( size );
 }
 
-void *SeExprSpecrealloc  (void * ptr, SeExprSpec_size_t  size )
+void *SeExpr2Specrealloc  (void * ptr, SeExpr2Spec_size_t  size )
 {
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
@@ -1995,22 +1993,22 @@ void *SeExprSpecrealloc  (void * ptr, SeExprSpec_size_t  size )
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void SeExprSpecfree (void * ptr )
+void SeExpr2Specfree (void * ptr )
 {
-	free( (char *) ptr );	/* see SeExprSpecrealloc() for (char *) cast */
+	free( (char *) ptr );	/* see SeExpr2Specrealloc() for (char *) cast */
 }
 
-#define SeExprSpecYYTABLES_NAME "SeExprSpectables"
+#define SeExprSpecYYTABLES_NAME "SeExpr2Spectables"
 
-#line 124 "src/SeExprEditor/SeExprSpecParserLex.l"
+#line 122 "src/ui/ExprSpecParserLex.l"
 
 
 
-/* Gets index of current token (corresponding to SeExprSpectext).  
+/* Gets index of current token (corresponding to SeExpr2Spectext).  
    Used for error reporting.
  */
-int SeExprSpecpos()
+int SeExpr2Specpos()
 {
-    return SeExprSpec_c_buf_p - SeExprSpecYY_CURRENT_BUFFER->SeExprSpec_ch_buf - SeExprSpecleng;
+    return SeExpr2Spec_c_buf_p - SeExprSpecYY_CURRENT_BUFFER->SeExpr2Spec_ch_buf - SeExpr2Specleng;
 }
 

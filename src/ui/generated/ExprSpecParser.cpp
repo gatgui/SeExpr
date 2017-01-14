@@ -36,7 +36,7 @@
 /* C LALR(1) parser skeleton written by Richard Stallman, by
    simplifying the original so-called "semantic" parser.  */
 
-/* All symbols defined below should begin with SeExprSpec or SeExprSpecYY, to avoid
+/* All symbols defined below should begin with SeExpr2Spec or SeExprSpecYY, to avoid
    infringing on user name space.  This should be done even for local
    variables, as they might otherwise be expanded by user macros.
    There are some unavoidable exceptions within include files to
@@ -59,21 +59,21 @@
 #define SeExprSpecYYLSP_NEEDED 1
 
 /* Substitute the variable and function names.  */
-#define SeExprSpecparse SeExprSpecparse
-#define SeExprSpeclex   SeExprSpeclex
-#define SeExprSpecerror SeExprSpecerror
-#define SeExprSpeclval  SeExprSpeclval
-#define SeExprSpecchar  SeExprSpecchar
-#define SeExprSpecdebug SeExprSpecdebug
-#define SeExprSpecnerrs SeExprSpecnerrs
-#define SeExprSpeclloc SeExprSpeclloc
+#define SeExpr2Specparse SeExpr2Specparse
+#define SeExpr2Speclex   SeExpr2Speclex
+#define SeExpr2Specerror SeExpr2Specerror
+#define SeExpr2Speclval  SeExpr2Speclval
+#define SeExpr2Specchar  SeExpr2Specchar
+#define SeExpr2Specdebug SeExpr2Specdebug
+#define SeExpr2Specnerrs SeExpr2Specnerrs
+#define SeExpr2Speclloc SeExpr2Speclloc
 
 /* Tokens.  */
 #ifndef SeExprSpecYYTOKENTYPE
 # define SeExprSpecYYTOKENTYPE
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum SeExprSpectokentype {
+   enum SeExpr2Spectokentype {
      IF = 258,
      ELSE = 259,
      NAME = 260,
@@ -122,7 +122,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 18 "src/SeExprEditor/SeExprSpecParser.y"
+#line 18 "src/ui/ExprSpecParser.y"
 
 #include <algorithm>
 #include <vector>
@@ -136,10 +136,11 @@
 #else
 #define UNUSED(x) (void)(x)
 #endif
-#include "SePlatform.h"
-#include "SeMutex.h"
-#include "SeExprSpecType.h"
-#include "SeExprEdEditable.h"
+#include <SeExpr2/Platform.h>
+#include <SeExpr2/Mutex.h>
+#include "ExprSpecType.h"
+#include "Editable.h"
+#include "ExprDeepWater.h"
 
 
 /******************
@@ -148,28 +149,28 @@
 
 
 #define SPEC_IS_NUMBER(x) \
-    (dynamic_cast<SeExprSpecScalarNode*>(x) != 0)
+    (dynamic_cast<ExprSpecScalarNode*>(x) != 0)
 #define SPEC_IS_VECTOR(x) \
-    (dynamic_cast<SeExprSpecVectorNode*>(x) != 0)
+    (dynamic_cast<ExprSpecVectorNode*>(x) != 0)
 #define SPEC_IS_STR(x) \
-    (dynamic_cast<SeExprSpecStringNode*>(x) != 0)
+    (dynamic_cast<ExprSpecStringNode*>(x) != 0)
 
-// declarations of functions and data in SeExprParser.l
-int SeExprSpeclex();
-int SeExprSpecpos();
-extern int SeExprSpec_start;
-extern char* SeExprSpectext;
-struct SeExprSpec_buffer_state;
-SeExprSpec_buffer_state* SeExprSpec_scan_string(const char *str);
-void SeExprSpec_delete_buffer(SeExprSpec_buffer_state*);
+// declarations of functions and data in ExprParser.y
+int SeExpr2Speclex();
+int SeExpr2Specpos();
+extern int SeExpr2Spec_start;
+extern char* SeExpr2Spectext;
+struct SeExpr2Spec_buffer_state;
+SeExpr2Spec_buffer_state* SeExpr2Spec_scan_string(const char *str);
+void SeExpr2Spec_delete_buffer(SeExpr2Spec_buffer_state*);
 
 //#####################################
 // Keep track of mini parse tree nodes
 
 // temporary to the parse... all pointers deleted at end of parse
-static std::vector<SeExprSpecNode*> specNodes;
+static std::vector<ExprSpecNode*> specNodes;
 /// Remember the spec node, so we can delete it later
-static SeExprSpecNode* remember(SeExprSpecNode* node)
+static ExprSpecNode* remember(ExprSpecNode* node)
 {specNodes.push_back(node);return node;}
 
 
@@ -188,12 +189,12 @@ char* specRegisterToken(char* rawString)
 
 // these are pointers to the arguments send into parse API
 // made static here so the parser can see them in yacc actions
-static std::vector<SeExprEdEditable*>* editables;
+static std::vector<Editable*>* editables;
 static std::vector<std::string>* variables;
 
 static const char* ParseStr;    // string being parsed
-static std::string ParseError;  // error (set from SeExprSpecerror)
-static SeExprSpecNode* ParseResult; // must set result here since SeExprSpecparse can't return it
+static std::string ParseError;  // error (set from SeExpr2Specerror)
+static ExprSpecNode* ParseResult; // must set result here since SeExpr2Specparse can't return it
 
 
 //######################################################################
@@ -208,26 +209,26 @@ static void specRegisterVariable(const char* var)
 
 /// Variable Assignment/String literal should be turned into an editable
 /// an editable is the data part of a control (it's model essentially)
-static void specRegisterEditable(const char* var,SeExprSpecNode* node)
+static void specRegisterEditable(const char* var,ExprSpecNode* node)
 {
     //std::cerr<<"we have editable var "<<var<<std::endl;
     if(!node){
         //std::cerr<<"   null ptr "<<var<<std::endl;
-    }else if(SeExprSpecScalarNode* n=dynamic_cast<SeExprSpecScalarNode*>(node)){
-        editables->push_back(new SeExprEdNumberEditable(var,node->startPos,node->endPos,n->v));
-    }else if(SeExprSpecVectorNode* n=dynamic_cast<SeExprSpecVectorNode*>(node)){
-        editables->push_back(new SeExprEdVectorEditable(var,node->startPos,node->endPos,n->v));
-    }else if(SeExprSpecStringNode* n=dynamic_cast<SeExprSpecStringNode*>(node)){
-        editables->push_back(new SeExprEdStringEditable(node->startPos,node->endPos,n->v));
-    }else if(SeExprSpecCCurveNode* n=dynamic_cast<SeExprSpecCCurveNode*>(node)){
-        if(SeExprSpecListNode* args=dynamic_cast<SeExprSpecListNode*>(n->args)){
+    }else if(ExprSpecScalarNode* n=dynamic_cast<ExprSpecScalarNode*>(node)){
+        editables->push_back(new NumberEditable(var,node->startPos,node->endPos,n->v));
+    }else if(ExprSpecVectorNode* n=dynamic_cast<ExprSpecVectorNode*>(node)){
+        editables->push_back(new VectorEditable(var,node->startPos,node->endPos,n->v));
+    }else if(ExprSpecStringNode* n=dynamic_cast<ExprSpecStringNode*>(node)){
+        editables->push_back(new StringEditable(node->startPos,node->endPos,n->v));
+    }else if(ExprSpecCCurveNode* n=dynamic_cast<ExprSpecCCurveNode*>(node)){
+        if(ExprSpecListNode* args=dynamic_cast<ExprSpecListNode*>(n->args)){
             if((args->nodes.size())%3==0){
-                SeExprEdColorCurveEditable* ccurve=new SeExprEdColorCurveEditable(var,node->startPos,node->endPos);
+                ColorCurveEditable* ccurve=new ColorCurveEditable(var,node->startPos,node->endPos);
                 bool valid=true;
                 for(size_t i=0;i<args->nodes.size();i+=3){
-                    SeExprSpecScalarNode* xnode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i]);
-                    SeExprSpecVectorNode* ynode=dynamic_cast<SeExprSpecVectorNode*>(args->nodes[i+1]);
-                    SeExprSpecScalarNode* interpnode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+2]);
+                    ExprSpecScalarNode* xnode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i]);
+                    ExprSpecVectorNode* ynode=dynamic_cast<ExprSpecVectorNode*>(args->nodes[i+1]);
+                    ExprSpecScalarNode* interpnode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+2]);
                     if(xnode && ynode && interpnode){
                         ccurve->add(xnode->v,ynode->v,interpnode->v);
                     }else{
@@ -240,15 +241,15 @@ static void specRegisterEditable(const char* var,SeExprSpecNode* node)
                 //std::cerr<<"Curve has wrong # of args"<<args->nodes.size()<<std::endl;
             }
         }
-    }else if(SeExprSpecCurveNode* n=dynamic_cast<SeExprSpecCurveNode*>(node)){
-        if(SeExprSpecListNode* args=dynamic_cast<SeExprSpecListNode*>(n->args)){
+    }else if(ExprSpecCurveNode* n=dynamic_cast<ExprSpecCurveNode*>(node)){
+        if(ExprSpecListNode* args=dynamic_cast<ExprSpecListNode*>(n->args)){
             if((args->nodes.size())%3==0){
-                SeExprEdCurveEditable* ccurve=new SeExprEdCurveEditable(var,node->startPos,node->endPos);
+                CurveEditable* ccurve=new CurveEditable(var,node->startPos,node->endPos);
                 bool valid=true;
                 for(size_t i=0;i<args->nodes.size();i+=3){
-                    SeExprSpecScalarNode* xnode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i]);
-                    SeExprSpecScalarNode* ynode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+1]);
-                    SeExprSpecScalarNode* interpnode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+2]);
+                    ExprSpecScalarNode* xnode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i]);
+                    ExprSpecScalarNode* ynode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+1]);
+                    ExprSpecScalarNode* interpnode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+2]);
                     if(xnode && ynode && interpnode){
                         ccurve->add(xnode->v,ynode->v,interpnode->v);
                     }else{
@@ -261,13 +262,13 @@ static void specRegisterEditable(const char* var,SeExprSpecNode* node)
                 }
             }
         }
-    }else if(SeExprSpecColorSwatchNode* n=dynamic_cast<SeExprSpecColorSwatchNode*>(node)){
-        if(SeExprSpecListNode* args=dynamic_cast<SeExprSpecListNode*>(n->args)){
+    }else if(ExprSpecColorSwatchNode* n=dynamic_cast<ExprSpecColorSwatchNode*>(node)){
+        if(ExprSpecListNode* args=dynamic_cast<ExprSpecListNode*>(n->args)){
             if(args->nodes.size()>0){
-                SeExprEdColorSwatchEditable* swatch=new SeExprEdColorSwatchEditable(var,node->startPos,node->endPos);
+                ColorSwatchEditable* swatch=new ColorSwatchEditable(var,node->startPos,node->endPos);
                 bool valid=true;
                 for(size_t i=0;i<args->nodes.size();i++){
-                    SeExprSpecVectorNode* colornode=dynamic_cast<SeExprSpecVectorNode*>(args->nodes[i]);
+                    ExprSpecVectorNode* colornode=dynamic_cast<ExprSpecVectorNode*>(args->nodes[i]);
                     if(colornode){
                         swatch->add(colornode->v);
                     }else{
@@ -278,38 +279,38 @@ static void specRegisterEditable(const char* var,SeExprSpecNode* node)
                 else delete swatch;
             }
         }
-    }else if(SeExprSpecAnimCurveNode* n=dynamic_cast<SeExprSpecAnimCurveNode*>(node)){
-        if(SeExprSpecListNode* args=dynamic_cast<SeExprSpecListNode*>(n->args)){
+    }else if(ExprSpecAnimCurveNode* n=dynamic_cast<ExprSpecAnimCurveNode*>(node)){
+        if(ExprSpecListNode* args=dynamic_cast<ExprSpecListNode*>(n->args)){
             // need 3 items for pre inf and post inf and weighting, plus 9 items per key
             if((args->nodes.size()-4)%9==0){
-                SeExprEdAnimCurveEditable* animCurve=new SeExprEdAnimCurveEditable(var,node->startPos,node->endPos);
+                AnimCurveEditable* animCurve=new AnimCurveEditable(var,node->startPos,node->endPos);
                 bool valid=true;
 
 
 #ifdef SEEXPR_USE_ANIMLIB
-                if(SeExprSpecStringNode* s=dynamic_cast<SeExprSpecStringNode*>(args->nodes[0])){
+                if(ExprSpecStringNode* s=dynamic_cast<ExprSpecStringNode*>(args->nodes[0])){
                     animCurve->curve.setPreInfinity(animlib::AnimCurve::stringToInfinityType(s->v));
                 }else valid=false;
-                if(SeExprSpecStringNode* s=dynamic_cast<SeExprSpecStringNode*>(args->nodes[1])){
+                if(ExprSpecStringNode* s=dynamic_cast<ExprSpecStringNode*>(args->nodes[1])){
                     animCurve->curve.setPostInfinity(animlib::AnimCurve::stringToInfinityType(s->v));
                 }else valid=false;
-                if(SeExprSpecScalarNode* v=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[2])){
+                if(ExprSpecScalarNode* v=dynamic_cast<ExprSpecScalarNode*>(args->nodes[2])){
                     animCurve->curve.setWeighted(bool(v->v));
                 }
-                if(SeExprSpecStringNode* v=dynamic_cast<SeExprSpecStringNode*>(args->nodes[3])){
+                if(ExprSpecStringNode* v=dynamic_cast<ExprSpecStringNode*>(args->nodes[3])){
                     animCurve->link=v->v;
                 }
 
                 for(size_t i=4;i<args->nodes.size();i+=9){
-                    SeExprSpecScalarNode* xnode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i]);
-                    SeExprSpecScalarNode* ynode=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+1]);
-                    SeExprSpecScalarNode* inWeight=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+2]);
-                    SeExprSpecScalarNode* outWeight=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+3]);
-                    SeExprSpecScalarNode* inAngle=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+4]);
-                    SeExprSpecScalarNode* outAngle=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+5]);
-                    SeExprSpecStringNode* inTangType=dynamic_cast<SeExprSpecStringNode*>(args->nodes[i+6]);
-                    SeExprSpecStringNode* outTangType=dynamic_cast<SeExprSpecStringNode*>(args->nodes[i+7]);
-                    SeExprSpecScalarNode* weighted=dynamic_cast<SeExprSpecScalarNode*>(args->nodes[i+8]);
+                    ExprSpecScalarNode* xnode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i]);
+                    ExprSpecScalarNode* ynode=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+1]);
+                    ExprSpecScalarNode* inWeight=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+2]);
+                    ExprSpecScalarNode* outWeight=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+3]);
+                    ExprSpecScalarNode* inAngle=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+4]);
+                    ExprSpecScalarNode* outAngle=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+5]);
+                    ExprSpecStringNode* inTangType=dynamic_cast<ExprSpecStringNode*>(args->nodes[i+6]);
+                    ExprSpecStringNode* outTangType=dynamic_cast<ExprSpecStringNode*>(args->nodes[i+7]);
+                    ExprSpecScalarNode* weighted=dynamic_cast<ExprSpecScalarNode*>(args->nodes[i+8]);
                     if(xnode && ynode && inWeight && outWeight && inAngle && outAngle && inTangType && outTangType ){
                         animlib::AnimKeyframe key(xnode->v,ynode->v);
                         key.setInWeight(inWeight->v);
@@ -332,6 +333,34 @@ static void specRegisterEditable(const char* var,SeExprSpecNode* node)
 #endif
             }
         }
+    }else if(ExprSpecDeepWaterNode* n=dynamic_cast<ExprSpecDeepWaterNode*>(node)){
+        if(ExprSpecListNode* args=dynamic_cast<ExprSpecListNode*>(n->args)){
+            if(args->nodes.size()==12){
+                DeepWaterEditable* deepWater=new DeepWaterEditable(var,node->startPos,node->endPos);
+                bool valid=true;
+
+                ExprSpecScalarNode* resolution=dynamic_cast<ExprSpecScalarNode*>(args->nodes[0]);
+                ExprSpecScalarNode* tileSize=dynamic_cast<ExprSpecScalarNode*>(args->nodes[1]);
+                ExprSpecScalarNode* lengthCutoff=dynamic_cast<ExprSpecScalarNode*>(args->nodes[2]);
+                ExprSpecScalarNode* amplitude=dynamic_cast<ExprSpecScalarNode*>(args->nodes[3]);
+                ExprSpecScalarNode* windAngle=dynamic_cast<ExprSpecScalarNode*>(args->nodes[4]);
+                ExprSpecScalarNode* windSpeed=dynamic_cast<ExprSpecScalarNode*>(args->nodes[5]);
+                ExprSpecScalarNode* directionalFactorExponent=dynamic_cast<ExprSpecScalarNode*>(args->nodes[6]);
+                ExprSpecScalarNode* directionalReflectionDamping=dynamic_cast<ExprSpecScalarNode*>(args->nodes[7]);
+                ExprSpecVectorNode* flowDirection=dynamic_cast<ExprSpecVectorNode*>(args->nodes[8]);
+                ExprSpecScalarNode* sharpen=dynamic_cast<ExprSpecScalarNode*>(args->nodes[9]);
+                ExprSpecScalarNode* time=dynamic_cast<ExprSpecScalarNode*>(args->nodes[10]);
+                ExprSpecScalarNode* filterWidth=dynamic_cast<ExprSpecScalarNode*>(args->nodes[11]);
+                if(resolution && tileSize && lengthCutoff && amplitude && windAngle && windSpeed && directionalFactorExponent && directionalReflectionDamping && flowDirection && sharpen && time && filterWidth){
+                    deepWater->setParams(SeDeepWaterParams(resolution->v, tileSize->v, lengthCutoff->v, amplitude->v, windAngle->v, windSpeed->v, directionalFactorExponent->v, directionalReflectionDamping->v, flowDirection->v, sharpen->v, time->v, filterWidth->v));
+                }else{
+                    valid=false;
+                }
+
+                if(valid) editables->push_back(deepWater);
+                else delete deepWater;
+            }
+        }
     }else{
         std::cerr<<"SEEXPREDITOR LOGIC ERROR: We didn't recognize the Spec"<<std::endl;
     }
@@ -343,7 +372,7 @@ static void specRegisterEditable(const char* var,SeExprSpecNode* node)
  *******************/
 
 // forward declaration
-static void SeExprSpecerror(const char* msg);
+static void SeExpr2Specerror(const char* msg);
 
 
 
@@ -367,16 +396,16 @@ static void SeExprSpecerror(const char* msg);
 
 #if ! defined SeExprSpecYYSTYPE && ! defined SeExprSpecYYSTYPE_IS_DECLARED
 typedef union SeExprSpecYYSTYPE
-#line 242 "src/SeExprEditor/SeExprSpecParser.y"
+#line 271 "src/ui/ExprSpecParser.y"
 {
-    SeExprSpecNode* n;
+    ExprSpecNode* n;
     double d;      // return value for number tokens
     char* s;       /* return value for name tokens.  Note: UNLIKE the regular parser, this is not strdup()'dthe string */
 }
 /* Line 193 of yacc.c.  */
-#line 378 "y.tab.c"
+#line 407 "y.tab.c"
 	SeExprSpecYYSTYPE;
-# define SeExprSpecstype SeExprSpecYYSTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2Specstype SeExprSpecYYSTYPE /* obsolescent; will be withdrawn */
 # define SeExprSpecYYSTYPE_IS_DECLARED 1
 # define SeExprSpecYYSTYPE_IS_TRIVIAL 1
 #endif
@@ -389,7 +418,7 @@ typedef struct SeExprSpecYYLTYPE
   int last_line;
   int last_column;
 } SeExprSpecYYLTYPE;
-# define SeExprSpecltype SeExprSpecYYLTYPE /* obsolescent; will be withdrawn */
+# define SeExpr2Specltype SeExprSpecYYLTYPE /* obsolescent; will be withdrawn */
 # define SeExprSpecYYLTYPE_IS_DECLARED 1
 # define SeExprSpecYYLTYPE_IS_TRIVIAL 1
 #endif
@@ -399,37 +428,37 @@ typedef struct SeExprSpecYYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 403 "y.tab.c"
+#line 432 "y.tab.c"
 
 #ifdef short
 # undef short
 #endif
 
 #ifdef SeExprSpecYYTYPE_UINT8
-typedef SeExprSpecYYTYPE_UINT8 SeExprSpectype_uint8;
+typedef SeExprSpecYYTYPE_UINT8 SeExpr2Spectype_uint8;
 #else
-typedef unsigned char SeExprSpectype_uint8;
+typedef unsigned char SeExpr2Spectype_uint8;
 #endif
 
 #ifdef SeExprSpecYYTYPE_INT8
-typedef SeExprSpecYYTYPE_INT8 SeExprSpectype_int8;
+typedef SeExprSpecYYTYPE_INT8 SeExpr2Spectype_int8;
 #elif (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
-typedef signed char SeExprSpectype_int8;
+typedef signed char SeExpr2Spectype_int8;
 #else
-typedef short int SeExprSpectype_int8;
+typedef short int SeExpr2Spectype_int8;
 #endif
 
 #ifdef SeExprSpecYYTYPE_UINT16
-typedef SeExprSpecYYTYPE_UINT16 SeExprSpectype_uint16;
+typedef SeExprSpecYYTYPE_UINT16 SeExpr2Spectype_uint16;
 #else
-typedef unsigned short int SeExprSpectype_uint16;
+typedef unsigned short int SeExpr2Spectype_uint16;
 #endif
 
 #ifdef SeExprSpecYYTYPE_INT16
-typedef SeExprSpecYYTYPE_INT16 SeExprSpectype_int16;
+typedef SeExprSpecYYTYPE_INT16 SeExpr2Spectype_int16;
 #else
-typedef short int SeExprSpectype_int16;
+typedef short int SeExpr2Spectype_int16;
 #endif
 
 #ifndef SeExprSpecYYSIZE_T
@@ -485,7 +514,7 @@ SeExprSpecYYID (i)
 }
 #endif
 
-#if ! defined SeExprSpecoverflow || SeExprSpecYYERROR_VERBOSE
+#if ! defined SeExpr2Specoverflow || SeExprSpecYYERROR_VERBOSE
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -552,29 +581,29 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 # endif
-#endif /* ! defined SeExprSpecoverflow || SeExprSpecYYERROR_VERBOSE */
+#endif /* ! defined SeExpr2Specoverflow || SeExprSpecYYERROR_VERBOSE */
 
 
-#if (! defined SeExprSpecoverflow \
+#if (! defined SeExpr2Specoverflow \
      && (! defined __cplusplus \
 	 || (defined SeExprSpecYYLTYPE_IS_TRIVIAL && SeExprSpecYYLTYPE_IS_TRIVIAL \
 	     && defined SeExprSpecYYSTYPE_IS_TRIVIAL && SeExprSpecYYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
-union SeExprSpecalloc
+union SeExpr2Specalloc
 {
-  SeExprSpectype_int16 SeExprSpecss;
-  SeExprSpecYYSTYPE SeExprSpecvs;
-    SeExprSpecYYLTYPE SeExprSpecls;
+  SeExpr2Spectype_int16 SeExpr2Specss;
+  SeExprSpecYYSTYPE SeExpr2Specvs;
+    SeExprSpecYYLTYPE SeExpr2Specls;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
-# define SeExprSpecYYSTACK_GAP_MAXIMUM (sizeof (union SeExprSpecalloc) - 1)
+# define SeExprSpecYYSTACK_GAP_MAXIMUM (sizeof (union SeExpr2Specalloc) - 1)
 
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define SeExprSpecYYSTACK_BYTES(N) \
-     ((N) * (sizeof (SeExprSpectype_int16) + sizeof (SeExprSpecYYSTYPE) + sizeof (SeExprSpecYYLTYPE)) \
+     ((N) * (sizeof (SeExpr2Spectype_int16) + sizeof (SeExprSpecYYSTYPE) + sizeof (SeExprSpecYYLTYPE)) \
       + 2 * SeExprSpecYYSTACK_GAP_MAXIMUM)
 
 /* Copy COUNT objects from FROM to TO.  The source and destination do
@@ -587,9 +616,9 @@ union SeExprSpecalloc
 #   define SeExprSpecYYCOPY(To, From, Count)		\
       do					\
 	{					\
-	  SeExprSpecYYSIZE_T SeExprSpeci;				\
-	  for (SeExprSpeci = 0; SeExprSpeci < (Count); SeExprSpeci++)	\
-	    (To)[SeExprSpeci] = (From)[SeExprSpeci];		\
+	  SeExprSpecYYSIZE_T SeExpr2Speci;				\
+	  for (SeExpr2Speci = 0; SeExpr2Speci < (Count); SeExpr2Speci++)	\
+	    (To)[SeExpr2Speci] = (From)[SeExpr2Speci];		\
 	}					\
       while (SeExprSpecYYID (0))
 #  endif
@@ -603,11 +632,11 @@ union SeExprSpecalloc
 # define SeExprSpecYYSTACK_RELOCATE(Stack)					\
     do									\
       {									\
-	SeExprSpecYYSIZE_T SeExprSpecnewbytes;						\
-	SeExprSpecYYCOPY (&SeExprSpecptr->Stack, Stack, SeExprSpecsize);				\
-	Stack = &SeExprSpecptr->Stack;						\
-	SeExprSpecnewbytes = SeExprSpecstacksize * sizeof (*Stack) + SeExprSpecYYSTACK_GAP_MAXIMUM; \
-	SeExprSpecptr += SeExprSpecnewbytes / sizeof (*SeExprSpecptr);				\
+	SeExprSpecYYSIZE_T SeExpr2Specnewbytes;						\
+	SeExprSpecYYCOPY (&SeExpr2Specptr->Stack, Stack, SeExpr2Specsize);				\
+	Stack = &SeExpr2Specptr->Stack;						\
+	SeExpr2Specnewbytes = SeExpr2Specstacksize * sizeof (*Stack) + SeExprSpecYYSTACK_GAP_MAXIMUM; \
+	SeExpr2Specptr += SeExpr2Specnewbytes / sizeof (*SeExpr2Specptr);				\
       }									\
     while (SeExprSpecYYID (0))
 
@@ -632,10 +661,10 @@ union SeExprSpecalloc
 #define SeExprSpecYYMAXUTOK   277
 
 #define SeExprSpecYYTRANSLATE(SeExprSpecYYX)						\
-  ((unsigned int) (SeExprSpecYYX) <= SeExprSpecYYMAXUTOK ? SeExprSpectranslate[SeExprSpecYYX] : SeExprSpecYYUNDEFTOK)
+  ((unsigned int) (SeExprSpecYYX) <= SeExprSpecYYMAXUTOK ? SeExpr2Spectranslate[SeExprSpecYYX] : SeExprSpecYYUNDEFTOK)
 
 /* SeExprSpecYYTRANSLATE[SeExprSpecYYLEX] -- Bison symbol number corresponding to SeExprSpecYYLEX.  */
-static const SeExprSpectype_uint8 SeExprSpectranslate[] =
+static const SeExpr2Spectype_uint8 SeExpr2Spectranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -670,7 +699,7 @@ static const SeExprSpectype_uint8 SeExprSpectranslate[] =
 #if SeExprSpecYYDEBUG
 /* SeExprSpecYYPRHS[SeExprSpecYYN] -- Index of the first RHS symbol of rule number SeExprSpecYYN in
    SeExprSpecYYRHS.  */
-static const SeExprSpectype_uint8 SeExprSpecprhs[] =
+static const SeExpr2Spectype_uint8 SeExpr2Specprhs[] =
 {
        0,     0,     3,     6,     8,     9,    11,    13,    16,    18,
       23,    28,    33,    38,    43,    48,    53,    58,    63,    68,
@@ -681,7 +710,7 @@ static const SeExprSpectype_uint8 SeExprSpecprhs[] =
 };
 
 /* SeExprSpecYYRHS -- A `-1'-separated list of the rules' RHS.  */
-static const SeExprSpectype_int8 SeExprSpecrhs[] =
+static const SeExpr2Spectype_int8 SeExpr2Specrhs[] =
 {
       45,     0,    -1,    47,    51,    -1,    51,    -1,    -1,    47,
       -1,    48,    -1,    47,    48,    -1,    49,    -1,     6,    38,
@@ -709,21 +738,21 @@ static const SeExprSpectype_int8 SeExprSpecrhs[] =
 };
 
 /* SeExprSpecYYRLINE[SeExprSpecYYN] -- source line where rule number SeExprSpecYYN was defined.  */
-static const SeExprSpectype_uint16 SeExprSpecrline[] =
+static const SeExpr2Spectype_uint16 SeExpr2Specrline[] =
 {
-       0,   284,   284,   285,   290,   291,   295,   296,   301,   302,
-     306,   307,   308,   309,   310,   311,   312,   316,   317,   318,
-     319,   320,   321,   325,   330,   331,   332,   337,   338,   343,
-     344,   345,   346,   347,   348,   349,   350,   351,   352,   353,
-     354,   363,   364,   365,   366,   367,   368,   369,   370,   371,
-     394,   395,   396,   397,   402,   403,   408,   417,   429,   430
+       0,   313,   313,   314,   319,   320,   324,   325,   330,   331,
+     335,   336,   337,   338,   339,   340,   341,   345,   346,   347,
+     348,   349,   350,   354,   359,   360,   361,   366,   367,   372,
+     373,   374,   375,   376,   377,   378,   379,   380,   381,   382,
+     383,   392,   393,   394,   395,   396,   397,   398,   399,   400,
+     425,   426,   427,   428,   433,   434,   439,   448,   460,   461
 };
 #endif
 
 #if SeExprSpecYYDEBUG || SeExprSpecYYERROR_VERBOSE || SeExprSpecYYTOKEN_TABLE
 /* SeExprSpecYYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at SeExprSpecYYNTOKENS, nonterminals.  */
-static const char *const SeExprSpectname[] =
+static const char *const SeExpr2Spectname[] =
 {
   "$end", "error", "$undefined", "IF", "ELSE", "NAME", "VAR", "STR",
   "NUMBER", "AddEq", "SubEq", "MultEq", "DivEq", "ExpEq", "ModEq", "'('",
@@ -738,7 +767,7 @@ static const char *const SeExprSpectname[] =
 # ifdef SeExprSpecYYPRINT
 /* SeExprSpecYYTOKNUM[SeExprSpecYYLEX-NUM] -- Internal token number corresponding to
    token SeExprSpecYYLEX-NUM.  */
-static const SeExprSpectype_uint16 SeExprSpectoknum[] =
+static const SeExpr2Spectype_uint16 SeExpr2Spectoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,    40,    41,   270,    58,    63,
@@ -749,7 +778,7 @@ static const SeExprSpectype_uint16 SeExprSpectoknum[] =
 # endif
 
 /* SeExprSpecYYR1[SeExprSpecYYN] -- Symbol number of symbol that rule SeExprSpecYYN derives.  */
-static const SeExprSpectype_uint8 SeExprSpecr1[] =
+static const SeExpr2Spectype_uint8 SeExpr2Specr1[] =
 {
        0,    44,    45,    45,    46,    46,    47,    47,    48,    48,
       48,    48,    48,    48,    48,    48,    48,    48,    48,    48,
@@ -760,7 +789,7 @@ static const SeExprSpectype_uint8 SeExprSpecr1[] =
 };
 
 /* SeExprSpecYYR2[SeExprSpecYYN] -- Number of symbols composing right hand side of rule SeExprSpecYYN.  */
-static const SeExprSpectype_uint8 SeExprSpecr2[] =
+static const SeExpr2Spectype_uint8 SeExpr2Specr2[] =
 {
        0,     2,     2,     1,     0,     1,     1,     2,     1,     4,
        4,     4,     4,     4,     4,     4,     4,     4,     4,     4,
@@ -773,7 +802,7 @@ static const SeExprSpectype_uint8 SeExprSpecr2[] =
 /* SeExprSpecYYDEFACT[STATE-NAME] -- Default rule to reduce with in state
    STATE-NUM when SeExprSpecYYTABLE doesn't specify something else to do.  Zero
    means the default is an error.  */
-static const SeExprSpectype_uint8 SeExprSpecdefact[] =
+static const SeExpr2Spectype_uint8 SeExpr2Specdefact[] =
 {
        0,     0,    52,    51,    53,     0,     0,     0,     0,     0,
        0,     0,     0,     6,     8,     3,     0,     0,     0,     0,
@@ -792,7 +821,7 @@ static const SeExprSpectype_uint8 SeExprSpecdefact[] =
 };
 
 /* SeExprSpecYYDEFGOTO[NTERM-NUM].  */
-static const SeExprSpectype_int16 SeExprSpecdefgoto[] =
+static const SeExpr2Spectype_int16 SeExpr2Specdefgoto[] =
 {
       -1,    11,   127,   128,    13,    14,   134,    68,    69,    70,
       71
@@ -801,7 +830,7 @@ static const SeExprSpectype_int16 SeExprSpecdefgoto[] =
 /* SeExprSpecYYPACT[STATE-NUM] -- Index in SeExprSpecYYTABLE of the portion describing
    STATE-NUM.  */
 #define SeExprSpecYYPACT_NINF -65
-static const SeExprSpectype_int16 SeExprSpecpact[] =
+static const SeExpr2Spectype_int16 SeExpr2Specpact[] =
 {
       57,    25,    23,   127,   -65,    98,    98,    98,    98,    98,
       98,    15,    57,   -65,   -65,   590,    98,    98,    98,    98,
@@ -820,7 +849,7 @@ static const SeExprSpectype_int16 SeExprSpecpact[] =
 };
 
 /* SeExprSpecYYPGOTO[NTERM-NUM].  */
-static const SeExprSpectype_int8 SeExprSpecpgoto[] =
+static const SeExpr2Spectype_int8 SeExpr2Specpgoto[] =
 {
      -65,   -65,   -64,    77,   -11,   -55,   -65,     0,   -38,   -65,
      -27
@@ -831,7 +860,7 @@ static const SeExprSpectype_int8 SeExprSpecpgoto[] =
    number is the opposite.  If zero, do what SeExprSpecYYDEFACT says.
    If SeExprSpecYYTABLE_NINF, syntax error.  */
 #define SeExprSpecYYTABLE_NINF -1
-static const SeExprSpectype_uint8 SeExprSpectable[] =
+static const SeExpr2Spectype_uint8 SeExpr2Spectable[] =
 {
       15,    41,     1,    58,    59,    34,    35,    36,    37,    38,
       39,     1,    42,   125,   126,    40,    60,    61,    62,    63,
@@ -905,7 +934,7 @@ static const SeExprSpectype_uint8 SeExprSpectable[] =
        0,     0,    58,    59
 };
 
-static const SeExprSpectype_int16 SeExprSpeccheck[] =
+static const SeExpr2Spectype_int16 SeExpr2Speccheck[] =
 {
        0,    12,     3,    36,    37,     5,     6,     7,     8,     9,
       10,     3,    12,     5,     6,     0,    16,    17,    18,    19,
@@ -981,7 +1010,7 @@ static const SeExprSpectype_int16 SeExprSpeccheck[] =
 
 /* SeExprSpecYYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
-static const SeExprSpectype_uint8 SeExprSpecstos[] =
+static const SeExpr2Spectype_uint8 SeExpr2Specstos[] =
 {
        0,     3,     5,     6,     8,    15,    28,    29,    33,    34,
       37,    45,    47,    48,    49,    51,    15,     9,    10,    11,
@@ -999,37 +1028,37 @@ static const SeExprSpectype_uint8 SeExprSpecstos[] =
       16,    41,    43,     4,    50,    40,    49,    46,    41
 };
 
-#define SeExprSpecerrok		(SeExprSpecerrstatus = 0)
-#define SeExprSpecclearin	(SeExprSpecchar = SeExprSpecYYEMPTY)
+#define SeExpr2Specerrok		(SeExpr2Specerrstatus = 0)
+#define SeExpr2Specclearin	(SeExpr2Specchar = SeExprSpecYYEMPTY)
 #define SeExprSpecYYEMPTY		(-2)
 #define SeExprSpecYYEOF		0
 
-#define SeExprSpecYYACCEPT	goto SeExprSpecacceptlab
-#define SeExprSpecYYABORT		goto SeExprSpecabortlab
-#define SeExprSpecYYERROR		goto SeExprSpecerrorlab
+#define SeExprSpecYYACCEPT	goto SeExpr2Specacceptlab
+#define SeExprSpecYYABORT		goto SeExpr2Specabortlab
+#define SeExprSpecYYERROR		goto SeExpr2Specerrorlab
 
 
-/* Like SeExprSpecYYERROR except do call SeExprSpecerror.  This remains here temporarily
+/* Like SeExprSpecYYERROR except do call SeExpr2Specerror.  This remains here temporarily
    to ease the transition to the new meaning of SeExprSpecYYERROR, for GCC.
    Once GCC version 2 has supplanted version 1, this can go.  */
 
-#define SeExprSpecYYFAIL		goto SeExprSpecerrlab
+#define SeExprSpecYYFAIL		goto SeExpr2Specerrlab
 
-#define SeExprSpecYYRECOVERING()  (!!SeExprSpecerrstatus)
+#define SeExprSpecYYRECOVERING()  (!!SeExpr2Specerrstatus)
 
 #define SeExprSpecYYBACKUP(Token, Value)					\
 do								\
-  if (SeExprSpecchar == SeExprSpecYYEMPTY && SeExprSpeclen == 1)				\
+  if (SeExpr2Specchar == SeExprSpecYYEMPTY && SeExpr2Speclen == 1)				\
     {								\
-      SeExprSpecchar = (Token);						\
-      SeExprSpeclval = (Value);						\
-      SeExprSpectoken = SeExprSpecYYTRANSLATE (SeExprSpecchar);				\
+      SeExpr2Specchar = (Token);						\
+      SeExpr2Speclval = (Value);						\
+      SeExpr2Spectoken = SeExprSpecYYTRANSLATE (SeExpr2Specchar);				\
       SeExprSpecYYPOPSTACK (1);						\
-      goto SeExprSpecbackup;						\
+      goto SeExpr2Specbackup;						\
     }								\
   else								\
     {								\
-      SeExprSpecerror (SeExprSpecYY_("syntax error: cannot back up")); \
+      SeExpr2Specerror (SeExprSpecYY_("syntax error: cannot back up")); \
       SeExprSpecYYERROR;							\
     }								\
 while (SeExprSpecYYID (0))
@@ -1081,12 +1110,12 @@ while (SeExprSpecYYID (0))
 #endif
 
 
-/* SeExprSpecYYLEX -- calling `SeExprSpeclex' with the right arguments.  */
+/* SeExprSpecYYLEX -- calling `SeExpr2Speclex' with the right arguments.  */
 
 #ifdef SeExprSpecYYLEX_PARAM
-# define SeExprSpecYYLEX SeExprSpeclex (SeExprSpecYYLEX_PARAM)
+# define SeExprSpecYYLEX SeExpr2Speclex (SeExprSpecYYLEX_PARAM)
 #else
-# define SeExprSpecYYLEX SeExprSpeclex ()
+# define SeExprSpecYYLEX SeExpr2Speclex ()
 #endif
 
 /* Enable debugging if requested.  */
@@ -1099,16 +1128,16 @@ while (SeExprSpecYYID (0))
 
 # define SeExprSpecYYDPRINTF(Args)			\
 do {						\
-  if (SeExprSpecdebug)					\
+  if (SeExpr2Specdebug)					\
     SeExprSpecYYFPRINTF Args;				\
 } while (SeExprSpecYYID (0))
 
 # define SeExprSpecYY_SYMBOL_PRINT(Title, Type, Value, Location)			  \
 do {									  \
-  if (SeExprSpecdebug)								  \
+  if (SeExpr2Specdebug)								  \
     {									  \
       SeExprSpecYYFPRINTF (stderr, "%s ", Title);					  \
-      SeExprSpec_symbol_print (stderr,						  \
+      SeExpr2Spec_symbol_print (stderr,						  \
 		  Type, Value, Location); \
       SeExprSpecYYFPRINTF (stderr, "\n");						  \
     }									  \
@@ -1123,26 +1152,26 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-SeExprSpec_symbol_value_print (FILE *SeExprSpecoutput, int SeExprSpectype, SeExprSpecYYSTYPE const * const SeExprSpecvaluep, SeExprSpecYYLTYPE const * const SeExprSpeclocationp)
+SeExpr2Spec_symbol_value_print (FILE *SeExpr2Specoutput, int SeExpr2Spectype, SeExprSpecYYSTYPE const * const SeExpr2Specvaluep, SeExprSpecYYLTYPE const * const SeExpr2Speclocationp)
 #else
 static void
-SeExprSpec_symbol_value_print (SeExprSpecoutput, SeExprSpectype, SeExprSpecvaluep, SeExprSpeclocationp)
-    FILE *SeExprSpecoutput;
-    int SeExprSpectype;
-    SeExprSpecYYSTYPE const * const SeExprSpecvaluep;
-    SeExprSpecYYLTYPE const * const SeExprSpeclocationp;
+SeExpr2Spec_symbol_value_print (SeExpr2Specoutput, SeExpr2Spectype, SeExpr2Specvaluep, SeExpr2Speclocationp)
+    FILE *SeExpr2Specoutput;
+    int SeExpr2Spectype;
+    SeExprSpecYYSTYPE const * const SeExpr2Specvaluep;
+    SeExprSpecYYLTYPE const * const SeExpr2Speclocationp;
 #endif
 {
-  if (!SeExprSpecvaluep)
+  if (!SeExpr2Specvaluep)
     return;
-  SeExprSpecYYUSE (SeExprSpeclocationp);
+  SeExprSpecYYUSE (SeExpr2Speclocationp);
 # ifdef SeExprSpecYYPRINT
-  if (SeExprSpectype < SeExprSpecYYNTOKENS)
-    SeExprSpecYYPRINT (SeExprSpecoutput, SeExprSpectoknum[SeExprSpectype], *SeExprSpecvaluep);
+  if (SeExpr2Spectype < SeExprSpecYYNTOKENS)
+    SeExprSpecYYPRINT (SeExpr2Specoutput, SeExpr2Spectoknum[SeExpr2Spectype], *SeExpr2Specvaluep);
 # else
-  SeExprSpecYYUSE (SeExprSpecoutput);
+  SeExprSpecYYUSE (SeExpr2Specoutput);
 # endif
-  switch (SeExprSpectype)
+  switch (SeExpr2Spectype)
     {
       default:
 	break;
@@ -1157,41 +1186,41 @@ SeExprSpec_symbol_value_print (SeExprSpecoutput, SeExprSpectype, SeExprSpecvalue
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-SeExprSpec_symbol_print (FILE *SeExprSpecoutput, int SeExprSpectype, SeExprSpecYYSTYPE const * const SeExprSpecvaluep, SeExprSpecYYLTYPE const * const SeExprSpeclocationp)
+SeExpr2Spec_symbol_print (FILE *SeExpr2Specoutput, int SeExpr2Spectype, SeExprSpecYYSTYPE const * const SeExpr2Specvaluep, SeExprSpecYYLTYPE const * const SeExpr2Speclocationp)
 #else
 static void
-SeExprSpec_symbol_print (SeExprSpecoutput, SeExprSpectype, SeExprSpecvaluep, SeExprSpeclocationp)
-    FILE *SeExprSpecoutput;
-    int SeExprSpectype;
-    SeExprSpecYYSTYPE const * const SeExprSpecvaluep;
-    SeExprSpecYYLTYPE const * const SeExprSpeclocationp;
+SeExpr2Spec_symbol_print (SeExpr2Specoutput, SeExpr2Spectype, SeExpr2Specvaluep, SeExpr2Speclocationp)
+    FILE *SeExpr2Specoutput;
+    int SeExpr2Spectype;
+    SeExprSpecYYSTYPE const * const SeExpr2Specvaluep;
+    SeExprSpecYYLTYPE const * const SeExpr2Speclocationp;
 #endif
 {
-  if (SeExprSpectype < SeExprSpecYYNTOKENS)
-    SeExprSpecYYFPRINTF (SeExprSpecoutput, "token %s (", SeExprSpectname[SeExprSpectype]);
+  if (SeExpr2Spectype < SeExprSpecYYNTOKENS)
+    SeExprSpecYYFPRINTF (SeExpr2Specoutput, "token %s (", SeExpr2Spectname[SeExpr2Spectype]);
   else
-    SeExprSpecYYFPRINTF (SeExprSpecoutput, "nterm %s (", SeExprSpectname[SeExprSpectype]);
+    SeExprSpecYYFPRINTF (SeExpr2Specoutput, "nterm %s (", SeExpr2Spectname[SeExpr2Spectype]);
 
-  SeExprSpecYY_LOCATION_PRINT (SeExprSpecoutput, *SeExprSpeclocationp);
-  SeExprSpecYYFPRINTF (SeExprSpecoutput, ": ");
-  SeExprSpec_symbol_value_print (SeExprSpecoutput, SeExprSpectype, SeExprSpecvaluep, SeExprSpeclocationp);
-  SeExprSpecYYFPRINTF (SeExprSpecoutput, ")");
+  SeExprSpecYY_LOCATION_PRINT (SeExpr2Specoutput, *SeExpr2Speclocationp);
+  SeExprSpecYYFPRINTF (SeExpr2Specoutput, ": ");
+  SeExpr2Spec_symbol_value_print (SeExpr2Specoutput, SeExpr2Spectype, SeExpr2Specvaluep, SeExpr2Speclocationp);
+  SeExprSpecYYFPRINTF (SeExpr2Specoutput, ")");
 }
 
 /*------------------------------------------------------------------.
-| SeExprSpec_stack_print -- Print the state stack from its BOTTOM up to its |
+| SeExpr2Spec_stack_print -- Print the state stack from its BOTTOM up to its |
 | TOP (included).                                                   |
 `------------------------------------------------------------------*/
 
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-SeExprSpec_stack_print (SeExprSpectype_int16 *bottom, SeExprSpectype_int16 *top)
+SeExpr2Spec_stack_print (SeExpr2Spectype_int16 *bottom, SeExpr2Spectype_int16 *top)
 #else
 static void
-SeExprSpec_stack_print (bottom, top)
-    SeExprSpectype_int16 *bottom;
-    SeExprSpectype_int16 *top;
+SeExpr2Spec_stack_print (bottom, top)
+    SeExpr2Spectype_int16 *bottom;
+    SeExpr2Spectype_int16 *top;
 #endif
 {
   SeExprSpecYYFPRINTF (stderr, "Stack now");
@@ -1202,8 +1231,8 @@ SeExprSpec_stack_print (bottom, top)
 
 # define SeExprSpecYY_STACK_PRINT(Bottom, Top)				\
 do {								\
-  if (SeExprSpecdebug)							\
-    SeExprSpec_stack_print ((Bottom), (Top));				\
+  if (SeExpr2Specdebug)							\
+    SeExpr2Spec_stack_print ((Bottom), (Top));				\
 } while (SeExprSpecYYID (0))
 
 
@@ -1214,40 +1243,40 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-SeExprSpec_reduce_print (SeExprSpecYYSTYPE *SeExprSpecvsp, SeExprSpecYYLTYPE *SeExprSpeclsp, int SeExprSpecrule)
+SeExpr2Spec_reduce_print (SeExprSpecYYSTYPE *SeExpr2Specvsp, SeExprSpecYYLTYPE *SeExpr2Speclsp, int SeExpr2Specrule)
 #else
 static void
-SeExprSpec_reduce_print (SeExprSpecvsp, SeExprSpeclsp, SeExprSpecrule)
-    SeExprSpecYYSTYPE *SeExprSpecvsp;
-    SeExprSpecYYLTYPE *SeExprSpeclsp;
-    int SeExprSpecrule;
+SeExpr2Spec_reduce_print (SeExpr2Specvsp, SeExpr2Speclsp, SeExpr2Specrule)
+    SeExprSpecYYSTYPE *SeExpr2Specvsp;
+    SeExprSpecYYLTYPE *SeExpr2Speclsp;
+    int SeExpr2Specrule;
 #endif
 {
-  int SeExprSpecnrhs = SeExprSpecr2[SeExprSpecrule];
-  int SeExprSpeci;
-  unsigned long int SeExprSpeclno = SeExprSpecrline[SeExprSpecrule];
+  int SeExpr2Specnrhs = SeExpr2Specr2[SeExpr2Specrule];
+  int SeExpr2Speci;
+  unsigned long int SeExpr2Speclno = SeExpr2Specrline[SeExpr2Specrule];
   SeExprSpecYYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
-	     SeExprSpecrule - 1, SeExprSpeclno);
+	     SeExpr2Specrule - 1, SeExpr2Speclno);
   /* The symbols being reduced.  */
-  for (SeExprSpeci = 0; SeExprSpeci < SeExprSpecnrhs; SeExprSpeci++)
+  for (SeExpr2Speci = 0; SeExpr2Speci < SeExpr2Specnrhs; SeExpr2Speci++)
     {
-      fprintf (stderr, "   $%d = ", SeExprSpeci + 1);
-      SeExprSpec_symbol_print (stderr, SeExprSpecrhs[SeExprSpecprhs[SeExprSpecrule] + SeExprSpeci],
-		       &(SeExprSpecvsp[(SeExprSpeci + 1) - (SeExprSpecnrhs)])
-		       , &(SeExprSpeclsp[(SeExprSpeci + 1) - (SeExprSpecnrhs)])		       );
+      fprintf (stderr, "   $%d = ", SeExpr2Speci + 1);
+      SeExpr2Spec_symbol_print (stderr, SeExpr2Specrhs[SeExpr2Specprhs[SeExpr2Specrule] + SeExpr2Speci],
+		       &(SeExpr2Specvsp[(SeExpr2Speci + 1) - (SeExpr2Specnrhs)])
+		       , &(SeExpr2Speclsp[(SeExpr2Speci + 1) - (SeExpr2Specnrhs)])		       );
       fprintf (stderr, "\n");
     }
 }
 
 # define SeExprSpecYY_REDUCE_PRINT(Rule)		\
 do {					\
-  if (SeExprSpecdebug)				\
-    SeExprSpec_reduce_print (SeExprSpecvsp, SeExprSpeclsp, Rule); \
+  if (SeExpr2Specdebug)				\
+    SeExpr2Spec_reduce_print (SeExpr2Specvsp, SeExpr2Speclsp, Rule); \
 } while (SeExprSpecYYID (0))
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
-int SeExprSpecdebug;
+int SeExpr2Specdebug;
 #else /* !SeExprSpecYYDEBUG */
 # define SeExprSpecYYDPRINTF(Args)
 # define SeExprSpecYY_SYMBOL_PRINT(Title, Type, Value, Location)
@@ -1276,102 +1305,102 @@ int SeExprSpecdebug;
 
 #if SeExprSpecYYERROR_VERBOSE
 
-# ifndef SeExprSpecstrlen
+# ifndef SeExpr2Specstrlen
 #  if defined __GLIBC__ && defined _STRING_H
-#   define SeExprSpecstrlen strlen
+#   define SeExpr2Specstrlen strlen
 #  else
 /* Return the length of SeExprSpecYYSTR.  */
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static SeExprSpecYYSIZE_T
-SeExprSpecstrlen (const char *SeExprSpecstr)
+SeExpr2Specstrlen (const char *SeExpr2Specstr)
 #else
 static SeExprSpecYYSIZE_T
-SeExprSpecstrlen (SeExprSpecstr)
-    const char *SeExprSpecstr;
+SeExpr2Specstrlen (SeExpr2Specstr)
+    const char *SeExpr2Specstr;
 #endif
 {
-  SeExprSpecYYSIZE_T SeExprSpeclen;
-  for (SeExprSpeclen = 0; SeExprSpecstr[SeExprSpeclen]; SeExprSpeclen++)
+  SeExprSpecYYSIZE_T SeExpr2Speclen;
+  for (SeExpr2Speclen = 0; SeExpr2Specstr[SeExpr2Speclen]; SeExpr2Speclen++)
     continue;
-  return SeExprSpeclen;
+  return SeExpr2Speclen;
 }
 #  endif
 # endif
 
-# ifndef SeExprSpecstpcpy
+# ifndef SeExpr2Specstpcpy
 #  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
-#   define SeExprSpecstpcpy stpcpy
+#   define SeExpr2Specstpcpy stpcpy
 #  else
 /* Copy SeExprSpecYYSRC to SeExprSpecYYDEST, returning the address of the terminating '\0' in
    SeExprSpecYYDEST.  */
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static char *
-SeExprSpecstpcpy (char *SeExprSpecdest, const char *SeExprSpecsrc)
+SeExpr2Specstpcpy (char *SeExpr2Specdest, const char *SeExpr2Specsrc)
 #else
 static char *
-SeExprSpecstpcpy (SeExprSpecdest, SeExprSpecsrc)
-    char *SeExprSpecdest;
-    const char *SeExprSpecsrc;
+SeExpr2Specstpcpy (SeExpr2Specdest, SeExpr2Specsrc)
+    char *SeExpr2Specdest;
+    const char *SeExpr2Specsrc;
 #endif
 {
-  char *SeExprSpecd = SeExprSpecdest;
-  const char *SeExprSpecs = SeExprSpecsrc;
+  char *SeExpr2Specd = SeExpr2Specdest;
+  const char *SeExpr2Specs = SeExpr2Specsrc;
 
-  while ((*SeExprSpecd++ = *SeExprSpecs++) != '\0')
+  while ((*SeExpr2Specd++ = *SeExpr2Specs++) != '\0')
     continue;
 
-  return SeExprSpecd - 1;
+  return SeExpr2Specd - 1;
 }
 #  endif
 # endif
 
-# ifndef SeExprSpectnamerr
+# ifndef SeExpr2Spectnamerr
 /* Copy to SeExprSpecYYRES the contents of SeExprSpecYYSTR after stripping away unnecessary
-   quotes and backslashes, so that it's suitable for SeExprSpecerror.  The
+   quotes and backslashes, so that it's suitable for SeExpr2Specerror.  The
    heuristic is that double-quoting is unnecessary unless the string
    contains an apostrophe, a comma, or backslash (other than
-   backslash-backslash).  SeExprSpecYYSTR is taken from SeExprSpectname.  If SeExprSpecYYRES is
+   backslash-backslash).  SeExprSpecYYSTR is taken from SeExpr2Spectname.  If SeExprSpecYYRES is
    null, do not copy; instead, return the length of what the result
    would have been.  */
 static SeExprSpecYYSIZE_T
-SeExprSpectnamerr (char *SeExprSpecres, const char *SeExprSpecstr)
+SeExpr2Spectnamerr (char *SeExpr2Specres, const char *SeExpr2Specstr)
 {
-  if (*SeExprSpecstr == '"')
+  if (*SeExpr2Specstr == '"')
     {
-      SeExprSpecYYSIZE_T SeExprSpecn = 0;
-      char const *SeExprSpecp = SeExprSpecstr;
+      SeExprSpecYYSIZE_T SeExpr2Specn = 0;
+      char const *SeExpr2Specp = SeExpr2Specstr;
 
       for (;;)
-	switch (*++SeExprSpecp)
+	switch (*++SeExpr2Specp)
 	  {
 	  case '\'':
 	  case ',':
 	    goto do_not_strip_quotes;
 
 	  case '\\':
-	    if (*++SeExprSpecp != '\\')
+	    if (*++SeExpr2Specp != '\\')
 	      goto do_not_strip_quotes;
 	    /* Fall through.  */
 	  default:
-	    if (SeExprSpecres)
-	      SeExprSpecres[SeExprSpecn] = *SeExprSpecp;
-	    SeExprSpecn++;
+	    if (SeExpr2Specres)
+	      SeExpr2Specres[SeExpr2Specn] = *SeExpr2Specp;
+	    SeExpr2Specn++;
 	    break;
 
 	  case '"':
-	    if (SeExprSpecres)
-	      SeExprSpecres[SeExprSpecn] = '\0';
-	    return SeExprSpecn;
+	    if (SeExpr2Specres)
+	      SeExpr2Specres[SeExpr2Specn] = '\0';
+	    return SeExpr2Specn;
 	  }
     do_not_strip_quotes: ;
     }
 
-  if (! SeExprSpecres)
-    return SeExprSpecstrlen (SeExprSpecstr);
+  if (! SeExpr2Specres)
+    return SeExpr2Specstrlen (SeExpr2Specstr);
 
-  return SeExprSpecstpcpy (SeExprSpecres, SeExprSpecstr) - SeExprSpecres;
+  return SeExpr2Specstpcpy (SeExpr2Specres, SeExpr2Specstr) - SeExpr2Specres;
 }
 # endif
 
@@ -1383,22 +1412,22 @@ SeExprSpectnamerr (char *SeExprSpecres, const char *SeExprSpecstr)
    message will do.  Return SeExprSpecYYSIZE_MAXIMUM if overflow occurs during
    size calculation.  */
 static SeExprSpecYYSIZE_T
-SeExprSpecsyntax_error (char *SeExprSpecresult, int SeExprSpecstate, int SeExprSpecchar)
+SeExpr2Specsyntax_error (char *SeExpr2Specresult, int SeExpr2Specstate, int SeExpr2Specchar)
 {
-  int SeExprSpecn = SeExprSpecpact[SeExprSpecstate];
+  int SeExpr2Specn = SeExpr2Specpact[SeExpr2Specstate];
 
-  if (! (SeExprSpecYYPACT_NINF < SeExprSpecn && SeExprSpecn <= SeExprSpecYYLAST))
+  if (! (SeExprSpecYYPACT_NINF < SeExpr2Specn && SeExpr2Specn <= SeExprSpecYYLAST))
     return 0;
   else
     {
-      int SeExprSpectype = SeExprSpecYYTRANSLATE (SeExprSpecchar);
-      SeExprSpecYYSIZE_T SeExprSpecsize0 = SeExprSpectnamerr (0, SeExprSpectname[SeExprSpectype]);
-      SeExprSpecYYSIZE_T SeExprSpecsize = SeExprSpecsize0;
-      SeExprSpecYYSIZE_T SeExprSpecsize1;
-      int SeExprSpecsize_overflow = 0;
+      int SeExpr2Spectype = SeExprSpecYYTRANSLATE (SeExpr2Specchar);
+      SeExprSpecYYSIZE_T SeExpr2Specsize0 = SeExpr2Spectnamerr (0, SeExpr2Spectname[SeExpr2Spectype]);
+      SeExprSpecYYSIZE_T SeExpr2Specsize = SeExpr2Specsize0;
+      SeExprSpecYYSIZE_T SeExpr2Specsize1;
+      int SeExpr2Specsize_overflow = 0;
       enum { SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-      char const *SeExprSpecarg[SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM];
-      int SeExprSpecx;
+      char const *SeExpr2Specarg[SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM];
+      int SeExpr2Specx;
 
 # if 0
       /* This is so xgettext sees the translatable formats that are
@@ -1409,77 +1438,77 @@ SeExprSpecsyntax_error (char *SeExprSpecresult, int SeExprSpecstate, int SeExprS
       SeExprSpecYY_("syntax error, unexpected %s, expecting %s or %s or %s");
       SeExprSpecYY_("syntax error, unexpected %s, expecting %s or %s or %s or %s");
 # endif
-      char *SeExprSpecfmt;
-      char const *SeExprSpecf;
-      static char const SeExprSpecunexpected[] = "syntax error, unexpected %s";
-      static char const SeExprSpecexpecting[] = ", expecting %s";
-      static char const SeExprSpecor[] = " or %s";
-      char SeExprSpecformat[sizeof SeExprSpecunexpected
-		    + sizeof SeExprSpecexpecting - 1
+      char *SeExpr2Specfmt;
+      char const *SeExpr2Specf;
+      static char const SeExpr2Specunexpected[] = "syntax error, unexpected %s";
+      static char const SeExpr2Specexpecting[] = ", expecting %s";
+      static char const SeExpr2Specor[] = " or %s";
+      char SeExpr2Specformat[sizeof SeExpr2Specunexpected
+		    + sizeof SeExpr2Specexpecting - 1
 		    + ((SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM - 2)
-		       * (sizeof SeExprSpecor - 1))];
-      char const *SeExprSpecprefix = SeExprSpecexpecting;
+		       * (sizeof SeExpr2Specor - 1))];
+      char const *SeExpr2Specprefix = SeExpr2Specexpecting;
 
       /* Start SeExprSpecYYX at -SeExprSpecYYN if negative to avoid negative indexes in
 	 SeExprSpecYYCHECK.  */
-      int SeExprSpecxbegin = SeExprSpecn < 0 ? -SeExprSpecn : 0;
+      int SeExpr2Specxbegin = SeExpr2Specn < 0 ? -SeExpr2Specn : 0;
 
-      /* Stay within bounds of both SeExprSpeccheck and SeExprSpectname.  */
-      int SeExprSpecchecklim = SeExprSpecYYLAST - SeExprSpecn + 1;
-      int SeExprSpecxend = SeExprSpecchecklim < SeExprSpecYYNTOKENS ? SeExprSpecchecklim : SeExprSpecYYNTOKENS;
-      int SeExprSpeccount = 1;
+      /* Stay within bounds of both SeExpr2Speccheck and SeExpr2Spectname.  */
+      int SeExpr2Specchecklim = SeExprSpecYYLAST - SeExpr2Specn + 1;
+      int SeExpr2Specxend = SeExpr2Specchecklim < SeExprSpecYYNTOKENS ? SeExpr2Specchecklim : SeExprSpecYYNTOKENS;
+      int SeExpr2Speccount = 1;
 
-      SeExprSpecarg[0] = SeExprSpectname[SeExprSpectype];
-      SeExprSpecfmt = SeExprSpecstpcpy (SeExprSpecformat, SeExprSpecunexpected);
+      SeExpr2Specarg[0] = SeExpr2Spectname[SeExpr2Spectype];
+      SeExpr2Specfmt = SeExpr2Specstpcpy (SeExpr2Specformat, SeExpr2Specunexpected);
 
-      for (SeExprSpecx = SeExprSpecxbegin; SeExprSpecx < SeExprSpecxend; ++SeExprSpecx)
-	if (SeExprSpeccheck[SeExprSpecx + SeExprSpecn] == SeExprSpecx && SeExprSpecx != SeExprSpecYYTERROR)
+      for (SeExpr2Specx = SeExpr2Specxbegin; SeExpr2Specx < SeExpr2Specxend; ++SeExpr2Specx)
+	if (SeExpr2Speccheck[SeExpr2Specx + SeExpr2Specn] == SeExpr2Specx && SeExpr2Specx != SeExprSpecYYTERROR)
 	  {
-	    if (SeExprSpeccount == SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM)
+	    if (SeExpr2Speccount == SeExprSpecYYERROR_VERBOSE_ARGS_MAXIMUM)
 	      {
-		SeExprSpeccount = 1;
-		SeExprSpecsize = SeExprSpecsize0;
-		SeExprSpecformat[sizeof SeExprSpecunexpected - 1] = '\0';
+		SeExpr2Speccount = 1;
+		SeExpr2Specsize = SeExpr2Specsize0;
+		SeExpr2Specformat[sizeof SeExpr2Specunexpected - 1] = '\0';
 		break;
 	      }
-	    SeExprSpecarg[SeExprSpeccount++] = SeExprSpectname[SeExprSpecx];
-	    SeExprSpecsize1 = SeExprSpecsize + SeExprSpectnamerr (0, SeExprSpectname[SeExprSpecx]);
-	    SeExprSpecsize_overflow |= (SeExprSpecsize1 < SeExprSpecsize);
-	    SeExprSpecsize = SeExprSpecsize1;
-	    SeExprSpecfmt = SeExprSpecstpcpy (SeExprSpecfmt, SeExprSpecprefix);
-	    SeExprSpecprefix = SeExprSpecor;
+	    SeExpr2Specarg[SeExpr2Speccount++] = SeExpr2Spectname[SeExpr2Specx];
+	    SeExpr2Specsize1 = SeExpr2Specsize + SeExpr2Spectnamerr (0, SeExpr2Spectname[SeExpr2Specx]);
+	    SeExpr2Specsize_overflow |= (SeExpr2Specsize1 < SeExpr2Specsize);
+	    SeExpr2Specsize = SeExpr2Specsize1;
+	    SeExpr2Specfmt = SeExpr2Specstpcpy (SeExpr2Specfmt, SeExpr2Specprefix);
+	    SeExpr2Specprefix = SeExpr2Specor;
 	  }
 
-      SeExprSpecf = SeExprSpecYY_(SeExprSpecformat);
-      SeExprSpecsize1 = SeExprSpecsize + SeExprSpecstrlen (SeExprSpecf);
-      SeExprSpecsize_overflow |= (SeExprSpecsize1 < SeExprSpecsize);
-      SeExprSpecsize = SeExprSpecsize1;
+      SeExpr2Specf = SeExprSpecYY_(SeExpr2Specformat);
+      SeExpr2Specsize1 = SeExpr2Specsize + SeExpr2Specstrlen (SeExpr2Specf);
+      SeExpr2Specsize_overflow |= (SeExpr2Specsize1 < SeExpr2Specsize);
+      SeExpr2Specsize = SeExpr2Specsize1;
 
-      if (SeExprSpecsize_overflow)
+      if (SeExpr2Specsize_overflow)
 	return SeExprSpecYYSIZE_MAXIMUM;
 
-      if (SeExprSpecresult)
+      if (SeExpr2Specresult)
 	{
 	  /* Avoid sprintf, as that infringes on the user's name space.
 	     Don't have undefined behavior even if the translation
 	     produced a string with the wrong number of "%s"s.  */
-	  char *SeExprSpecp = SeExprSpecresult;
-	  int SeExprSpeci = 0;
-	  while ((*SeExprSpecp = *SeExprSpecf) != '\0')
+	  char *SeExpr2Specp = SeExpr2Specresult;
+	  int SeExpr2Speci = 0;
+	  while ((*SeExpr2Specp = *SeExpr2Specf) != '\0')
 	    {
-	      if (*SeExprSpecp == '%' && SeExprSpecf[1] == 's' && SeExprSpeci < SeExprSpeccount)
+	      if (*SeExpr2Specp == '%' && SeExpr2Specf[1] == 's' && SeExpr2Speci < SeExpr2Speccount)
 		{
-		  SeExprSpecp += SeExprSpectnamerr (SeExprSpecp, SeExprSpecarg[SeExprSpeci++]);
-		  SeExprSpecf += 2;
+		  SeExpr2Specp += SeExpr2Spectnamerr (SeExpr2Specp, SeExpr2Specarg[SeExpr2Speci++]);
+		  SeExpr2Specf += 2;
 		}
 	      else
 		{
-		  SeExprSpecp++;
-		  SeExprSpecf++;
+		  SeExpr2Specp++;
+		  SeExpr2Specf++;
 		}
 	    }
 	}
-      return SeExprSpecsize;
+      return SeExpr2Specsize;
     }
 }
 #endif /* SeExprSpecYYERROR_VERBOSE */
@@ -1493,24 +1522,24 @@ SeExprSpecsyntax_error (char *SeExprSpecresult, int SeExprSpecstate, int SeExprS
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-SeExprSpecdestruct (const char *SeExprSpecmsg, int SeExprSpectype, SeExprSpecYYSTYPE *SeExprSpecvaluep, SeExprSpecYYLTYPE *SeExprSpeclocationp)
+SeExpr2Specdestruct (const char *SeExpr2Specmsg, int SeExpr2Spectype, SeExprSpecYYSTYPE *SeExpr2Specvaluep, SeExprSpecYYLTYPE *SeExpr2Speclocationp)
 #else
 static void
-SeExprSpecdestruct (SeExprSpecmsg, SeExprSpectype, SeExprSpecvaluep, SeExprSpeclocationp)
-    const char *SeExprSpecmsg;
-    int SeExprSpectype;
-    SeExprSpecYYSTYPE *SeExprSpecvaluep;
-    SeExprSpecYYLTYPE *SeExprSpeclocationp;
+SeExpr2Specdestruct (SeExpr2Specmsg, SeExpr2Spectype, SeExpr2Specvaluep, SeExpr2Speclocationp)
+    const char *SeExpr2Specmsg;
+    int SeExpr2Spectype;
+    SeExprSpecYYSTYPE *SeExpr2Specvaluep;
+    SeExprSpecYYLTYPE *SeExpr2Speclocationp;
 #endif
 {
-  SeExprSpecYYUSE (SeExprSpecvaluep);
-  SeExprSpecYYUSE (SeExprSpeclocationp);
+  SeExprSpecYYUSE (SeExpr2Specvaluep);
+  SeExprSpecYYUSE (SeExpr2Speclocationp);
 
-  if (!SeExprSpecmsg)
-    SeExprSpecmsg = "Deleting";
-  SeExprSpecYY_SYMBOL_PRINT (SeExprSpecmsg, SeExprSpectype, SeExprSpecvaluep, SeExprSpeclocationp);
+  if (!SeExpr2Specmsg)
+    SeExpr2Specmsg = "Deleting";
+  SeExprSpecYY_SYMBOL_PRINT (SeExpr2Specmsg, SeExpr2Spectype, SeExpr2Specvaluep, SeExpr2Speclocationp);
 
-  switch (SeExprSpectype)
+  switch (SeExpr2Spectype)
     {
 
       default:
@@ -1523,299 +1552,299 @@ SeExprSpecdestruct (SeExprSpecmsg, SeExprSpectype, SeExprSpecvaluep, SeExprSpecl
 
 #ifdef SeExprSpecYYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
-int SeExprSpecparse (void *SeExprSpecYYPARSE_PARAM);
+int SeExpr2Specparse (void *SeExprSpecYYPARSE_PARAM);
 #else
-int SeExprSpecparse ();
+int SeExpr2Specparse ();
 #endif
 #else /* ! SeExprSpecYYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int SeExprSpecparse (void);
+int SeExpr2Specparse (void);
 #else
-int SeExprSpecparse ();
+int SeExpr2Specparse ();
 #endif
 #endif /* ! SeExprSpecYYPARSE_PARAM */
 
 
 
 /* The look-ahead symbol.  */
-int SeExprSpecchar;
+int SeExpr2Specchar;
 
 /* The semantic value of the look-ahead symbol.  */
-SeExprSpecYYSTYPE SeExprSpeclval;
+SeExprSpecYYSTYPE SeExpr2Speclval;
 
 /* Number of syntax errors so far.  */
-int SeExprSpecnerrs;
+int SeExpr2Specnerrs;
 /* Location data for the look-ahead symbol.  */
-SeExprSpecYYLTYPE SeExprSpeclloc;
+SeExprSpecYYLTYPE SeExpr2Speclloc;
 
 
 
 /*----------.
-| SeExprSpecparse.  |
+| SeExpr2Specparse.  |
 `----------*/
 
 #ifdef SeExprSpecYYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-SeExprSpecparse (void *SeExprSpecYYPARSE_PARAM)
+SeExpr2Specparse (void *SeExprSpecYYPARSE_PARAM)
 #else
 int
-SeExprSpecparse (SeExprSpecYYPARSE_PARAM)
+SeExpr2Specparse (SeExprSpecYYPARSE_PARAM)
     void *SeExprSpecYYPARSE_PARAM;
 #endif
 #else /* ! SeExprSpecYYPARSE_PARAM */
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-SeExprSpecparse (void)
+SeExpr2Specparse (void)
 #else
 int
-SeExprSpecparse ()
+SeExpr2Specparse ()
 
 #endif
 #endif
 {
   
-  int SeExprSpecstate;
-  int SeExprSpecn;
-  int SeExprSpecresult;
+  int SeExpr2Specstate;
+  int SeExpr2Specn;
+  int SeExpr2Specresult;
   /* Number of tokens to shift before error messages enabled.  */
-  int SeExprSpecerrstatus;
+  int SeExpr2Specerrstatus;
   /* Look-ahead token as an internal (translated) token number.  */
-  int SeExprSpectoken = 0;
+  int SeExpr2Spectoken = 0;
 #if SeExprSpecYYERROR_VERBOSE
   /* Buffer for error messages, and its allocated size.  */
-  char SeExprSpecmsgbuf[128];
-  char *SeExprSpecmsg = SeExprSpecmsgbuf;
-  SeExprSpecYYSIZE_T SeExprSpecmsg_alloc = sizeof SeExprSpecmsgbuf;
+  char SeExpr2Specmsgbuf[128];
+  char *SeExpr2Specmsg = SeExpr2Specmsgbuf;
+  SeExprSpecYYSIZE_T SeExpr2Specmsg_alloc = sizeof SeExpr2Specmsgbuf;
 #endif
 
   /* Three stacks and their tools:
-     `SeExprSpecss': related to states,
-     `SeExprSpecvs': related to semantic values,
-     `SeExprSpecls': related to locations.
+     `SeExpr2Specss': related to states,
+     `SeExpr2Specvs': related to semantic values,
+     `SeExpr2Specls': related to locations.
 
-     Refer to the stacks thru separate pointers, to allow SeExprSpecoverflow
+     Refer to the stacks thru separate pointers, to allow SeExpr2Specoverflow
      to reallocate them elsewhere.  */
 
   /* The state stack.  */
-  SeExprSpectype_int16 SeExprSpecssa[SeExprSpecYYINITDEPTH];
-  SeExprSpectype_int16 *SeExprSpecss = SeExprSpecssa;
-  SeExprSpectype_int16 *SeExprSpecssp;
+  SeExpr2Spectype_int16 SeExpr2Specssa[SeExprSpecYYINITDEPTH];
+  SeExpr2Spectype_int16 *SeExpr2Specss = SeExpr2Specssa;
+  SeExpr2Spectype_int16 *SeExpr2Specssp;
 
   /* The semantic value stack.  */
-  SeExprSpecYYSTYPE SeExprSpecvsa[SeExprSpecYYINITDEPTH];
-  SeExprSpecYYSTYPE *SeExprSpecvs = SeExprSpecvsa;
-  SeExprSpecYYSTYPE *SeExprSpecvsp;
+  SeExprSpecYYSTYPE SeExpr2Specvsa[SeExprSpecYYINITDEPTH];
+  SeExprSpecYYSTYPE *SeExpr2Specvs = SeExpr2Specvsa;
+  SeExprSpecYYSTYPE *SeExpr2Specvsp;
 
   /* The location stack.  */
-  SeExprSpecYYLTYPE SeExprSpeclsa[SeExprSpecYYINITDEPTH];
-  SeExprSpecYYLTYPE *SeExprSpecls = SeExprSpeclsa;
-  SeExprSpecYYLTYPE *SeExprSpeclsp;
+  SeExprSpecYYLTYPE SeExpr2Speclsa[SeExprSpecYYINITDEPTH];
+  SeExprSpecYYLTYPE *SeExpr2Specls = SeExpr2Speclsa;
+  SeExprSpecYYLTYPE *SeExpr2Speclsp;
   /* The locations where the error started and ended.  */
-  SeExprSpecYYLTYPE SeExprSpecerror_range[2];
+  SeExprSpecYYLTYPE SeExpr2Specerror_range[2];
 
-#define SeExprSpecYYPOPSTACK(N)   (SeExprSpecvsp -= (N), SeExprSpecssp -= (N), SeExprSpeclsp -= (N))
+#define SeExprSpecYYPOPSTACK(N)   (SeExpr2Specvsp -= (N), SeExpr2Specssp -= (N), SeExpr2Speclsp -= (N))
 
-  SeExprSpecYYSIZE_T SeExprSpecstacksize = SeExprSpecYYINITDEPTH;
+  SeExprSpecYYSIZE_T SeExpr2Specstacksize = SeExprSpecYYINITDEPTH;
 
   /* The variables used to return semantic value and location from the
      action routines.  */
-  SeExprSpecYYSTYPE SeExprSpecval;
-  SeExprSpecYYLTYPE SeExprSpecloc;
+  SeExprSpecYYSTYPE SeExpr2Specval;
+  SeExprSpecYYLTYPE SeExpr2Specloc;
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
-  int SeExprSpeclen = 0;
+  int SeExpr2Speclen = 0;
 
   SeExprSpecYYDPRINTF ((stderr, "Starting parse\n"));
 
-  SeExprSpecstate = 0;
-  SeExprSpecerrstatus = 0;
-  SeExprSpecnerrs = 0;
-  SeExprSpecchar = SeExprSpecYYEMPTY;		/* Cause a token to be read.  */
+  SeExpr2Specstate = 0;
+  SeExpr2Specerrstatus = 0;
+  SeExpr2Specnerrs = 0;
+  SeExpr2Specchar = SeExprSpecYYEMPTY;		/* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
      so that they stay on the same level as the state stack.
      The wasted elements are never initialized.  */
 
-  SeExprSpecssp = SeExprSpecss;
-  SeExprSpecvsp = SeExprSpecvs;
-  SeExprSpeclsp = SeExprSpecls;
+  SeExpr2Specssp = SeExpr2Specss;
+  SeExpr2Specvsp = SeExpr2Specvs;
+  SeExpr2Speclsp = SeExpr2Specls;
 #if defined SeExprSpecYYLTYPE_IS_TRIVIAL && SeExprSpecYYLTYPE_IS_TRIVIAL
   /* Initialize the default location before parsing starts.  */
-  SeExprSpeclloc.first_line   = SeExprSpeclloc.last_line   = 1;
-  SeExprSpeclloc.first_column = SeExprSpeclloc.last_column = 0;
+  SeExpr2Speclloc.first_line   = SeExpr2Speclloc.last_line   = 1;
+  SeExpr2Speclloc.first_column = SeExpr2Speclloc.last_column = 0;
 #endif
 
-  goto SeExprSpecsetstate;
+  goto SeExpr2Specsetstate;
 
 /*------------------------------------------------------------.
-| SeExprSpecnewstate -- Push a new state, which is found in SeExprSpecstate.  |
+| SeExpr2Specnewstate -- Push a new state, which is found in SeExpr2Specstate.  |
 `------------------------------------------------------------*/
- SeExprSpecnewstate:
+ SeExpr2Specnewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
-  SeExprSpecssp++;
+  SeExpr2Specssp++;
 
- SeExprSpecsetstate:
-  *SeExprSpecssp = SeExprSpecstate;
+ SeExpr2Specsetstate:
+  *SeExpr2Specssp = SeExpr2Specstate;
 
-  if (SeExprSpecss + SeExprSpecstacksize - 1 <= SeExprSpecssp)
+  if (SeExpr2Specss + SeExpr2Specstacksize - 1 <= SeExpr2Specssp)
     {
       /* Get the current used size of the three stacks, in elements.  */
-      SeExprSpecYYSIZE_T SeExprSpecsize = SeExprSpecssp - SeExprSpecss + 1;
+      SeExprSpecYYSIZE_T SeExpr2Specsize = SeExpr2Specssp - SeExpr2Specss + 1;
 
-#ifdef SeExprSpecoverflow
+#ifdef SeExpr2Specoverflow
       {
 	/* Give user a chance to reallocate the stack.  Use copies of
 	   these so that the &'s don't force the real ones into
 	   memory.  */
-	SeExprSpecYYSTYPE *SeExprSpecvs1 = SeExprSpecvs;
-	SeExprSpectype_int16 *SeExprSpecss1 = SeExprSpecss;
-	SeExprSpecYYLTYPE *SeExprSpecls1 = SeExprSpecls;
+	SeExprSpecYYSTYPE *SeExpr2Specvs1 = SeExpr2Specvs;
+	SeExpr2Spectype_int16 *SeExpr2Specss1 = SeExpr2Specss;
+	SeExprSpecYYLTYPE *SeExpr2Specls1 = SeExpr2Specls;
 
 	/* Each stack pointer address is followed by the size of the
 	   data in use in that stack, in bytes.  This used to be a
 	   conditional around just the two extra args, but that might
-	   be undefined if SeExprSpecoverflow is a macro.  */
-	SeExprSpecoverflow (SeExprSpecYY_("memory exhausted"),
-		    &SeExprSpecss1, SeExprSpecsize * sizeof (*SeExprSpecssp),
-		    &SeExprSpecvs1, SeExprSpecsize * sizeof (*SeExprSpecvsp),
-		    &SeExprSpecls1, SeExprSpecsize * sizeof (*SeExprSpeclsp),
-		    &SeExprSpecstacksize);
-	SeExprSpecls = SeExprSpecls1;
-	SeExprSpecss = SeExprSpecss1;
-	SeExprSpecvs = SeExprSpecvs1;
+	   be undefined if SeExpr2Specoverflow is a macro.  */
+	SeExpr2Specoverflow (SeExprSpecYY_("memory exhausted"),
+		    &SeExpr2Specss1, SeExpr2Specsize * sizeof (*SeExpr2Specssp),
+		    &SeExpr2Specvs1, SeExpr2Specsize * sizeof (*SeExpr2Specvsp),
+		    &SeExpr2Specls1, SeExpr2Specsize * sizeof (*SeExpr2Speclsp),
+		    &SeExpr2Specstacksize);
+	SeExpr2Specls = SeExpr2Specls1;
+	SeExpr2Specss = SeExpr2Specss1;
+	SeExpr2Specvs = SeExpr2Specvs1;
       }
-#else /* no SeExprSpecoverflow */
+#else /* no SeExpr2Specoverflow */
 # ifndef SeExprSpecYYSTACK_RELOCATE
-      goto SeExprSpecexhaustedlab;
+      goto SeExpr2Specexhaustedlab;
 # else
       /* Extend the stack our own way.  */
-      if (SeExprSpecYYMAXDEPTH <= SeExprSpecstacksize)
-	goto SeExprSpecexhaustedlab;
-      SeExprSpecstacksize *= 2;
-      if (SeExprSpecYYMAXDEPTH < SeExprSpecstacksize)
-	SeExprSpecstacksize = SeExprSpecYYMAXDEPTH;
+      if (SeExprSpecYYMAXDEPTH <= SeExpr2Specstacksize)
+	goto SeExpr2Specexhaustedlab;
+      SeExpr2Specstacksize *= 2;
+      if (SeExprSpecYYMAXDEPTH < SeExpr2Specstacksize)
+	SeExpr2Specstacksize = SeExprSpecYYMAXDEPTH;
 
       {
-	SeExprSpectype_int16 *SeExprSpecss1 = SeExprSpecss;
-	union SeExprSpecalloc *SeExprSpecptr =
-	  (union SeExprSpecalloc *) SeExprSpecYYSTACK_ALLOC (SeExprSpecYYSTACK_BYTES (SeExprSpecstacksize));
-	if (! SeExprSpecptr)
-	  goto SeExprSpecexhaustedlab;
-	SeExprSpecYYSTACK_RELOCATE (SeExprSpecss);
-	SeExprSpecYYSTACK_RELOCATE (SeExprSpecvs);
-	SeExprSpecYYSTACK_RELOCATE (SeExprSpecls);
+	SeExpr2Spectype_int16 *SeExpr2Specss1 = SeExpr2Specss;
+	union SeExpr2Specalloc *SeExpr2Specptr =
+	  (union SeExpr2Specalloc *) SeExprSpecYYSTACK_ALLOC (SeExprSpecYYSTACK_BYTES (SeExpr2Specstacksize));
+	if (! SeExpr2Specptr)
+	  goto SeExpr2Specexhaustedlab;
+	SeExprSpecYYSTACK_RELOCATE (SeExpr2Specss);
+	SeExprSpecYYSTACK_RELOCATE (SeExpr2Specvs);
+	SeExprSpecYYSTACK_RELOCATE (SeExpr2Specls);
 #  undef SeExprSpecYYSTACK_RELOCATE
-	if (SeExprSpecss1 != SeExprSpecssa)
-	  SeExprSpecYYSTACK_FREE (SeExprSpecss1);
+	if (SeExpr2Specss1 != SeExpr2Specssa)
+	  SeExprSpecYYSTACK_FREE (SeExpr2Specss1);
       }
 # endif
-#endif /* no SeExprSpecoverflow */
+#endif /* no SeExpr2Specoverflow */
 
-      SeExprSpecssp = SeExprSpecss + SeExprSpecsize - 1;
-      SeExprSpecvsp = SeExprSpecvs + SeExprSpecsize - 1;
-      SeExprSpeclsp = SeExprSpecls + SeExprSpecsize - 1;
+      SeExpr2Specssp = SeExpr2Specss + SeExpr2Specsize - 1;
+      SeExpr2Specvsp = SeExpr2Specvs + SeExpr2Specsize - 1;
+      SeExpr2Speclsp = SeExpr2Specls + SeExpr2Specsize - 1;
 
       SeExprSpecYYDPRINTF ((stderr, "Stack size increased to %lu\n",
-		  (unsigned long int) SeExprSpecstacksize));
+		  (unsigned long int) SeExpr2Specstacksize));
 
-      if (SeExprSpecss + SeExprSpecstacksize - 1 <= SeExprSpecssp)
+      if (SeExpr2Specss + SeExpr2Specstacksize - 1 <= SeExpr2Specssp)
 	SeExprSpecYYABORT;
     }
 
-  SeExprSpecYYDPRINTF ((stderr, "Entering state %d\n", SeExprSpecstate));
+  SeExprSpecYYDPRINTF ((stderr, "Entering state %d\n", SeExpr2Specstate));
 
-  goto SeExprSpecbackup;
+  goto SeExpr2Specbackup;
 
 /*-----------.
-| SeExprSpecbackup.  |
+| SeExpr2Specbackup.  |
 `-----------*/
-SeExprSpecbackup:
+SeExpr2Specbackup:
 
   /* Do appropriate processing given the current state.  Read a
      look-ahead token if we need one and don't already have one.  */
 
   /* First try to decide what to do without reference to look-ahead token.  */
-  SeExprSpecn = SeExprSpecpact[SeExprSpecstate];
-  if (SeExprSpecn == SeExprSpecYYPACT_NINF)
-    goto SeExprSpecdefault;
+  SeExpr2Specn = SeExpr2Specpact[SeExpr2Specstate];
+  if (SeExpr2Specn == SeExprSpecYYPACT_NINF)
+    goto SeExpr2Specdefault;
 
   /* Not known => get a look-ahead token if don't already have one.  */
 
   /* SeExprSpecYYCHAR is either SeExprSpecYYEMPTY or SeExprSpecYYEOF or a valid look-ahead symbol.  */
-  if (SeExprSpecchar == SeExprSpecYYEMPTY)
+  if (SeExpr2Specchar == SeExprSpecYYEMPTY)
     {
       SeExprSpecYYDPRINTF ((stderr, "Reading a token: "));
-      SeExprSpecchar = SeExprSpecYYLEX;
+      SeExpr2Specchar = SeExprSpecYYLEX;
     }
 
-  if (SeExprSpecchar <= SeExprSpecYYEOF)
+  if (SeExpr2Specchar <= SeExprSpecYYEOF)
     {
-      SeExprSpecchar = SeExprSpectoken = SeExprSpecYYEOF;
+      SeExpr2Specchar = SeExpr2Spectoken = SeExprSpecYYEOF;
       SeExprSpecYYDPRINTF ((stderr, "Now at end of input.\n"));
     }
   else
     {
-      SeExprSpectoken = SeExprSpecYYTRANSLATE (SeExprSpecchar);
-      SeExprSpecYY_SYMBOL_PRINT ("Next token is", SeExprSpectoken, &SeExprSpeclval, &SeExprSpeclloc);
+      SeExpr2Spectoken = SeExprSpecYYTRANSLATE (SeExpr2Specchar);
+      SeExprSpecYY_SYMBOL_PRINT ("Next token is", SeExpr2Spectoken, &SeExpr2Speclval, &SeExpr2Speclloc);
     }
 
   /* If the proper action on seeing token SeExprSpecYYTOKEN is to reduce or to
      detect an error, take that action.  */
-  SeExprSpecn += SeExprSpectoken;
-  if (SeExprSpecn < 0 || SeExprSpecYYLAST < SeExprSpecn || SeExprSpeccheck[SeExprSpecn] != SeExprSpectoken)
-    goto SeExprSpecdefault;
-  SeExprSpecn = SeExprSpectable[SeExprSpecn];
-  if (SeExprSpecn <= 0)
+  SeExpr2Specn += SeExpr2Spectoken;
+  if (SeExpr2Specn < 0 || SeExprSpecYYLAST < SeExpr2Specn || SeExpr2Speccheck[SeExpr2Specn] != SeExpr2Spectoken)
+    goto SeExpr2Specdefault;
+  SeExpr2Specn = SeExpr2Spectable[SeExpr2Specn];
+  if (SeExpr2Specn <= 0)
     {
-      if (SeExprSpecn == 0 || SeExprSpecn == SeExprSpecYYTABLE_NINF)
-	goto SeExprSpecerrlab;
-      SeExprSpecn = -SeExprSpecn;
-      goto SeExprSpecreduce;
+      if (SeExpr2Specn == 0 || SeExpr2Specn == SeExprSpecYYTABLE_NINF)
+	goto SeExpr2Specerrlab;
+      SeExpr2Specn = -SeExpr2Specn;
+      goto SeExpr2Specreduce;
     }
 
-  if (SeExprSpecn == SeExprSpecYYFINAL)
+  if (SeExpr2Specn == SeExprSpecYYFINAL)
     SeExprSpecYYACCEPT;
 
   /* Count tokens shifted since error; after three, turn off error
      status.  */
-  if (SeExprSpecerrstatus)
-    SeExprSpecerrstatus--;
+  if (SeExpr2Specerrstatus)
+    SeExpr2Specerrstatus--;
 
   /* Shift the look-ahead token.  */
-  SeExprSpecYY_SYMBOL_PRINT ("Shifting", SeExprSpectoken, &SeExprSpeclval, &SeExprSpeclloc);
+  SeExprSpecYY_SYMBOL_PRINT ("Shifting", SeExpr2Spectoken, &SeExpr2Speclval, &SeExpr2Speclloc);
 
   /* Discard the shifted token unless it is eof.  */
-  if (SeExprSpecchar != SeExprSpecYYEOF)
-    SeExprSpecchar = SeExprSpecYYEMPTY;
+  if (SeExpr2Specchar != SeExprSpecYYEOF)
+    SeExpr2Specchar = SeExprSpecYYEMPTY;
 
-  SeExprSpecstate = SeExprSpecn;
-  *++SeExprSpecvsp = SeExprSpeclval;
-  *++SeExprSpeclsp = SeExprSpeclloc;
-  goto SeExprSpecnewstate;
+  SeExpr2Specstate = SeExpr2Specn;
+  *++SeExpr2Specvsp = SeExpr2Speclval;
+  *++SeExpr2Speclsp = SeExpr2Speclloc;
+  goto SeExpr2Specnewstate;
 
 
 /*-----------------------------------------------------------.
-| SeExprSpecdefault -- do the default action for the current state.  |
+| SeExpr2Specdefault -- do the default action for the current state.  |
 `-----------------------------------------------------------*/
-SeExprSpecdefault:
-  SeExprSpecn = SeExprSpecdefact[SeExprSpecstate];
-  if (SeExprSpecn == 0)
-    goto SeExprSpecerrlab;
-  goto SeExprSpecreduce;
+SeExpr2Specdefault:
+  SeExpr2Specn = SeExpr2Specdefact[SeExpr2Specstate];
+  if (SeExpr2Specn == 0)
+    goto SeExpr2Specerrlab;
+  goto SeExpr2Specreduce;
 
 
 /*-----------------------------.
-| SeExprSpecreduce -- Do a reduction.  |
+| SeExpr2Specreduce -- Do a reduction.  |
 `-----------------------------*/
-SeExprSpecreduce:
-  /* SeExprSpecn is the number of a rule to reduce with.  */
-  SeExprSpeclen = SeExprSpecr2[SeExprSpecn];
+SeExpr2Specreduce:
+  /* SeExpr2Specn is the number of a rule to reduce with.  */
+  SeExpr2Speclen = SeExpr2Specr2[SeExpr2Specn];
 
   /* If SeExprSpecYYLEN is nonzero, implement the default value of the action:
      `$$ = $1'.
@@ -1825,597 +1854,599 @@ SeExprSpecreduce:
      users should not rely upon it.  Assigning to SeExprSpecYYVAL
      unconditionally makes the parser a bit smaller, and it avoids a
      GCC warning that SeExprSpecYYVAL may be used uninitialized.  */
-  SeExprSpecval = SeExprSpecvsp[1-SeExprSpeclen];
+  SeExpr2Specval = SeExpr2Specvsp[1-SeExpr2Speclen];
 
   /* Default location.  */
-  SeExprSpecYYLLOC_DEFAULT (SeExprSpecloc, (SeExprSpeclsp - SeExprSpeclen), SeExprSpeclen);
-  SeExprSpecYY_REDUCE_PRINT (SeExprSpecn);
-  switch (SeExprSpecn)
+  SeExprSpecYYLLOC_DEFAULT (SeExpr2Specloc, (SeExpr2Speclsp - SeExpr2Speclen), SeExpr2Speclen);
+  SeExprSpecYY_REDUCE_PRINT (SeExpr2Specn);
+  switch (SeExpr2Specn)
     {
         case 2:
-#line 284 "src/SeExprEditor/SeExprSpecParser.y"
+#line 313 "src/ui/ExprSpecParser.y"
     { ParseResult = 0; }
     break;
 
   case 3:
-#line 285 "src/SeExprEditor/SeExprSpecParser.y"
+#line 314 "src/ui/ExprSpecParser.y"
     { ParseResult = 0; }
     break;
 
   case 4:
-#line 290 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 319 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 5:
-#line 291 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 320 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 6:
-#line 295 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 324 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 7:
-#line 296 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 325 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 8:
-#line 301 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 330 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 9:
-#line 302 "src/SeExprEditor/SeExprSpecParser.y"
+#line 331 "src/ui/ExprSpecParser.y"
     {
-        specRegisterVariable((SeExprSpecvsp[(1) - (4)].s));
-        specRegisterEditable((SeExprSpecvsp[(1) - (4)].s),(SeExprSpecvsp[(3) - (4)].n));
+        specRegisterVariable((SeExpr2Specvsp[(1) - (4)].s));
+        specRegisterEditable((SeExpr2Specvsp[(1) - (4)].s),(SeExpr2Specvsp[(3) - (4)].n));
       }
     break;
 
   case 10:
-#line 306 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 335 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 11:
-#line 307 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 336 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 12:
-#line 308 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 337 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 13:
-#line 309 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 338 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 14:
-#line 310 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 339 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 15:
-#line 311 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 340 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 16:
-#line 312 "src/SeExprEditor/SeExprSpecParser.y"
+#line 341 "src/ui/ExprSpecParser.y"
     {
-        specRegisterVariable((SeExprSpecvsp[(1) - (4)].s));
-        specRegisterEditable((SeExprSpecvsp[(1) - (4)].s),(SeExprSpecvsp[(3) - (4)].n));
+        specRegisterVariable((SeExpr2Specvsp[(1) - (4)].s));
+        specRegisterEditable((SeExpr2Specvsp[(1) - (4)].s),(SeExpr2Specvsp[(3) - (4)].n));
       }
     break;
 
   case 17:
-#line 316 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 345 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 18:
-#line 317 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 346 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 19:
-#line 318 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 347 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 20:
-#line 319 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 348 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 21:
-#line 320 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 349 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 22:
-#line 321 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 350 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 23:
-#line 326 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 355 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 24:
-#line 330 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 359 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 25:
-#line 331 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0;}
+#line 360 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0;}
     break;
 
   case 26:
-#line 332 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0;}
+#line 361 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0;}
     break;
 
   case 27:
-#line 337 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 366 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 28:
-#line 338 "src/SeExprEditor/SeExprSpecParser.y"
+#line 367 "src/ui/ExprSpecParser.y"
     {
-        if(SPEC_IS_NUMBER((SeExprSpecvsp[(2) - (7)].n)) && SPEC_IS_NUMBER((SeExprSpecvsp[(4) - (7)].n)) && SPEC_IS_NUMBER((SeExprSpecvsp[(6) - (7)].n))){
-            (SeExprSpecval.n)=remember(new SeExprSpecVectorNode((SeExprSpecloc).first_column,(SeExprSpecloc).last_column,(SeExprSpecvsp[(2) - (7)].n),(SeExprSpecvsp[(4) - (7)].n),(SeExprSpecvsp[(6) - (7)].n)));
-        }else (SeExprSpecval.n)=0;
+        if(SPEC_IS_NUMBER((SeExpr2Specvsp[(2) - (7)].n)) && SPEC_IS_NUMBER((SeExpr2Specvsp[(4) - (7)].n)) && SPEC_IS_NUMBER((SeExpr2Specvsp[(6) - (7)].n))){
+            (SeExpr2Specval.n)=remember(new ExprSpecVectorNode((SeExpr2Specloc).first_column,(SeExpr2Specloc).last_column,(SeExpr2Specvsp[(2) - (7)].n),(SeExpr2Specvsp[(4) - (7)].n),(SeExpr2Specvsp[(6) - (7)].n)));
+        }else (SeExpr2Specval.n)=0;
       }
     break;
 
   case 29:
-#line 343 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 372 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 30:
-#line 344 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 373 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 31:
-#line 345 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 374 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 32:
-#line 346 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 375 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 33:
-#line 347 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 376 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 34:
-#line 348 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 377 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 35:
-#line 349 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 378 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 36:
-#line 350 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 379 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 37:
-#line 351 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 380 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 38:
-#line 352 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 381 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 39:
-#line 353 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = (SeExprSpecvsp[(2) - (2)].n); }
+#line 382 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = (SeExpr2Specvsp[(2) - (2)].n); }
     break;
 
   case 40:
-#line 354 "src/SeExprEditor/SeExprSpecParser.y"
+#line 383 "src/ui/ExprSpecParser.y"
     {
-        if(SPEC_IS_NUMBER((SeExprSpecvsp[(2) - (2)].n))){
-            SeExprSpecScalarNode* node=(SeExprSpecScalarNode*)(SeExprSpecvsp[(2) - (2)].n);
+        if(SPEC_IS_NUMBER((SeExpr2Specvsp[(2) - (2)].n))){
+            ExprSpecScalarNode* node=(ExprSpecScalarNode*)(SeExpr2Specvsp[(2) - (2)].n);
             node->v*=-1;
-            node->startPos=(SeExprSpecloc).first_column;
-            node->endPos=(SeExprSpecloc).last_column;
-            (SeExprSpecval.n)=(SeExprSpecvsp[(2) - (2)].n);
-        }else (SeExprSpecval.n)=0;
+            node->startPos=(SeExpr2Specloc).first_column;
+            node->endPos=(SeExpr2Specloc).last_column;
+            (SeExpr2Specval.n)=(SeExpr2Specvsp[(2) - (2)].n);
+        }else (SeExpr2Specval.n)=0;
       }
     break;
 
   case 41:
-#line 363 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 392 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 42:
-#line 364 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 393 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 43:
-#line 365 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 394 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 44:
-#line 366 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 395 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 45:
-#line 367 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 396 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 46:
-#line 368 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 397 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 47:
-#line 369 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 398 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 48:
-#line 370 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0; }
+#line 399 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0; }
     break;
 
   case 49:
-#line 371 "src/SeExprEditor/SeExprSpecParser.y"
+#line 400 "src/ui/ExprSpecParser.y"
     {
-        if((SeExprSpecvsp[(3) - (4)].n) && strcmp((SeExprSpecvsp[(1) - (4)].s),"curve")==0){
-            (SeExprSpecval.n)=remember(new SeExprSpecCurveNode((SeExprSpecvsp[(3) - (4)].n)));
-        }else if((SeExprSpecvsp[(3) - (4)].n) && strcmp((SeExprSpecvsp[(1) - (4)].s),"ccurve")==0){
-            (SeExprSpecval.n)=remember(new SeExprSpecCCurveNode((SeExprSpecvsp[(3) - (4)].n)));
-        }else if((SeExprSpecvsp[(3) - (4)].n) && strcmp((SeExprSpecvsp[(1) - (4)].s),"swatch")==0){
-            (SeExprSpecval.n)=remember(new SeExprSpecColorSwatchNode((SeExprSpecvsp[(3) - (4)].n)));
-        }else if((SeExprSpecvsp[(3) - (4)].n) && strcmp((SeExprSpecvsp[(1) - (4)].s),"animCurve")==0){
-            (SeExprSpecval.n)=remember(new SeExprSpecAnimCurveNode((SeExprSpecvsp[(3) - (4)].n)));
-        }else if((SeExprSpecvsp[(3) - (4)].n)){
+        if((SeExpr2Specvsp[(3) - (4)].n) && strcmp((SeExpr2Specvsp[(1) - (4)].s),"curve")==0){
+            (SeExpr2Specval.n)=remember(new ExprSpecCurveNode((SeExpr2Specvsp[(3) - (4)].n)));
+        }else if((SeExpr2Specvsp[(3) - (4)].n) && strcmp((SeExpr2Specvsp[(1) - (4)].s),"ccurve")==0){
+            (SeExpr2Specval.n)=remember(new ExprSpecCCurveNode((SeExpr2Specvsp[(3) - (4)].n)));
+        }else if((SeExpr2Specvsp[(3) - (4)].n) && strcmp((SeExpr2Specvsp[(1) - (4)].s),"swatch")==0){
+            (SeExpr2Specval.n)=remember(new ExprSpecColorSwatchNode((SeExpr2Specvsp[(3) - (4)].n)));
+        }else if((SeExpr2Specvsp[(3) - (4)].n) && strcmp((SeExpr2Specvsp[(1) - (4)].s),"animCurve")==0){
+            (SeExpr2Specval.n)=remember(new ExprSpecAnimCurveNode((SeExpr2Specvsp[(3) - (4)].n)));
+        }else if((SeExpr2Specvsp[(3) - (4)].n) && strcmp((SeExpr2Specvsp[(1) - (4)].s),"deepWater")==0){
+            (SeExpr2Specval.n)=remember(new ExprSpecDeepWaterNode((SeExpr2Specvsp[(3) - (4)].n)));
+        }else if((SeExpr2Specvsp[(3) - (4)].n)){
             // function arguments not parse of curve, ccurve, or animCurve
             // check if there are any string args that need to be made into controls
             // but be sure to return 0 as this parseable
-            if(SeExprSpecListNode* list=dynamic_cast<SeExprSpecListNode*>((SeExprSpecvsp[(3) - (4)].n))){
+            if(ExprSpecListNode* list=dynamic_cast<ExprSpecListNode*>((SeExpr2Specvsp[(3) - (4)].n))){
                 for(size_t i=0;i<list->nodes.size();i++){
-                    if(SeExprSpecStringNode* str=dynamic_cast<SeExprSpecStringNode*>(list->nodes[i])){
+                    if(ExprSpecStringNode* str=dynamic_cast<ExprSpecStringNode*>(list->nodes[i])){
                         specRegisterEditable("<UNKNOWN>",str);
                     }
                 }
             }
-            (SeExprSpecval.n)=0;
-        }else (SeExprSpecval.n)=0;
+            (SeExpr2Specval.n)=0;
+        }else (SeExpr2Specval.n)=0;
       }
     break;
 
   case 50:
-#line 394 "src/SeExprEditor/SeExprSpecParser.y"
-    {(SeExprSpecval.n) = 0; }
+#line 425 "src/ui/ExprSpecParser.y"
+    {(SeExpr2Specval.n) = 0; }
     break;
 
   case 51:
-#line 395 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 426 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 52:
-#line 396 "src/SeExprEditor/SeExprSpecParser.y"
-    {  (SeExprSpecval.n) = 0; }
+#line 427 "src/ui/ExprSpecParser.y"
+    {  (SeExpr2Specval.n) = 0; }
     break;
 
   case 53:
-#line 397 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n)=remember(new SeExprSpecScalarNode((SeExprSpecloc).first_column,(SeExprSpecloc).last_column,(SeExprSpecvsp[(1) - (1)].d))); }
+#line 428 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n)=remember(new ExprSpecScalarNode((SeExpr2Specloc).first_column,(SeExpr2Specloc).last_column,(SeExpr2Specvsp[(1) - (1)].d))); }
     break;
 
   case 54:
-#line 402 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = 0;}
+#line 433 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = 0;}
     break;
 
   case 55:
-#line 403 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = (SeExprSpecvsp[(1) - (1)].n);}
+#line 434 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = (SeExpr2Specvsp[(1) - (1)].n);}
     break;
 
   case 56:
-#line 408 "src/SeExprEditor/SeExprSpecParser.y"
+#line 439 "src/ui/ExprSpecParser.y"
     {
        // ignore first argument unless it is a string (because we parse strings in weird ways)
-       SeExprSpecListNode* list=new SeExprSpecListNode((SeExprSpecloc).last_column,(SeExprSpecloc).last_column);
-       if((SeExprSpecvsp[(1) - (1)].n) && SPEC_IS_STR((SeExprSpecvsp[(1) - (1)].n))){
-           list->add((SeExprSpecvsp[(1) - (1)].n));
+       ExprSpecListNode* list=new ExprSpecListNode((SeExpr2Specloc).last_column,(SeExpr2Specloc).last_column);
+       if((SeExpr2Specvsp[(1) - (1)].n) && SPEC_IS_STR((SeExpr2Specvsp[(1) - (1)].n))){
+           list->add((SeExpr2Specvsp[(1) - (1)].n));
        }
        remember(list);
-       (SeExprSpecval.n)=list;
+       (SeExpr2Specval.n)=list;
    }
     break;
 
   case 57:
-#line 417 "src/SeExprEditor/SeExprSpecParser.y"
+#line 448 "src/ui/ExprSpecParser.y"
     {
 
-      if((SeExprSpecvsp[(1) - (3)].n) && (SeExprSpecvsp[(3) - (3)].n) && ((SPEC_IS_NUMBER((SeExprSpecvsp[(3) - (3)].n)) || SPEC_IS_VECTOR((SeExprSpecvsp[(3) - (3)].n)) || SPEC_IS_STR((SeExprSpecvsp[(3) - (3)].n))))){
-          (SeExprSpecval.n)=(SeExprSpecvsp[(1) - (3)].n);
-          dynamic_cast<SeExprSpecListNode*>((SeExprSpecvsp[(1) - (3)].n))->add((SeExprSpecvsp[(3) - (3)].n));
+      if((SeExpr2Specvsp[(1) - (3)].n) && (SeExpr2Specvsp[(3) - (3)].n) && ((SPEC_IS_NUMBER((SeExpr2Specvsp[(3) - (3)].n)) || SPEC_IS_VECTOR((SeExpr2Specvsp[(3) - (3)].n)) || SPEC_IS_STR((SeExpr2Specvsp[(3) - (3)].n))))){
+          (SeExpr2Specval.n)=(SeExpr2Specvsp[(1) - (3)].n);
+          dynamic_cast<ExprSpecListNode*>((SeExpr2Specvsp[(1) - (3)].n))->add((SeExpr2Specvsp[(3) - (3)].n));
       }else{
-          (SeExprSpecval.n)=0;
+          (SeExpr2Specval.n)=0;
       }
     }
     break;
 
   case 58:
-#line 429 "src/SeExprEditor/SeExprSpecParser.y"
-    { (SeExprSpecval.n) = (SeExprSpecvsp[(1) - (1)].n);}
+#line 460 "src/ui/ExprSpecParser.y"
+    { (SeExpr2Specval.n) = (SeExpr2Specvsp[(1) - (1)].n);}
     break;
 
   case 59:
-#line 430 "src/SeExprEditor/SeExprSpecParser.y"
+#line 461 "src/ui/ExprSpecParser.y"
     {
-        SeExprSpecStringNode* str=new SeExprSpecStringNode((SeExprSpecloc).first_column,(SeExprSpecloc).last_column,(SeExprSpecvsp[(1) - (1)].s));
+        ExprSpecStringNode* str=new ExprSpecStringNode((SeExpr2Specloc).first_column,(SeExpr2Specloc).last_column,(SeExpr2Specvsp[(1) - (1)].s));
         //specRegisterEditable("<UNKNOWN>",str);
         // TODO: move string stuff out
-        (SeExprSpecval.n) = remember(str);
+        (SeExpr2Specval.n) = remember(str);
       }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2189 "y.tab.c"
+#line 2220 "y.tab.c"
       default: break;
     }
-  SeExprSpecYY_SYMBOL_PRINT ("-> $$ =", SeExprSpecr1[SeExprSpecn], &SeExprSpecval, &SeExprSpecloc);
+  SeExprSpecYY_SYMBOL_PRINT ("-> $$ =", SeExpr2Specr1[SeExpr2Specn], &SeExpr2Specval, &SeExpr2Specloc);
 
-  SeExprSpecYYPOPSTACK (SeExprSpeclen);
-  SeExprSpeclen = 0;
-  SeExprSpecYY_STACK_PRINT (SeExprSpecss, SeExprSpecssp);
+  SeExprSpecYYPOPSTACK (SeExpr2Speclen);
+  SeExpr2Speclen = 0;
+  SeExprSpecYY_STACK_PRINT (SeExpr2Specss, SeExpr2Specssp);
 
-  *++SeExprSpecvsp = SeExprSpecval;
-  *++SeExprSpeclsp = SeExprSpecloc;
+  *++SeExpr2Specvsp = SeExpr2Specval;
+  *++SeExpr2Speclsp = SeExpr2Specloc;
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
 
-  SeExprSpecn = SeExprSpecr1[SeExprSpecn];
+  SeExpr2Specn = SeExpr2Specr1[SeExpr2Specn];
 
-  SeExprSpecstate = SeExprSpecpgoto[SeExprSpecn - SeExprSpecYYNTOKENS] + *SeExprSpecssp;
-  if (0 <= SeExprSpecstate && SeExprSpecstate <= SeExprSpecYYLAST && SeExprSpeccheck[SeExprSpecstate] == *SeExprSpecssp)
-    SeExprSpecstate = SeExprSpectable[SeExprSpecstate];
+  SeExpr2Specstate = SeExpr2Specpgoto[SeExpr2Specn - SeExprSpecYYNTOKENS] + *SeExpr2Specssp;
+  if (0 <= SeExpr2Specstate && SeExpr2Specstate <= SeExprSpecYYLAST && SeExpr2Speccheck[SeExpr2Specstate] == *SeExpr2Specssp)
+    SeExpr2Specstate = SeExpr2Spectable[SeExpr2Specstate];
   else
-    SeExprSpecstate = SeExprSpecdefgoto[SeExprSpecn - SeExprSpecYYNTOKENS];
+    SeExpr2Specstate = SeExpr2Specdefgoto[SeExpr2Specn - SeExprSpecYYNTOKENS];
 
-  goto SeExprSpecnewstate;
+  goto SeExpr2Specnewstate;
 
 
 /*------------------------------------.
-| SeExprSpecerrlab -- here on detecting error |
+| SeExpr2Specerrlab -- here on detecting error |
 `------------------------------------*/
-SeExprSpecerrlab:
+SeExpr2Specerrlab:
   /* If not already recovering from an error, report this error.  */
-  if (!SeExprSpecerrstatus)
+  if (!SeExpr2Specerrstatus)
     {
-      ++SeExprSpecnerrs;
+      ++SeExpr2Specnerrs;
 #if ! SeExprSpecYYERROR_VERBOSE
-      SeExprSpecerror (SeExprSpecYY_("syntax error"));
+      SeExpr2Specerror (SeExprSpecYY_("syntax error"));
 #else
       {
-	SeExprSpecYYSIZE_T SeExprSpecsize = SeExprSpecsyntax_error (0, SeExprSpecstate, SeExprSpecchar);
-	if (SeExprSpecmsg_alloc < SeExprSpecsize && SeExprSpecmsg_alloc < SeExprSpecYYSTACK_ALLOC_MAXIMUM)
+	SeExprSpecYYSIZE_T SeExpr2Specsize = SeExpr2Specsyntax_error (0, SeExpr2Specstate, SeExpr2Specchar);
+	if (SeExpr2Specmsg_alloc < SeExpr2Specsize && SeExpr2Specmsg_alloc < SeExprSpecYYSTACK_ALLOC_MAXIMUM)
 	  {
-	    SeExprSpecYYSIZE_T SeExprSpecalloc = 2 * SeExprSpecsize;
-	    if (! (SeExprSpecsize <= SeExprSpecalloc && SeExprSpecalloc <= SeExprSpecYYSTACK_ALLOC_MAXIMUM))
-	      SeExprSpecalloc = SeExprSpecYYSTACK_ALLOC_MAXIMUM;
-	    if (SeExprSpecmsg != SeExprSpecmsgbuf)
-	      SeExprSpecYYSTACK_FREE (SeExprSpecmsg);
-	    SeExprSpecmsg = (char *) SeExprSpecYYSTACK_ALLOC (SeExprSpecalloc);
-	    if (SeExprSpecmsg)
-	      SeExprSpecmsg_alloc = SeExprSpecalloc;
+	    SeExprSpecYYSIZE_T SeExpr2Specalloc = 2 * SeExpr2Specsize;
+	    if (! (SeExpr2Specsize <= SeExpr2Specalloc && SeExpr2Specalloc <= SeExprSpecYYSTACK_ALLOC_MAXIMUM))
+	      SeExpr2Specalloc = SeExprSpecYYSTACK_ALLOC_MAXIMUM;
+	    if (SeExpr2Specmsg != SeExpr2Specmsgbuf)
+	      SeExprSpecYYSTACK_FREE (SeExpr2Specmsg);
+	    SeExpr2Specmsg = (char *) SeExprSpecYYSTACK_ALLOC (SeExpr2Specalloc);
+	    if (SeExpr2Specmsg)
+	      SeExpr2Specmsg_alloc = SeExpr2Specalloc;
 	    else
 	      {
-		SeExprSpecmsg = SeExprSpecmsgbuf;
-		SeExprSpecmsg_alloc = sizeof SeExprSpecmsgbuf;
+		SeExpr2Specmsg = SeExpr2Specmsgbuf;
+		SeExpr2Specmsg_alloc = sizeof SeExpr2Specmsgbuf;
 	      }
 	  }
 
-	if (0 < SeExprSpecsize && SeExprSpecsize <= SeExprSpecmsg_alloc)
+	if (0 < SeExpr2Specsize && SeExpr2Specsize <= SeExpr2Specmsg_alloc)
 	  {
-	    (void) SeExprSpecsyntax_error (SeExprSpecmsg, SeExprSpecstate, SeExprSpecchar);
-	    SeExprSpecerror (SeExprSpecmsg);
+	    (void) SeExpr2Specsyntax_error (SeExpr2Specmsg, SeExpr2Specstate, SeExpr2Specchar);
+	    SeExpr2Specerror (SeExpr2Specmsg);
 	  }
 	else
 	  {
-	    SeExprSpecerror (SeExprSpecYY_("syntax error"));
-	    if (SeExprSpecsize != 0)
-	      goto SeExprSpecexhaustedlab;
+	    SeExpr2Specerror (SeExprSpecYY_("syntax error"));
+	    if (SeExpr2Specsize != 0)
+	      goto SeExpr2Specexhaustedlab;
 	  }
       }
 #endif
     }
 
-  SeExprSpecerror_range[0] = SeExprSpeclloc;
+  SeExpr2Specerror_range[0] = SeExpr2Speclloc;
 
-  if (SeExprSpecerrstatus == 3)
+  if (SeExpr2Specerrstatus == 3)
     {
       /* If just tried and failed to reuse look-ahead token after an
 	 error, discard it.  */
 
-      if (SeExprSpecchar <= SeExprSpecYYEOF)
+      if (SeExpr2Specchar <= SeExprSpecYYEOF)
 	{
 	  /* Return failure if at end of input.  */
-	  if (SeExprSpecchar == SeExprSpecYYEOF)
+	  if (SeExpr2Specchar == SeExprSpecYYEOF)
 	    SeExprSpecYYABORT;
 	}
       else
 	{
-	  SeExprSpecdestruct ("Error: discarding",
-		      SeExprSpectoken, &SeExprSpeclval, &SeExprSpeclloc);
-	  SeExprSpecchar = SeExprSpecYYEMPTY;
+	  SeExpr2Specdestruct ("Error: discarding",
+		      SeExpr2Spectoken, &SeExpr2Speclval, &SeExpr2Speclloc);
+	  SeExpr2Specchar = SeExprSpecYYEMPTY;
 	}
     }
 
   /* Else will try to reuse look-ahead token after shifting the error
      token.  */
-  goto SeExprSpecerrlab1;
+  goto SeExpr2Specerrlab1;
 
 
 /*---------------------------------------------------.
-| SeExprSpecerrorlab -- error raised explicitly by SeExprSpecYYERROR.  |
+| SeExpr2Specerrorlab -- error raised explicitly by SeExprSpecYYERROR.  |
 `---------------------------------------------------*/
-SeExprSpecerrorlab:
+SeExpr2Specerrorlab:
 
   /* Pacify compilers like GCC when the user code never invokes
-     SeExprSpecYYERROR and the label SeExprSpecerrorlab therefore never appears in user
+     SeExprSpecYYERROR and the label SeExpr2Specerrorlab therefore never appears in user
      code.  */
   if (/*CONSTCOND*/ 0)
-     goto SeExprSpecerrorlab;
+     goto SeExpr2Specerrorlab;
 
-  SeExprSpecerror_range[0] = SeExprSpeclsp[1-SeExprSpeclen];
+  SeExpr2Specerror_range[0] = SeExpr2Speclsp[1-SeExpr2Speclen];
   /* Do not reclaim the symbols of the rule which action triggered
      this SeExprSpecYYERROR.  */
-  SeExprSpecYYPOPSTACK (SeExprSpeclen);
-  SeExprSpeclen = 0;
-  SeExprSpecYY_STACK_PRINT (SeExprSpecss, SeExprSpecssp);
-  SeExprSpecstate = *SeExprSpecssp;
-  goto SeExprSpecerrlab1;
+  SeExprSpecYYPOPSTACK (SeExpr2Speclen);
+  SeExpr2Speclen = 0;
+  SeExprSpecYY_STACK_PRINT (SeExpr2Specss, SeExpr2Specssp);
+  SeExpr2Specstate = *SeExpr2Specssp;
+  goto SeExpr2Specerrlab1;
 
 
 /*-------------------------------------------------------------.
-| SeExprSpecerrlab1 -- common code for both syntax error and SeExprSpecYYERROR.  |
+| SeExpr2Specerrlab1 -- common code for both syntax error and SeExprSpecYYERROR.  |
 `-------------------------------------------------------------*/
-SeExprSpecerrlab1:
-  SeExprSpecerrstatus = 3;	/* Each real token shifted decrements this.  */
+SeExpr2Specerrlab1:
+  SeExpr2Specerrstatus = 3;	/* Each real token shifted decrements this.  */
 
   for (;;)
     {
-      SeExprSpecn = SeExprSpecpact[SeExprSpecstate];
-      if (SeExprSpecn != SeExprSpecYYPACT_NINF)
+      SeExpr2Specn = SeExpr2Specpact[SeExpr2Specstate];
+      if (SeExpr2Specn != SeExprSpecYYPACT_NINF)
 	{
-	  SeExprSpecn += SeExprSpecYYTERROR;
-	  if (0 <= SeExprSpecn && SeExprSpecn <= SeExprSpecYYLAST && SeExprSpeccheck[SeExprSpecn] == SeExprSpecYYTERROR)
+	  SeExpr2Specn += SeExprSpecYYTERROR;
+	  if (0 <= SeExpr2Specn && SeExpr2Specn <= SeExprSpecYYLAST && SeExpr2Speccheck[SeExpr2Specn] == SeExprSpecYYTERROR)
 	    {
-	      SeExprSpecn = SeExprSpectable[SeExprSpecn];
-	      if (0 < SeExprSpecn)
+	      SeExpr2Specn = SeExpr2Spectable[SeExpr2Specn];
+	      if (0 < SeExpr2Specn)
 		break;
 	    }
 	}
 
       /* Pop the current state because it cannot handle the error token.  */
-      if (SeExprSpecssp == SeExprSpecss)
+      if (SeExpr2Specssp == SeExpr2Specss)
 	SeExprSpecYYABORT;
 
-      SeExprSpecerror_range[0] = *SeExprSpeclsp;
-      SeExprSpecdestruct ("Error: popping",
-		  SeExprSpecstos[SeExprSpecstate], SeExprSpecvsp, SeExprSpeclsp);
+      SeExpr2Specerror_range[0] = *SeExpr2Speclsp;
+      SeExpr2Specdestruct ("Error: popping",
+		  SeExpr2Specstos[SeExpr2Specstate], SeExpr2Specvsp, SeExpr2Speclsp);
       SeExprSpecYYPOPSTACK (1);
-      SeExprSpecstate = *SeExprSpecssp;
-      SeExprSpecYY_STACK_PRINT (SeExprSpecss, SeExprSpecssp);
+      SeExpr2Specstate = *SeExpr2Specssp;
+      SeExprSpecYY_STACK_PRINT (SeExpr2Specss, SeExpr2Specssp);
     }
 
-  if (SeExprSpecn == SeExprSpecYYFINAL)
+  if (SeExpr2Specn == SeExprSpecYYFINAL)
     SeExprSpecYYACCEPT;
 
-  *++SeExprSpecvsp = SeExprSpeclval;
+  *++SeExpr2Specvsp = SeExpr2Speclval;
 
-  SeExprSpecerror_range[1] = SeExprSpeclloc;
+  SeExpr2Specerror_range[1] = SeExpr2Speclloc;
   /* Using SeExprSpecYYLLOC is tempting, but would change the location of
      the look-ahead.  SeExprSpecYYLOC is available though.  */
-  SeExprSpecYYLLOC_DEFAULT (SeExprSpecloc, (SeExprSpecerror_range - 1), 2);
-  *++SeExprSpeclsp = SeExprSpecloc;
+  SeExprSpecYYLLOC_DEFAULT (SeExpr2Specloc, (SeExpr2Specerror_range - 1), 2);
+  *++SeExpr2Speclsp = SeExpr2Specloc;
 
   /* Shift the error token.  */
-  SeExprSpecYY_SYMBOL_PRINT ("Shifting", SeExprSpecstos[SeExprSpecn], SeExprSpecvsp, SeExprSpeclsp);
+  SeExprSpecYY_SYMBOL_PRINT ("Shifting", SeExpr2Specstos[SeExpr2Specn], SeExpr2Specvsp, SeExpr2Speclsp);
 
-  SeExprSpecstate = SeExprSpecn;
-  goto SeExprSpecnewstate;
+  SeExpr2Specstate = SeExpr2Specn;
+  goto SeExpr2Specnewstate;
 
 
 /*-------------------------------------.
-| SeExprSpecacceptlab -- SeExprSpecYYACCEPT comes here.  |
+| SeExpr2Specacceptlab -- SeExprSpecYYACCEPT comes here.  |
 `-------------------------------------*/
-SeExprSpecacceptlab:
-  SeExprSpecresult = 0;
-  goto SeExprSpecreturn;
+SeExpr2Specacceptlab:
+  SeExpr2Specresult = 0;
+  goto SeExpr2Specreturn;
 
 /*-----------------------------------.
-| SeExprSpecabortlab -- SeExprSpecYYABORT comes here.  |
+| SeExpr2Specabortlab -- SeExprSpecYYABORT comes here.  |
 `-----------------------------------*/
-SeExprSpecabortlab:
-  SeExprSpecresult = 1;
-  goto SeExprSpecreturn;
+SeExpr2Specabortlab:
+  SeExpr2Specresult = 1;
+  goto SeExpr2Specreturn;
 
-#ifndef SeExprSpecoverflow
+#ifndef SeExpr2Specoverflow
 /*-------------------------------------------------.
-| SeExprSpecexhaustedlab -- memory exhaustion comes here.  |
+| SeExpr2Specexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
-SeExprSpecexhaustedlab:
-  SeExprSpecerror (SeExprSpecYY_("memory exhausted"));
-  SeExprSpecresult = 2;
+SeExpr2Specexhaustedlab:
+  SeExpr2Specerror (SeExprSpecYY_("memory exhausted"));
+  SeExpr2Specresult = 2;
   /* Fall through.  */
 #endif
 
-SeExprSpecreturn:
-  if (SeExprSpecchar != SeExprSpecYYEOF && SeExprSpecchar != SeExprSpecYYEMPTY)
-     SeExprSpecdestruct ("Cleanup: discarding lookahead",
-		 SeExprSpectoken, &SeExprSpeclval, &SeExprSpeclloc);
+SeExpr2Specreturn:
+  if (SeExpr2Specchar != SeExprSpecYYEOF && SeExpr2Specchar != SeExprSpecYYEMPTY)
+     SeExpr2Specdestruct ("Cleanup: discarding lookahead",
+		 SeExpr2Spectoken, &SeExpr2Speclval, &SeExpr2Speclloc);
   /* Do not reclaim the symbols of the rule which action triggered
      this SeExprSpecYYABORT or SeExprSpecYYACCEPT.  */
-  SeExprSpecYYPOPSTACK (SeExprSpeclen);
-  SeExprSpecYY_STACK_PRINT (SeExprSpecss, SeExprSpecssp);
-  while (SeExprSpecssp != SeExprSpecss)
+  SeExprSpecYYPOPSTACK (SeExpr2Speclen);
+  SeExprSpecYY_STACK_PRINT (SeExpr2Specss, SeExpr2Specssp);
+  while (SeExpr2Specssp != SeExpr2Specss)
     {
-      SeExprSpecdestruct ("Cleanup: popping",
-		  SeExprSpecstos[*SeExprSpecssp], SeExprSpecvsp, SeExprSpeclsp);
+      SeExpr2Specdestruct ("Cleanup: popping",
+		  SeExpr2Specstos[*SeExpr2Specssp], SeExpr2Specvsp, SeExpr2Speclsp);
       SeExprSpecYYPOPSTACK (1);
     }
-#ifndef SeExprSpecoverflow
-  if (SeExprSpecss != SeExprSpecssa)
-    SeExprSpecYYSTACK_FREE (SeExprSpecss);
+#ifndef SeExpr2Specoverflow
+  if (SeExpr2Specss != SeExpr2Specssa)
+    SeExprSpecYYSTACK_FREE (SeExpr2Specss);
 #endif
 #if SeExprSpecYYERROR_VERBOSE
-  if (SeExprSpecmsg != SeExprSpecmsgbuf)
-    SeExprSpecYYSTACK_FREE (SeExprSpecmsg);
+  if (SeExpr2Specmsg != SeExpr2Specmsgbuf)
+    SeExprSpecYYSTACK_FREE (SeExpr2Specmsg);
 #endif
   /* Make sure SeExprSpecYYID is used.  */
-  return SeExprSpecYYID (SeExprSpecresult);
+  return SeExprSpecYYID (SeExpr2Specresult);
 }
 
 
-#line 438 "src/SeExprEditor/SeExprSpecParser.y"
+#line 469 "src/ui/ExprSpecParser.y"
 
 
-/* SeExprSpecerror - Report an error.  This is called by the parser.
+/* SeExpr2Specerror - Report an error.  This is called by the parser.
 (Note: the "msg" param is useless as it is usually just "sparse error".
 so it's ignored.)
 */
-static void SeExprSpecerror(const char* /*msg*/)
+static void SeExpr2Specerror(const char* /*msg*/)
 {
     // find start of line containing error
-    int pos = SeExprSpecpos(), lineno = 1, start = 0, end = strlen(ParseStr);
+    int pos = SeExpr2Specpos(), lineno = 1, start = 0, end = strlen(ParseStr);
     bool multiline = 0;
     for (int i = start; i < pos; i++)
 	if (ParseStr[i] == '\n') { start = i + 1; lineno++; multiline=1; }
@@ -2424,15 +2455,15 @@ static void SeExprSpecerror(const char* /*msg*/)
     for (int i = end; i > pos; i--)
 	if (ParseStr[i] == '\n') { end = i - 1; multiline=1; }
 
-    ParseError = SeExprSpectext[0] ? "Syntax error" : "Unexpected end of expression";
+    ParseError = SeExpr2Spectext[0] ? "Syntax error" : "Unexpected end of expression";
     if (multiline) {
 	char buff[30];
 	snprintf(buff, 30, " at line %d", lineno);
 	ParseError += buff;
     }
-    if (SeExprSpectext[0]) {
+    if (SeExpr2Spectext[0]) {
 	ParseError += " near '";
-	ParseError += SeExprSpectext;
+	ParseError += SeExpr2Spectext;
     }
     ParseError += "':\n    ";
 
@@ -2453,15 +2484,15 @@ extern void specResetCounters(std::vector<std::pair<int,int> >& comments);
    along.
  */
 
-static SeExprInternal::Mutex mutex;
+static SeExprInternal2::Mutex mutex;
 
 /// Main entry point to parser
-bool SeExprSpecParse(std::vector<SeExprEdEditable*>& outputEditables,
+bool ExprSpecParse(std::vector<Editable*>& outputEditables,
     std::vector<std::string>& outputVariables,
     std::vector<std::pair<int,int> >& comments,
     const char* str)
 {
-    SeExprInternal::AutoMutex locker(mutex);
+    SeExprInternal2::AutoMutex locker(mutex);
 
     /// Make inputs/outputs accessible to parser actions
     editables=&outputEditables;
@@ -2470,11 +2501,11 @@ bool SeExprSpecParse(std::vector<SeExprEdEditable*>& outputEditables,
 
     // setup and startup parser
     specResetCounters(comments); // reset lineNumber and columnNumber in scanner
-    SeExprSpec_buffer_state* buffer = SeExprSpec_scan_string(str); // setup lexer
+    SeExpr2Spec_buffer_state* buffer = SeExpr2Spec_scan_string(str); // setup lexer
     ParseResult = 0;
-    int resultCode = SeExprSpecparse(); // parser (don't care if it is a parse error)
+    int resultCode = SeExpr2Specparse(); // parser (don't care if it is a parse error)
     UNUSED(resultCode);
-    SeExprSpec_delete_buffer(buffer);
+    SeExpr2Spec_delete_buffer(buffer);
 
     // delete temporary data -- specs(mini parse tree) and tokens(strings)!
     for(size_t i=0;i<specNodes.size();i++) delete specNodes[i];
