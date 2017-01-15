@@ -7,6 +7,8 @@ import excons
 from excons.tools import gl
 from excons.tools import dl
 from excons.tools import threads
+from excons.tools import python
+from excons.tools import boost
 
 
 excons.SetArgument("use-c++11", 1)
@@ -99,23 +101,38 @@ if generateParser:
 libsrcs = glob.glob("src/SeExpr/*.cpp") + Glob("src/SeExpr/generated/*.cpp")
 libsrcs.remove("src/SeExpr/ExprLLVMCodeGeneration.cpp")
 
+# Python module
+python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())
+
 # Declare targets
 prjs = [
    {  "name": "SeExpr2_s",
       "type": "staticlib",
+      "alias": "staticlib",
       "defs": libdefs,
       "incdirs": libincs,
       "srcs": libsrcs
+   },
+   {  "name": "core",
+      "type": "dynamicmodule",
+      "alias": "python",
+      "prefix": python_prefix,
+      "ext": python.ModuleExtension(),
+      "incdirs": ["src/SeExpr/parser"],
+      "srcs": glob.glob("src/py/*.cpp") + glob.glob("src/SeExpr/parser/*.cpp"),
+      "install": {python_prefix: ["src/py/__init__.py", "src/py/utils.py"]},
+      "custom": [boost.Require(libs=["python"]), python.SoftRequire, dl.Require, threads.Require]
    }
 ]
 
 if sys.platform != "win32":
-    prjs.append({"name": "SeExpr2",
-                 "type": "sharedlib",
-                 "defs": libdefs,
-                 "incdirs": libincs,
-                 "srcs": libsrcs,
-                 "custom": [dl.Require, threads.Require]})
+   prjs.append({"name": "SeExpr2",
+                "type": "sharedlib",
+                "alias": "sharedlib",
+                "defs": libdefs,
+                "incdirs": libincs,
+                "srcs": libsrcs,
+                "custom": [dl.Require, threads.Require]})
 
 if buildEditor:
    if generateParser:
@@ -132,7 +149,7 @@ if buildEditor:
                   "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
 
    srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/ui/*.cpp"))
-   srcs += glob.glob("src/ui/generated/*.cpp")
+   srcs += Glob("src/ui/generated/*.cpp")
 
    qtmochdrs = ["src/ui/ExprBrowser.h",
                 "src/ui/ExprColorCurve.h",
