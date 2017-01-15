@@ -15,6 +15,10 @@ excons.SetArgument("use-c++11", 1)
 # Check if editor is required
 buildEditor = ("editor" in COMMAND_LINE_TARGETS or "SeExpr2Editor" in COMMAND_LINE_TARGETS)
 
+# Check if we can generate parser source
+generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
+
+
 def GenerateConfig(target, source, env):
    with open(str(source[0]), "r") as src:
       with open(str(target[0]), "w") as dst:
@@ -65,19 +69,35 @@ env["BUILDERS"]["GenerateMOC"] = Builder(action=Action(GenerateMOC, "Generating 
 # Library
 libdefs = [] # ["__STDC_LIMIT_MACROS"]
 if not sys.platform == "win32":
-   env.Append(CPPFLAGS=" -msse4.1 -Wno-unused-parameter")
+   env.Append(CPPFLAGS=" -msse4.1 -Wextra -Wno-unused-parameter")
    if sys.platform == "darwin":
-      #env.Append(CPPFLAGS=" -Wno-unneeded-internal-declaration")
-      env.Append(CCFLAGS=" -Wno-date-time")
+      env.Append(CPPFLAGS=" -Wno-date-time")
    else:
       env.Append(CCFLAGS=" -rdynamic")
 else:
    libdefs.append("SEEXPR_WIN32")
 libincs = ["src/SeExpr", "src/SeExpr/generated"]
-libsrcs = glob.glob("src/SeExpr/*.cpp") + glob.glob("src/SeExpr/generated/*.cpp")
-libsrcs.remove("src/SeExpr/ExprLLVMCodeGeneration.cpp")
 
 env.GenerateConfig("src/SeExpr/ExprConfig.h.in")
+
+if generateParser:
+   env.Command("ExprParserLexIn.cpp", "src/SeExpr/ExprParserLex.l",
+               "flex -o$TARGET $SOURCE")
+   rv = env.Command("src/SeExpr/generated/ExprParserLex.cpp", "ExprParserLexIn.cpp",
+                    "sed -e \"s/SeExprwrap(n)/SeExprwrap()/g\" -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+   env.NoClean(rv)
+   env.Command(["y.tab.c", "y.tab.h"], "src/SeExpr/ExprParser.y",
+               "bison --defines --verbose --fixed-output-files -p SeExpr2 $SOURCE")
+   rv = env.Command("src/SeExpr/generated/ExprParser.tab.h", "y.tab.h",
+                    "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+   env.NoClean(rv)
+   rv = env.Command("src/SeExpr/generated/ExprParser.cpp", "y.tab.c",
+                    "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+   env.NoClean(rv)
+
+# collect library sources after potential parser generation so that Glob get the generated files
+libsrcs = glob.glob("src/SeExpr/*.cpp") + Glob("src/SeExpr/generated/*.cpp")
+libsrcs.remove("src/SeExpr/ExprLLVMCodeGeneration.cpp")
 
 # Declare targets
 prjs = [
@@ -98,6 +118,19 @@ if sys.platform != "win32":
                  "custom": [dl.Require, threads.Require]})
 
 if buildEditor:
+   if generateParser:
+      # SeExprSpec
+      env.Command("ExprSpecParserLexIn.cpp", "src/ui/ExprSpecParserLex.l",
+                  "flex -o$TARGET $SOURCE")
+      env.Command("src/ui/generated/ExprSpecParserLex.cpp", "ExprSpecParserLexIn.cpp",
+                  "sed -e \"s/SeExprSpecwrap(n)/SeExprSpecwrap()/g\" -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      env.Command(["y.tab.c", "y.tab.h"], "src/ui/ExprSpecParser.y",
+                  "bison --defines --verbose --fixed-output-files -p SeExpr2 $SOURCE")
+      env.Command("src/ui/generated/ExprSpecParser.tab.h", "y.tab.h",
+                  "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      env.Command("src/ui/generated/ExprSpecParser.cpp", "y.tab.c",
+                  "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+
    srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/ui/*.cpp"))
    srcs += glob.glob("src/ui/generated/*.cpp")
 

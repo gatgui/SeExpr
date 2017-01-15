@@ -13,3 +13,5 @@ excons.cache
 *.dblite
 *_moc.cpp
 src/SeExpr/ExprConfig.h
+/y.*
+/ExprParserLexIn.cpp
