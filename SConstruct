@@ -76,7 +76,7 @@ libdefs = [] # ["__STDC_LIMIT_MACROS"]
 if not sys.platform == "win32":
    env.Append(CPPFLAGS=" -msse4.1 -Wextra -Wno-unused-parameter")
    if sys.platform == "darwin":
-      env.Append(CPPFLAGS=" -Wno-date-time")
+      env.Append(CPPFLAGS=" -Wno-date-time -Wno-deprecated-declarations -Wno-unneeded-internal-declaration")
    else:
       env.Append(CCFLAGS=" -rdynamic")
 else:
