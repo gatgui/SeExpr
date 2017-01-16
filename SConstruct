@@ -15,7 +15,10 @@ excons.SetArgument("use-c++11", 1)
 
 
 # Check if editor is required
-buildEditor = ("editor" in COMMAND_LINE_TARGETS or "SeExpr2Editor" in COMMAND_LINE_TARGETS)
+buildEditor = ("editor" in COMMAND_LINE_TARGETS)
+
+# Check if python is required
+buildPython = ("python" in COMMAND_LINE_TARGETS)
 
 # Check if we can generate parser source
 generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
@@ -111,16 +114,6 @@ prjs = [
       "defs": libdefs,
       "incdirs": libincs,
       "srcs": libsrcs
-   },
-   {  "name": "core",
-      "type": "dynamicmodule",
-      "alias": "python",
-      "prefix": python_prefix,
-      "ext": python.ModuleExtension(),
-      "incdirs": ["src/SeExpr/parser"],
-      "srcs": glob.glob("src/py/*.cpp") + glob.glob("src/SeExpr/parser/*.cpp"),
-      "install": {python_prefix: ["src/py/__init__.py", "src/py/utils.py"]},
-      "custom": [boost.Require(libs=["python"]), python.SoftRequire, dl.Require, threads.Require]
    }
 ]
 
@@ -132,6 +125,17 @@ if sys.platform != "win32":
                 "incdirs": libincs,
                 "srcs": libsrcs,
                 "custom": [dl.Require, threads.Require]})
+
+if buildPython:
+   prjs.append({"name": "core",
+                "type": "dynamicmodule",
+                "alias": "python",
+                "prefix": python_prefix,
+                "ext": python.ModuleExtension(),
+                "incdirs": ["src/SeExpr/parser"],
+                "srcs": glob.glob("src/py/*.cpp") + glob.glob("src/SeExpr/parser/*.cpp"),
+                "install": {python_prefix: ["src/py/__init__.py", "src/py/utils.py"]},
+                "custom": [boost.Require(libs=["python"]), python.SoftRequire, dl.Require, threads.Require]})
 
 if buildEditor:
    if generateParser:
