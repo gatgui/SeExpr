@@ -14,14 +14,20 @@ from excons.tools import boost
 excons.SetArgument("use-c++11", 1)
 
 
-# Check if editor is required
+# Check if editor should be built
 buildEditor = ("editor" in COMMAND_LINE_TARGETS)
 
-# Check if python is required
+# Check if python module should be built
 buildPython = ("python" in COMMAND_LINE_TARGETS)
 
-# Check if we can generate parser source
-generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
+# Check if demos should be built
+buildDemo = ("demos" in COMMAND_LINE_TARGETS)
+
+# Check if parser sources should be generated
+generateParser = (excons.GetArgument("generate-parser", 1, int) != 0)
+if generateParser:
+   # Check if we can actually generate parser sources
+   generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
 
 
 def GenerateConfig(target, source, env):
@@ -114,7 +120,7 @@ prjs = [
       "defs": libdefs,
       "incdirs": libincs,
       "srcs": libsrcs
-   }
+   },
 ]
 
 if sys.platform != "win32":
@@ -125,6 +131,13 @@ if sys.platform != "win32":
                 "incdirs": libincs,
                 "srcs": libsrcs,
                 "custom": [dl.Require, threads.Require]})
+
+if buildDemo:
+   prjs.append({"name": "demos",
+                "type": "testprograms",
+                "defs": libdefs,
+                "staticlibs": ["SeExpr2_s"],
+                "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"]})
 
 if buildPython:
    prjs.append({"name": "core",
