@@ -87,11 +87,11 @@ std::set<SeExpr2::GlobalVal *> tmpOperandVars;
 namespace SeExpr2 {
 
 DExpression::DExpression(const std::string &varName,
-                         Expressions &context,
+                         Expressions &_context,
                          const std::string &e,
                          const ExprType &type,
                          EvaluationStrategy be)
-    : Expression(e, type, be), context(context) {
+    : Expression(e, type, be), context(_context) {
     if (type.isFP())
         val = new GlobalFP(varName, type.dim());
     else if (type.isString())
