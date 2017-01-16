@@ -19,7 +19,9 @@
 #include "VarBlock.h"
 #include <iostream>
 #include <cstdio>
+#ifndef SEEXPR_WIN32
 #include <dlfcn.h>
+#endif
 
 // TODO: optimize to write to location directly on a CondNode
 namespace SeExpr2 {
@@ -48,10 +50,12 @@ void Interpreter::eval(VarBlock* block, bool debug) {
 void Interpreter::print(int pc) const {
     std::cerr << "---- ops     ----------------------" << std::endl;
     for (size_t i = 0; i < ops.size(); i++) {
+#ifndef SEEXPR_WIN32
         Dl_info info;
         const char* name = "";
         if (dladdr((void*)ops[i].first, &info)) name = info.dli_sname;
         fprintf(stderr, "%s %s %p (", pc == (int)i ? "-->" : "   ", name, ops[i].first);
+#endif
         int nextGuy = (i == ops.size() - 1 ? opData.size() : ops[i + 1].second);
         for (int k = ops[i].second; k < nextGuy; k++) {
             fprintf(stderr, " %d", opData[k]);
