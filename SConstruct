@@ -98,8 +98,7 @@ if generateParser:
    env.NoClean(rv)
 
 # collect library sources after potential parser generation so that Glob get the generated files
-libsrcs = glob.glob("src/SeExpr/*.cpp") + Glob("src/SeExpr/generated/*.cpp")
-libsrcs.remove("src/SeExpr/ExprLLVMCodeGeneration.cpp")
+libsrcs = filter(lambda x: os.path.basename(x) != "ExprLLVMCodeGeneration.cpp", glob.glob("src/SeExpr/*.cpp")) + Glob("src/SeExpr/generated/*.cpp")
 
 # Python module
 python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())

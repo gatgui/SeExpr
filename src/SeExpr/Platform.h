@@ -62,7 +62,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-#include <sys/time.h>
 
 // missing functions on Windows
 #ifdef WINDOWS
@@ -81,9 +80,14 @@ typedef unsigned int uint32_t;
 #ifndef M_PI
 #define M_PI (3.141592653589793238)
 #endif
+#ifndef UINT32_MAX
 #define UINT32_MAX (0xffffffff)
+#endif
+#ifndef UINT32_MIN
 #define UINT32_MIN (0)
+#endif
 #else
+#include <sys/time.h>
 typedef off_t FilePos;
 #endif
 
@@ -130,7 +134,7 @@ class Timer {
 #else  // Windows
 class Timer {
   public:
-    Timer() : started(false) {}
+    Timer() {}
 
     void start() { std::cerr << "timer not implemented on Windows" << std::endl; }
     long elapsedTime() { return 0; }
