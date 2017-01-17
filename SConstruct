@@ -99,17 +99,18 @@ env.GenerateConfig("src/SeExpr/ExprConfig.h.in")
 if generateParser:
    env.Command("ExprParserLexIn.cpp", "src/SeExpr/ExprParserLex.l",
                "flex -o$TARGET $SOURCE")
-   rv = env.Command("src/SeExpr/generated/ExprParserLex.cpp", "ExprParserLexIn.cpp",
-                    "sed -e \"s/SeExpr2wrap(n)/SeExpr2wrap()/g\" -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
-   env.NoClean(rv)
+   env.Command("src/SeExpr/generated/ExprParserLex.cpp", "ExprParserLexIn.cpp",
+               "sed -e \"s/SeExpr2wrap(n)/SeExpr2wrap()/g\" -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
    env.Command(["y.tab.c", "y.tab.h"], "src/SeExpr/ExprParser.y",
                "bison --defines --verbose --fixed-output-files -p SeExpr2 $SOURCE")
-   rv = env.Command("src/SeExpr/generated/ExprParser.tab.h", "y.tab.h",
-                    "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
-   env.NoClean(rv)
-   rv = env.Command("src/SeExpr/generated/ExprParser.cpp", "y.tab.c",
-                    "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
-   env.NoClean(rv)
+   env.Command("src/SeExpr/generated/ExprParser.tab.h", "y.tab.h",
+               "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+   env.Command("src/SeExpr/generated/ExprParser.cpp", "y.tab.c",
+               "sed -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+else:
+   env.Command("src/SeExpr/generated/ExprParserLex.cpp", "windows7/SeExpr/generated/ExprParserLex.cpp", Copy("$TARGET", "$SOURCE"))
+   env.Command("src/SeExpr/generated/ExprParser.tab.h", "windows7/SeExpr/generated/ExprParser.tab.h", Copy("$TARGET", "$SOURCE"))
+   env.Command("src/SeExpr/generated/ExprParser.cpp", "windows7/SeExpr/generated/ExprParser.cpp", Copy("$TARGET", "$SOURCE"))
 
 # collect library sources after potential parser generation so that Glob get the generated files
 libsrcs = filter(lambda x: os.path.basename(x) != "ExprLLVMCodeGeneration.cpp", glob.glob("src/SeExpr/*.cpp")) + Glob("src/SeExpr/generated/*.cpp")
@@ -142,7 +143,8 @@ if buildDemo:
                 "type": "testprograms",
                 "defs": libdefs,
                 "staticlibs": ["SeExpr2_s"],
-                "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"]})
+                "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"],
+                "custom": [dl.Require]})
 
 if buildPython:
    prjs.append({"name": "core",
@@ -159,17 +161,18 @@ if buildEditor:
    if generateParser:
       env.Command("ExprSpecParserLexIn.cpp", "src/ui/ExprSpecParserLex.l",
                   "flex -o$TARGET $SOURCE")
-      rv = env.Command("src/ui/generated/ExprSpecParserLex.cpp", "ExprSpecParserLexIn.cpp",
-                       "sed -e \"s/SeExpr2Specwrap(n)/SeExpr2Specwrap()/g\" -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
-      env.NoClean(rv)
+      env.Command("src/ui/generated/ExprSpecParserLex.cpp", "ExprSpecParserLexIn.cpp",
+                  "sed -e \"s/ExprSpecwrap(n)/ExprSpecwrap()/g\" -e \"s/yy/ExprSpec/g\" -e \"s/YY/ExprSpecYY/g\" $SOURCE > $TARGET")
       env.Command(["y.tab.c", "y.tab.h"], "src/ui/ExprSpecParser.y",
-                  "bison --defines --verbose --fixed-output-files -p SeExpr2Spec $SOURCE")
-      rv = env.Command("src/ui/generated/ExprSpecParser.tab.h", "y.tab.h",
-                       "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
-      env.NoClean(rv)
-      rv = env.Command("src/ui/generated/ExprSpecParser.cpp", "y.tab.c",
-                       "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
-      env.NoClean(rv)
+                  "bison --defines --verbose --fixed-output-files -p ExprSpec $SOURCE")
+      env.Command("src/ui/generated/ExprSpecParser.tab.h", "y.tab.h",
+                  "sed -e \"s/yy/ExprSpec/g\" -e \"s/YY/ExprSpecYY/g\" $SOURCE > $TARGET")
+      env.Command("src/ui/generated/ExprSpecParser.cpp", "y.tab.c",
+                  "sed -e \"s/yy/ExprSpec/g\" -e \"s/YY/ExprSpecYY/g\" $SOURCE > $TARGET")
+   else:
+      env.Command("src/ui/generated/ExprSpecParserLex.cpp", "windows7/ui/generated/ExprSpecParserLex.cpp", Copy("$TARGET", "$SOURCE"))
+      env.Command("src/ui/generated/ExprSpecParser.tab.h", "windows7/ui/generated/ExprSpecParser.tab.h", Copy("$TARGET", "$SOURCE"))
+      env.Command("src/ui/generated/ExprSpecParser.cpp", "windows7/ui/generated/ExprSpecParser.cpp", Copy("$TARGET", "$SOURCE"))
 
    srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/ui/*.cpp"))
    srcs += Glob("src/ui/generated/*.cpp")
