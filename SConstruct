@@ -120,7 +120,7 @@ python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())
 
 # Declare targets
 prjs = [
-   {  "name": "SeExpr2_s",
+   {  "name": "SeExpr2",
       "type": "staticlib",
       "alias": "staticlib",
       "defs": libdefs,
@@ -129,20 +129,11 @@ prjs = [
    },
 ]
 
-if sys.platform != "win32":
-   prjs.append({"name": "SeExpr2",
-                "type": "sharedlib",
-                "alias": "sharedlib",
-                "defs": libdefs,
-                "incdirs": libincs,
-                "srcs": libsrcs,
-                "custom": [dl.Require, threads.Require]})
-
 if buildDemo:
    prjs.append({"name": "demos",
                 "type": "testprograms",
                 "defs": libdefs,
-                "staticlibs": ["SeExpr2_s"],
+                "staticlibs": ["SeExpr2"],
                 "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"],
                 "custom": [dl.Require]})
 
@@ -198,12 +189,10 @@ if buildEditor:
                 "defs": ["SeExprEditor_BUILT_AS_STATIC"],
                 "incdirs": ["src/SeExpr", "src/ui", "src/ui/generated"],
                 "srcs": qtmocsrcs + srcs,
-                "libs": ["SeExpr2_s"],
+                "libs": ["SeExpr2"],
                 "custom": [gl.Require, RequireQt, dl.Require, threads.Require]})
 
 targets = excons.DeclareTargets(env, prjs)
 
 insthdrs = env.Install(excons.OutputBaseDirectory() + "/include/SeExpr2", Glob("src/SeExpr/*.h"))
-env.Depends(targets["SeExpr2_s"], insthdrs)
-if "SeExpr2" in targets:
-   env.Depends(targets["SeExpr2"], insthdrs)
+env.Depends(targets["SeExpr2"], insthdrs)
