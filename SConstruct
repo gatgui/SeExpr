@@ -24,8 +24,8 @@ buildPython = ("python" in COMMAND_LINE_TARGETS)
 buildDemo = ("demos" in COMMAND_LINE_TARGETS)
 
 # Check if parser sources should be generated
-generateParser = (excons.GetArgument("generate-parser", 1, int) != 0)
-if generateParser:
+generateParser = False
+if int(ARGUMENTS.get("generate-parser", "0")) != 0:
    # Check if we can actually generate parser sources
    generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
 
