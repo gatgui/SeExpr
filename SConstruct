@@ -86,7 +86,12 @@ if not sys.platform == "win32":
    else:
       env.Append(CCFLAGS=" -rdynamic")
 else:
-   libdefs.append("SEEXPR_WIN32")
+   libdefs.extend(["SEEXPR_WIN32", "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE", "NOMINMAX"])
+   # disable:
+   # - 4267: size_t to int warnings
+   # - 4244: double to float, __int64 to int warnings
+   # - 4005: macro redifinitions
+   env.Append(CPPFLAGS=" -wd4267 -wd4244 -wd4005")
 libincs = ["src/SeExpr", "src/SeExpr/generated"]
 
 env.GenerateConfig("src/SeExpr/ExprConfig.h.in")
@@ -95,7 +100,7 @@ if generateParser:
    env.Command("ExprParserLexIn.cpp", "src/SeExpr/ExprParserLex.l",
                "flex -o$TARGET $SOURCE")
    rv = env.Command("src/SeExpr/generated/ExprParserLex.cpp", "ExprParserLexIn.cpp",
-                    "sed -e \"s/SeExprwrap(n)/SeExprwrap()/g\" -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
+                    "sed -e \"s/SeExpr2wrap(n)/SeExpr2wrap()/g\" -e \"s/yy/SeExpr2/g\" -e \"s/YY/SeExprYY/g\" $SOURCE > $TARGET")
    env.NoClean(rv)
    env.Command(["y.tab.c", "y.tab.h"], "src/SeExpr/ExprParser.y",
                "bison --defines --verbose --fixed-output-files -p SeExpr2 $SOURCE")
@@ -152,17 +157,19 @@ if buildPython:
 
 if buildEditor:
    if generateParser:
-      # SeExprSpec
       env.Command("ExprSpecParserLexIn.cpp", "src/ui/ExprSpecParserLex.l",
                   "flex -o$TARGET $SOURCE")
-      env.Command("src/ui/generated/ExprSpecParserLex.cpp", "ExprSpecParserLexIn.cpp",
-                  "sed -e \"s/SeExprSpecwrap(n)/SeExprSpecwrap()/g\" -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      rv = env.Command("src/ui/generated/ExprSpecParserLex.cpp", "ExprSpecParserLexIn.cpp",
+                       "sed -e \"s/SeExpr2Specwrap(n)/SeExpr2Specwrap()/g\" -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      env.NoClean(rv)
       env.Command(["y.tab.c", "y.tab.h"], "src/ui/ExprSpecParser.y",
-                  "bison --defines --verbose --fixed-output-files -p SeExpr2 $SOURCE")
-      env.Command("src/ui/generated/ExprSpecParser.tab.h", "y.tab.h",
-                  "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
-      env.Command("src/ui/generated/ExprSpecParser.cpp", "y.tab.c",
-                  "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+                  "bison --defines --verbose --fixed-output-files -p SeExpr2Spec $SOURCE")
+      rv = env.Command("src/ui/generated/ExprSpecParser.tab.h", "y.tab.h",
+                       "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      env.NoClean(rv)
+      rv = env.Command("src/ui/generated/ExprSpecParser.cpp", "y.tab.c",
+                       "sed -e \"s/yy/SeExprSpec/g\" -e \"s/YY/SeExprSpecYY/g\" $SOURCE > $TARGET")
+      env.NoClean(rv)
 
    srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/ui/*.cpp"))
    srcs += Glob("src/ui/generated/*.cpp")

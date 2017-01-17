@@ -18,6 +18,7 @@
 #ifndef MAKEDEPEND
 #include <math.h>
 #include <sstream>
+#include <algorithm>
 #endif
 #include "Vec.h"
 #include "ExprType.h"
@@ -540,7 +541,7 @@ ExprType ExprFuncNode::prep(bool wantScalar, ExprVarEnvBuilder& envBuilder) {
         if (!_func) _func = ExprFunc::lookup(_name);
 
         // check that function exists and that the function has the right number of arguments
-        if (checkCondition(_func, "Function " + _name + " has no definition", error) &&
+        if (checkCondition(_func != NULL, "Function " + _name + " has no definition", error) &&
             checkCondition(nargs >= _func->minArgs(), "Too few args for function" + _name, error) &&
             checkCondition(
                 nargs <= _func->maxArgs() || _func->maxArgs() < 0, "Too many args for function " + _name, error)) {

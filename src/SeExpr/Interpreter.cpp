@@ -19,6 +19,7 @@
 #include "VarBlock.h"
 #include <iostream>
 #include <cstdio>
+#include <algorithm>
 #ifndef SEEXPR_WIN32
 #include <dlfcn.h>
 #endif
