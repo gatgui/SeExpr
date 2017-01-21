@@ -10,6 +10,22 @@ from excons.tools import threads
 from excons.tools import python
 from excons.tools import boost
 
+Help("""USAGE
+  scons [OPTIONS] TARGET*
+
+AVAILABLE TARGETS
+  lib    (default)
+  python
+  editor (no supported yet)
+  demos
+
+SEEXPR OPTIONS
+  generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
+  with-qt=<str>       : Qt prefix (use 'include' and 'lib' subfolders)
+  with-qt-inc=<str>   : Qt includes path (optional if with-qt= is set)
+  with-qt-lib=<str>   : Qt libraries path (optional if with-qt= is set)
+
+""" + excons.GetOptionsString())
 
 excons.SetArgument("use-c++11", 1)
 
@@ -122,7 +138,7 @@ python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())
 prjs = [
    {  "name": "SeExpr2",
       "type": "staticlib",
-      "alias": "staticlib",
+      "alias": "lib",
       "defs": libdefs,
       "incdirs": libincs,
       "srcs": libsrcs
