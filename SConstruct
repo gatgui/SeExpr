@@ -10,25 +10,8 @@ from excons.tools import threads
 from excons.tools import python
 from excons.tools import boost
 
-Help("""USAGE
-  scons [OPTIONS] TARGET*
-
-AVAILABLE TARGETS
-  lib    (default)
-  python
-  editor (no supported yet)
-  demos
-
-SEEXPR OPTIONS
-  generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
-  with-qt=<str>       : Qt prefix (use 'include' and 'lib' subfolders)
-  with-qt-inc=<str>   : Qt includes path (optional if with-qt= is set)
-  with-qt-lib=<str>   : Qt libraries path (optional if with-qt= is set)
-
-""" + excons.GetOptionsString())
 
 excons.SetArgument("use-c++11", 1)
-
 
 # Check if editor should be built
 buildEditor = ("editor" in COMMAND_LINE_TARGETS)
@@ -138,6 +121,7 @@ python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())
 prjs = [
    {  "name": "SeExpr2",
       "type": "staticlib",
+      "desc": "SeExpr static library",
       "alias": "lib",
       "defs": libdefs,
       "incdirs": libincs,
@@ -208,7 +192,19 @@ if buildEditor:
                 "libs": ["SeExpr2"],
                 "custom": [gl.Require, RequireQt, dl.Require, threads.Require]})
 
+build_opts = """SEEXPR OPTIONS
+  generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
+  with-qt=<str>       : Qt prefix                                              []
+  with-qt-inc=<str>   : Qt includes path                                       [<prefix>/include]
+  with-qt-lib=<str>   : Qt libraries path                                      [<prefix>/lib]"""
+
+excons.AddHelpOptions(seexpr=build_opts)
+excons.AddHelpTargets({"python": "SeExpr python module",
+                       "editor": "SeExpr expression editor",
+                       "demos": "SeExpr sample programs"})
+
 targets = excons.DeclareTargets(env, prjs)
 
 insthdrs = env.Install(excons.OutputBaseDirectory() + "/include/SeExpr2", Glob("src/SeExpr/*.h"))
 env.Depends(targets["SeExpr2"], insthdrs)
+
