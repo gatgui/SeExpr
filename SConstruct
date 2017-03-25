@@ -71,27 +71,44 @@ def RequireQt(env):
          env.Append(LIBPATH = [qtlib])
       env.Append(LIBS = ["QtCore", "QtGui", "QtOpenGL"])
 
-
 env = excons.MakeBaseEnv()
 env["BUILDERS"]["GenerateConfig"] = Builder(action=Action(GenerateConfig, "Generating $TARGET ...", suffix=".h", src_suffix=".h.in"))
 env["BUILDERS"]["GenerateMOC"] = Builder(action=Action(GenerateMOC, "Generating $TARGET ..."), suffix="_moc.cpp")
 
 # Library
+libccflags = ""
+libcppflags = ""
 libdefs = [] # ["__STDC_LIMIT_MACROS"]
 if not sys.platform == "win32":
-   env.Append(CPPFLAGS=" -msse4.1 -Wextra -Wno-unused-parameter")
+   libcppflags += " -msse4.1 -Wextra -Wno-unused-parameter"
    if sys.platform == "darwin":
-      env.Append(CPPFLAGS=" -Wno-date-time -Wno-deprecated-declarations -Wno-unneeded-internal-declaration")
+      libcppflags += " -Wno-date-time -Wno-deprecated-declarations -Wno-unneeded-internal-declaration"
    else:
-      env.Append(CCFLAGS=" -rdynamic")
+      libccflags += " -rdynamic"
 else:
    libdefs.extend(["SEEXPR_WIN32", "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE", "NOMINMAX"])
    # disable:
    # - 4267: size_t to int warnings
    # - 4244: double to float, __int64 to int warnings
    # - 4005: macro redifinitions
-   env.Append(CPPFLAGS=" -wd4267 -wd4244 -wd4005")
+   libcppflags += " -wd4267 -wd4244 -wd4005"
 libincs = ["src/SeExpr", "src/SeExpr/generated"]
+
+# Only support static linking so far
+def RequireSeExpr2(env):
+   if libcppflags:
+      env.Append(CPPFLAGS=libcppflags)
+   if libccflags:
+      env.Append(CCFLAGS=libcflags)
+   if libdefs:
+      env.Append(CPPDEFINES=libdefs)
+   if not excons.StaticallyLink(env, "SeExpr2", silent=True):
+      print("'SeExpr2' static library not found in LIBPATH")
+      env.Append(LIBS=["SeExpr2"])
+   if sys.platform != "win32":
+      dl.Require(env)
+
+Export("RequireSeExpr2")
 
 env.GenerateConfig("src/SeExpr/ExprConfig.h.in")
 
@@ -123,6 +140,8 @@ prjs = [
       "type": "staticlib",
       "desc": "SeExpr static library",
       "alias": "lib",
+      "ccflags": libccflags,
+      "cppflags": libcppflags,
       "defs": libdefs,
       "incdirs": libincs,
       "srcs": libsrcs
@@ -132,10 +151,8 @@ prjs = [
 if buildDemo:
    prjs.append({"name": "demos",
                 "type": "testprograms",
-                "defs": libdefs,
-                "staticlibs": ["SeExpr2"],
                 "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"],
-                "custom": [dl.Require]})
+                "custom": [RequireSeExpr2]})
 
 if buildPython:
    prjs.append({"name": "core",
