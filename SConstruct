@@ -21,13 +21,147 @@ if use_llvm:
 else:
    llvm_incdir, llvm_libdir = None, None
 
+llvm_cfg = None
+llvm_libs = None
+
+def LLVMConfig(env):
+   global llvm_cfg
+
+   if llvm_cfg is None:
+      relpath = "llvm/Config/llvm-config.h"
+
+      llvm_config = None
+
+      if llvm_incdir:
+         path = llvm_incdir + "/" + relpath
+         if os.path.isfile(path):
+            llvm_config = path
+
+      if llvm_config is None:
+         incdirs = map(str, env["CPPPATH"])
+         if sys.platform != "win32":
+            # Add some standard locations
+            incdirs.extend(["/usr/local/include", "/usr/include"])
+         for incdir in incdirs:
+            path = incdir + "/" + relpath
+            if os.path.isfile(path):
+               llvm_config = path
+               break
+
+      if llvm_config is None:
+         print("[SeExpr2] Could not find 'llvm/Config/llvm-config.h'")
+         sys.exit(1)
+
+      targets = []
+      native_target = None
+      enable_threads = False
+      major = 0
+      minor = 0
+      e = re.compile(r"#define\s+LLVM_VERSION_(MAJOR|MINOR)\s+(\d+)")
+      with open(llvm_config, "r") as f:
+         for l in f.readlines():
+            l = l.strip()
+            m = e.match(l.strip())
+            if m:
+               if m.group(1) == "MAJOR":
+                  major = int(m.group(2))
+               elif m.group(1) == "MINOR":
+                  minor = int(m.group(2))
+            else:
+               if "LLVM_NATIVE_ARCH" in l:
+                  native_target = l.split("LLVM_NATIVE_ARCH")[1].strip()
+               elif "LLVM_ENABLE_THREADS" in l:
+                  enable_threads = (int(l.split("LLVM_ENABLE_THREADS")[1].strip()) != 0)
+
+      defpath = os.path.dirname(llvm_config) + "/Targets.def"
+      if os.path.isfile(defpath):
+         e = re.compile(r"LLVM_TARGET\(([^)]+)\)")
+         with open(defpath, "r") as f:
+            for l in f.readlines():
+               m = e.match(l.strip())
+               if m:
+                  targets.append(m.group(1))
+
+      llvm_cfg = {"major_version": major,
+                  "minor_version": minor,
+                  "native_target": native_target,
+                  "enable_threads": enable_threads,
+                  "targets": targets}
+
+   return llvm_cfg
+
+def LLVMLibs(env, cfg):
+   global llvm_libs
+
+   if llvm_libs is None:
+      libdir = llvm_libdir
+      libprefix = ("lib" if sys.platform != "win32" else "")
+      libext = (".a" if sys.platform != "win32" else ".lib")
+      if libdir is None:
+         target = "%sLLVMSupport%s" % (libprefix, libext)
+         libdirs = map(str, env["LIBPATH"])
+         if sys.platform != "win32":
+            if sys.platform != "darwin":
+               libdirs.extend(["/usr/local/lib64", "/usr/local/lib", "/usr/lib64", "/usr/lib"])
+            else:
+               libdirs.extend(["/usr/local/lib", "/usr/lib"])
+            for ld in libdirs:
+               path = ld + "/" + target
+               if os.path.isfile(path):
+                  libdir = ld
+                  break
+      if libdir is None:
+         print("[SeExpr2] Cannot find LLVM libraries.")
+      libs = excons.glob("%s/%sLLVM*%s" % (libdir, libprefix, libext))
+      e = re.compile(r"%sLLVM(\w+)(AsmParser|AsmPrinter|CodeGen|Desc|Disassembler|Info|Utils)%s" % (libprefix, libext.replace(".", r"\.")))
+      llvm_libs = {"base": [],
+                   "target": {},
+                   "jit": {},
+                   "debug": []}
+      for lib in libs:
+         bn = os.path.basename(lib)
+         m = e.match(bn)
+         if m and m.group(1) in cfg["targets"]:
+            tlibs = llvm_libs["target"].get(m.group(1), [])
+            tlibs.append(m.group(1) + m.group(2))
+            llvm_libs["target"][m.group(1)] = tlibs
+         else:
+            ln = os.path.splitext(bn)[0][4 + len(libprefix):]
+            if ln.startswith("Debug"):
+               llvm_libs["debug"].append(ln)
+            elif ln.endswith("JIT"):
+               jn = ln[:-3] # strip JIT
+               jl = llvm_libs["jit"].get(jn, [])
+               jl.append(ln)
+               llvm_libs["jit"][jn] = jl
+            else:
+               llvm_libs["base"].append(ln)
+      for jn in llvm_libs["jit"].keys():
+         bl = llvm_libs["base"]
+         llvm_libs["jit"][jn].extend(filter(lambda x: x.startswith(jn), bl))
+         llvm_libs["base"] = filter(lambda x: not x.startswith(jn), bl)
+
+   return llvm_libs
+
 def RequireLLVM(env):
+   cfg = LLVMConfig(env)
+   if cfg["major_version"] != 3 or cfg["minor_version"] < 8:
+      print("[SeExpr2] Unsupported LLVM version %d.%d." % (cfg["major_version"], cfg["minor_version"]))
+      sys.exit(1)
+   if cfg["minor_version"] == 8:
+      env.Append(CPPDEFINES=["__STDC_LIMIT_MACROS", "__STDC_CONSTANT_MACROS"])
    if llvm_incdir:
       env.Append(CPPPATH=[llvm_incdir])
    if llvm_libdir:
       env.Append(LIBPATH=[llvm_libdir])
-   for l in ["LLVMCore"]:
-      excons.Link(env, "LLVMCore", static=True, force=True, silent=True)
+   alibs = LLVMLibs(env, cfg)
+   llibs = alibs["jit"].get("MC", []) + alibs["target"].get(cfg["native_target"], []) + alibs["base"]
+   for l in llibs:
+      excons.Link(env, "LLVM%s" % l, static=True, force=True, silent=True)
+   if sys.platform != "win32":
+      env.Append(LIBS=["curses"])
+      if cfg["enable_threads"]:
+         env.Append(LIBS=["pthread"])
 
 # Check if editor should be built
 buildEditor = ("editor" in COMMAND_LINE_TARGETS)
