@@ -1,9 +1,9 @@
 import os
 import re
 import sys
-import glob
 import subprocess
 import excons
+import excons.config
 from excons.tools import gl
 from excons.tools import dl
 from excons.tools import threads
@@ -11,7 +11,23 @@ from excons.tools import python
 from excons.tools import boost
 
 
-excons.SetArgument("use-c++11", 1)
+ARGUMENTS["use-c++11"] = "1"
+
+env = excons.MakeBaseEnv()
+
+use_llvm = (excons.GetArgument("use-llvm", 0, int) != 0)
+if use_llvm:
+   llvm_incdir, llvm_libdir = excons.GetDirs("llvm", silent=False)
+else:
+   llvm_incdir, llvm_libdir = None, None
+
+def RequireLLVM(env):
+   if llvm_incdir:
+      env.Append(CPPPATH=[llvm_incdir])
+   if llvm_libdir:
+      env.Append(LIBPATH=[llvm_libdir])
+   for l in ["LLVMCore"]:
+      excons.Link(env, "LLVMCore", static=True, force=True, silent=True)
 
 # Check if editor should be built
 buildEditor = ("editor" in COMMAND_LINE_TARGETS)
@@ -28,22 +44,6 @@ if int(ARGUMENTS.get("generate-parser", "0")) != 0:
    # Check if we can actually generate parser sources
    generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
 
-
-def GenerateConfig(target, source, env):
-   with open(str(source[0]), "r") as src:
-      with open(str(target[0]), "w") as dst:
-         e = re.compile("@([^@]+)@")
-         for line in src.readlines():
-            m = e.search(line)
-            if m is not None:
-               opt = m.group(1)
-               if opt == "SEEXPR_ENABLE_LLVM_BACKEND":
-                  # LLVM backend build not yet supported
-                  line = line.replace(m.group(0), "0")
-               else:
-                  excons.WarnOne("Unsupported config option '%s'" % opt)
-            dst.write(line)
-   return None
 
 def GenerateMOC(target, source, env):
    cmd = "moc \"%s\" -o \"%s\"" % (source[0], target[0])
@@ -71,8 +71,8 @@ def RequireQt(env):
          env.Append(LIBPATH = [qtlib])
       env.Append(LIBS = ["QtCore", "QtGui", "QtOpenGL"])
 
-env = excons.MakeBaseEnv()
-env["BUILDERS"]["GenerateConfig"] = Builder(action=Action(GenerateConfig, "Generating $TARGET ...", suffix=".h", src_suffix=".h.in"))
+
+GenerateConfig = excons.config.AddGenerator(env, "seexpr", {"SEEXPR_ENABLE_LLVM_BACKEND": ("1" if use_llvm else "0")})
 env["BUILDERS"]["GenerateMOC"] = Builder(action=Action(GenerateMOC, "Generating $TARGET ..."), suffix="_moc.cpp")
 
 # Library
@@ -95,6 +95,17 @@ else:
 libincs = ["src/SeExpr", "src/SeExpr/generated"]
 
 # Only support static linking so far
+def SeExpr2Name():
+   return "SeExpr2"
+
+def SeExpr2Path():
+   name = SeExpr2Name()
+   if sys.platform == "win32":
+      libname = name + ".lib"
+   else:
+      libname = "lib" + name + ".a"
+   return excons.OutputBaseDirectory() + "/lib/" + libname
+
 def RequireSeExpr2(env):
    if libcppflags:
       env.Append(CPPFLAGS=libcppflags)
@@ -102,15 +113,15 @@ def RequireSeExpr2(env):
       env.Append(CCFLAGS=libcflags)
    if libdefs:
       env.Append(CPPDEFINES=libdefs)
-   if not excons.StaticallyLink(env, "SeExpr2", silent=True):
-      print("'SeExpr2' static library not found in LIBPATH")
-      env.Append(LIBS=["SeExpr2"])
+   excons.Link(env, SeExpr2Path(), static=True, force=True, silent=True)
+   if use_llvm:
+      RequireLLVM(env)
    if sys.platform != "win32":
       dl.Require(env)
 
-Export("RequireSeExpr2")
+Export("SeExpr2Name SeExpr2Path RequireSeExpr2")
 
-env.GenerateConfig("src/SeExpr/ExprConfig.h.in")
+GenerateConfig("src/SeExpr/ExprConfig.h", "src/SeExpr/ExprConfig.h.in")
 
 if generateParser:
    env.Command("ExprParserLexIn.cpp", "src/SeExpr/ExprParserLex.l",
@@ -128,8 +139,11 @@ else:
    env.Command("src/SeExpr/generated/ExprParser.tab.h", "windows7/SeExpr/generated/ExprParser.tab.h", Copy("$TARGET", "$SOURCE"))
    env.Command("src/SeExpr/generated/ExprParser.cpp", "windows7/SeExpr/generated/ExprParser.cpp", Copy("$TARGET", "$SOURCE"))
 
-# collect library sources after potential parser generation so that Glob get the generated files
-libsrcs = filter(lambda x: os.path.basename(x) != "ExprLLVMCodeGeneration.cpp", glob.glob("src/SeExpr/*.cpp")) + Glob("src/SeExpr/generated/*.cpp")
+# Collect library sources after potential parser generation so that Glob get the generated files
+libsrcs = excons.glob("src/SeExpr/*.cpp")
+if not use_llvm:
+   libsrcs = filter(lambda x: os.path.basename(x) != "ExprLLVMCodeGeneration.cpp", libsrcs)
+libsrcs += Glob("src/SeExpr/generated/*.cpp")
 
 # Python module
 python_prefix = "%s/%s/SeExprPy" % (python.ModulePrefix(), python.Version())
@@ -144,7 +158,8 @@ prjs = [
       "cppflags": libcppflags,
       "defs": libdefs,
       "incdirs": libincs,
-      "srcs": libsrcs
+      "srcs": libsrcs,
+      "custom": ([RequireLLVM] if use_llvm else [])
    },
 ]
 
@@ -161,7 +176,7 @@ if buildPython:
                 "prefix": python_prefix,
                 "ext": python.ModuleExtension(),
                 "incdirs": ["src/SeExpr/parser"],
-                "srcs": glob.glob("src/py/*.cpp") + glob.glob("src/SeExpr/parser/*.cpp"),
+                "srcs": excons.glob("src/py/*.cpp") + excons.glob("src/SeExpr/parser/*.cpp"),
                 "install": {python_prefix: ["src/py/__init__.py", "src/py/utils.py"]},
                 "custom": [boost.Require(libs=["python"]), python.SoftRequire, dl.Require, threads.Require]})
 
@@ -182,7 +197,7 @@ if buildEditor:
       env.Command("src/ui/generated/ExprSpecParser.tab.h", "windows7/ui/generated/ExprSpecParser.tab.h", Copy("$TARGET", "$SOURCE"))
       env.Command("src/ui/generated/ExprSpecParser.cpp", "windows7/ui/generated/ExprSpecParser.cpp", Copy("$TARGET", "$SOURCE"))
 
-   srcs = filter(lambda x: not x.endswith("_moc.cpp"), glob.glob("src/ui/*.cpp"))
+   srcs = filter(lambda x: not x.endswith("_moc.cpp"), excons.glob("src/ui/*.cpp"))
    srcs += Glob("src/ui/generated/*.cpp")
 
    qtmochdrs = ["src/ui/ExprBrowser.h",
@@ -204,16 +219,19 @@ if buildEditor:
                 "alias": "editor",
                 "type": "program",
                 "defs": ["SeExprEditor_BUILT_AS_STATIC"],
-                "incdirs": ["src/SeExpr", "src/ui", "src/ui/generated"],
+                "incdirs": ["src/ui", "src/ui/generated"],
                 "srcs": qtmocsrcs + srcs,
-                "libs": ["SeExpr2"],
-                "custom": [gl.Require, RequireQt, dl.Require, threads.Require]})
+                "custom": [RequireSeExpr2, gl.Require, RequireQt, dl.Require, threads.Require]})
 
 build_opts = """SEEXPR OPTIONS
   generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
-  with-qt=<str>       : Qt prefix                                              []
-  with-qt-inc=<str>   : Qt includes path                                       [<prefix>/include]
-  with-qt-lib=<str>   : Qt libraries path                                      [<prefix>/lib]"""
+  use-llvm=0|1        : Build with LLVM backend.                               [0]
+  with-llvm=<str>     : LLVM prefix.                                           []
+  with-llvm-inc=<str> : LLVM includes path.                                    [<prefix>/include]
+  with-llvm-lib=<str> : LLVM includes path.                                    [<prefix>/lib]
+  with-qt=<str>       : Qt prefix.                                             []
+  with-qt-inc=<str>   : Qt includes path.                                      [<prefix>/include]
+  with-qt-lib=<str>   : Qt libraries path.                                     [<prefix>/lib]"""
 
 excons.AddHelpOptions(seexpr=build_opts)
 excons.AddHelpTargets({"python": "SeExpr python module",
