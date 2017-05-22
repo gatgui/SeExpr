@@ -16,22 +16,22 @@ ARGUMENTS["use-c++11"] = "1"
 
 env = excons.MakeBaseEnv()
 
-use_llvm = (excons.GetArgument("use-llvm", 0, int) != 0)
+use_llvm = (excons.GetArgument("seexpr-use-llvm", 0, int) != 0)
 if use_llvm:
    RequireLLVM = llvm.Require(min_version=(3, 8), require_rtti=True, require_exceptions=False)
 
 # Check if editor should be built
-buildEditor = ("editor" in COMMAND_LINE_TARGETS)
+buildEditor = ("seexpr-editor" in COMMAND_LINE_TARGETS)
 
 # Check if python module should be built
-buildPython = ("python" in COMMAND_LINE_TARGETS)
+buildPython = ("seexpr-python" in COMMAND_LINE_TARGETS)
 
 # Check if demos should be built
-buildDemo = ("demos" in COMMAND_LINE_TARGETS)
+buildDemo = ("seexpr-demos" in COMMAND_LINE_TARGETS)
 
 # Check if parser sources should be generated
 generateParser = False
-if int(ARGUMENTS.get("generate-parser", "0")) != 0:
+if int(ARGUMENTS.get("seexpr-generate-parser", "0")) != 0:
    # Check if we can actually generate parser sources
    generateParser = (excons.Which("flex") and excons.Which("bison") and excons.Which("sed"))
 
@@ -144,7 +144,7 @@ prjs = [
    {  "name": "SeExpr2",
       "type": "staticlib",
       "desc": "SeExpr static library",
-      "alias": "lib",
+      "alias": "seexpr-lib",
       "ccflags": libccflags,
       "cppflags": libcppflags,
       "defs": libdefs,
@@ -155,7 +155,7 @@ prjs = [
 ]
 
 if buildDemo:
-   prjs.append({"name": "demos",
+   prjs.append({"name": "seexpr-demos",
                 "type": "testprograms",
                 "srcs": ["src/demos/asciiCalculator.cpp", "src/demos/asciiGraph.cpp"],
                 "custom": [RequireSeExpr2]})
@@ -163,7 +163,7 @@ if buildDemo:
 if buildPython:
    prjs.append({"name": "core",
                 "type": "dynamicmodule",
-                "alias": "python",
+                "alias": "seexpr-python",
                 "prefix": python_prefix,
                 "ext": python.ModuleExtension(),
                 "incdirs": ["src/SeExpr/parser"],
@@ -207,7 +207,7 @@ if buildEditor:
    qtmocsrcs = map(lambda x: str(env.GenerateMOC(x)[0]), qtmochdrs)
 
    prjs.append({"name": "SeExpr2Editor",
-                "alias": "editor",
+                "alias": "seexpr-editor",
                 "type": "program",
                 "defs": ["SeExprEditor_BUILT_AS_STATIC"],
                 "incdirs": ["src/ui", "src/ui/generated"],
@@ -215,16 +215,17 @@ if buildEditor:
                 "custom": [RequireSeExpr2, gl.Require, RequireQt, dl.Require, threads.Require]})
 
 build_opts = """SEEXPR OPTIONS
-  generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
-  use-llvm=0|1        : Build with LLVM backend.                               [0]
-  with-qt=<path>      : Qt prefix.                                             []
-  with-qt-inc=<path>  : Qt includes path.                                      [<prefix>/include]
-  with-qt-lib=<path>  : Qt libraries path.                                     [<prefix>/lib]"""
+  seexpr-generate-parser=0|1 : Generate parser sources using flex/bison if available. [0]
+  seexpr-use-llvm=0|1        : Build with LLVM backend.                               [0]
+  with-qt=<path>             : Qt prefix.                                             []
+  with-qt-inc=<path>         : Qt includes path.                                      [<prefix>/include]
+  with-qt-lib=<path>         : Qt libraries path.                                     [<prefix>/lib]"""
 
 excons.AddHelpOptions(seexpr=build_opts)
-excons.AddHelpTargets({"python": "SeExpr python module",
-                       "editor": "SeExpr expression editor",
-                       "demos": "SeExpr sample programs"})
+excons.AddHelpOptions(llvm=llvm.GetOptionsString())
+excons.AddHelpTargets({"seexpr-python": "SeExpr python module",
+                       "seexpr-editor": "SeExpr expression editor",
+                       "seexpr-demos": "SeExpr sample programs"})
 
 targets = excons.DeclareTargets(env, prjs)
 
