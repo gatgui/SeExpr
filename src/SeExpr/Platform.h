@@ -43,6 +43,12 @@
 #include <tchar.h>
 #include <process.h>
 
+#ifdef SEEXPR_ENABLE_LLVM
+#ifdef MemoryFence
+#undef MemoryFence
+#endif
+#endif
+
 #else
 
 // linux/unix/posix
