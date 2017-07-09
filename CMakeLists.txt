@@ -72,7 +72,14 @@ message(STATUS "CMAKE_INSTALL_LIBDIR = ${CMAKE_INSTALL_LIBDIR}")
 # Configuration options
 # TODO: find GTEST and boost and python the proper ways
 set(BOOST_DIR /usr CACHE PATH "where boost is located")
-set(BOOST_PYTHON_LIBNAME boost_python CACHE STRING "what library name for boost python")
+find_package(PythonInterp) # provides Python version check
+if(PYTHON_VERSION_MAJOR LESS 3)
+    set(BOOST_PYTHON_LIBNAME boost_python CACHE STRING "what library name for boost python")
+else()
+    # try to find boost_python3 in a way compatible with most distributions
+    find_library(BOOST_PYTHON3_LIB NAMES "boost_python3" "boost_python3${PYTHON_VERSION_MINOR}")
+    SET (BOOST_PYTHON_LIBNAME ${BOOST_PYTHON3_LIB} CACHE STRING "what library name for boost python")
+endif()
 set(GTEST_DIR /usr CACHE PATH "Where to find GTEST") # /usr/include/gtest)
 set(ENABLE_LLVM_BACKEND ON CACHE BOOL "Whether to build with LLVM backend")
 set(USE_PYTHON ON CACHE BOOL "Whether to compile python libraries")
@@ -81,11 +88,11 @@ set(LLVM_LIB "")
 if (ENABLE_LLVM_BACKEND)
     set(LLVM_DIR /usr/share/llvm/cmake CACHE PATH "Where to search for LLVM i.e. ")
 
-    find_package(LLVM CONFIG NAMES LLVM CONFIGS LLVM-Config.cmake)
+    find_package(LLVM CONFIG NAMES LLVM CONFIGS LLVMConfig.cmake)
     if (LLVM_FOUND)
         set(SEEXPR_ENABLE_LLVM_BACKEND 1)
-        message(STATUS "Using LLVM-Config.cmake in: ${LLVM_DIR}")
-        find_program(LLVM_CONFIG_EXECUTABLE NAMES llvm-config-3.8 llvm-config)
+        message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+        find_program(LLVM_CONFIG_EXECUTABLE NAMES ${LLVM_TOOLS_BINARY_DIR}/llvm-config)
 
         # Uncomment to use clang++
         #set(CMAKE_CXX_COMPILER clang++)

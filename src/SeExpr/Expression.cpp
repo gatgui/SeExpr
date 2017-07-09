@@ -345,7 +345,7 @@ const char* Expression::evalStr(VarBlock* varBlock) const {
             _interpreter->eval(varBlock);
             return _interpreter->s[_returnSlot];
         } else {  // useLLVM
-            _llvmEvaluator->evalStr(varBlock);
+            return _llvmEvaluator->evalStr(varBlock);
         }
     }
     return 0;

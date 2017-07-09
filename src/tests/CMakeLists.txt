@@ -25,8 +25,7 @@ if(EXISTS ${GTEST_DIR}/include)
     if (DEFINED PNG_DIR)
         message(STATUS "PNG_DIR = ${PNG_DIR}")
         include_directories(${PNG_DIR}/include)
-        find_library(PNG_LIBRARIES png PATHS ${PNG_DIR}/${CMAKE_INSTALL_LIBDIR}
-                     NO_DEFAULT_PATH)
+        find_library(PNG_LIBRARIES png PATHS ${PNG_DIR}/${CMAKE_INSTALL_LIBDIR})
         set(PNG_FOUND 1)
     endif()
 
@@ -59,7 +58,7 @@ if(EXISTS ${GTEST_DIR}/include)
                 /disney/shows/default/rel/global/expressions)
         endif()
 
-        add_executable(testmain2 "testmain.cpp" "imageTests.cpp" "testSeExprExamples.cpp" ${PAINT3D_SRC} "basic.cpp")
+        add_executable(testmain2 "testmain.cpp" "imageTests.cpp" "testSeExprExamples.cpp" ${PAINT3D_SRC} "basic.cpp" "string.cpp")
         target_link_libraries(testmain2 SeExpr2 gtest ${PNG_LIBRARIES})
         install(TARGETS testmain2 DESTINATION share/test/SeExpr2)
         install(PROGRAMS imagediff.py DESTINATION share/test/SeExpr2)
