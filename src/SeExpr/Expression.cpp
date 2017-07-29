@@ -282,7 +282,7 @@ void Expression::prep() const {
             int line = (lit != lines.end() ? *lit : lines.back()) - lines.front() + 1;
             int lineStart = line == 1 ? 0 : lines[line - 1];
             int col = _errors[i].startPos - lineStart;
-            sstream << "  Line " << line << " Col " << col << _errors[i].error << std::endl;
+            sstream << "  Line " << line << " Col " << col << " - " << _errors[i].error << std::endl;
         }
         _parseError = std::string(sstream.str());
     }
