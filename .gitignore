@@ -16,3 +16,11 @@ src/SeExpr/ExprConfig.h
 /y.*
 /ExprParserLexIn.cpp
 /seexpr.config
+
+src/SeExpr/parser
+src/SeExprEditor/generated
+.vs
+.vscode
+CMakeLists.txt.user
+CMakeSettings.json
+

@@ -45,12 +45,13 @@ bool Expression::debugging = getenv("SE_EXPR_DEBUG") != 0;
 // And the environment variables SE_EXPR_DEBUG
 static Expression::EvaluationStrategy chooseDefaultEvaluationStrategy() {
     if (Expression::debugging) {
-#ifdef _MSC_VER
-        std::cerr << "SeExpr2 Debug Mode Enabled " << _MSC_VER
+        std::cerr << "SeExpr2 Debug Mode Enabled " <<
+#if defined(WINDOWS)
+            _MSC_FULL_VER
 #else
-        std::cerr << "SeExpr2 Debug Mode Enabled " << __VERSION__
+            __VERSION__
 #endif
-                  << std::endl;
+            << std::endl;
     }
 #ifdef SEEXPR_ENABLE_LLVM
     if (char* env = getenv("SE_EXPR_EVAL")) {
@@ -308,7 +309,7 @@ const double* Expression::evalFP(VarBlock* varBlock) const {
     if (_isValid) {
         if (_evaluationStrategy == UseInterpreter) {
             _interpreter->eval(varBlock);
-            return &_interpreter->d[_returnSlot];
+            return (varBlock && varBlock->threadSafe) ? &(varBlock->d[_returnSlot]) : &_interpreter->d[_returnSlot];
         } else {  // useLLVM
             return _llvmEvaluator->evalFP(varBlock);
         }
@@ -343,7 +344,7 @@ const char* Expression::evalStr(VarBlock* varBlock) const {
     if (_isValid) {
         if (_evaluationStrategy == UseInterpreter) {
             _interpreter->eval(varBlock);
-            return _interpreter->s[_returnSlot];
+            return (varBlock && varBlock->threadSafe) ? varBlock->s[_returnSlot] : _interpreter->s[_returnSlot];
         } else {  // useLLVM
             return _llvmEvaluator->evalStr(varBlock);
         }

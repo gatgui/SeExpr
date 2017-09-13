@@ -34,10 +34,16 @@
 #endif
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_SECURE_NO_DEPRECATE 1
+#if !defined(NOMINMAX)
 #define NOMINMAX 1
+#endif
 
-// windows - defined for both Win32 and Win64
-#include <Windows.h>
+// note: because there are some conflicts preventing the use of
+// windows.h and COFF.h (one of LLVM include files) in the same
+// compilation unit (https://groups.google.com/forum/#!topic/llvm-dev/6n5Q0pFdaSA)
+// do NOT include windows.h here. The Windows implementation is
+// done on the Platform.cpp file, using opaque types.
+
 #include <malloc.h>
 #include <io.h>
 #include <tchar.h>
@@ -57,6 +63,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <inttypes.h>
+#include <sys/time.h>
 // OS for spinlock
 #ifdef __APPLE__
 #include <libkern/OSAtomic.h>
@@ -86,10 +93,10 @@ typedef unsigned int uint32_t;
 #ifndef M_PI
 #define M_PI (3.141592653589793238)
 #endif
-#ifndef UINT32_MAX
+#if !defined(UINT32_MAX)
 #define UINT32_MAX (0xffffffff)
 #endif
-#ifndef UINT32_MIN
+#if !defined(UINT32_MIN)
 #define UINT32_MIN (0)
 #endif
 #else
@@ -139,11 +146,15 @@ class Timer {
 };
 #else  // Windows
 class Timer {
-  public:
-    Timer() {}
+    __int64 time();
+    __int64 ticksPerSeconds;
+    __int64 startTime, stopTime;
+    bool started;
 
-    void start() { std::cerr << "timer not implemented on Windows" << std::endl; }
-    long elapsedTime() { return 0; }
+  public:
+    Timer();
+    void start();
+    long elapsedTime();
 };
 #endif
 
@@ -151,7 +162,8 @@ class PrintTiming {
   public:
     PrintTiming(const std::string& s) : _s(s) { _timer.start(); }
 
-    ~PrintTiming() { std::cout << _s << " (" << _timer.elapsedTime() << " ms)" << std::endl; }
+    ~PrintTiming() { std::cout << _s.c_str() << " (" << _timer.elapsedTime() << " ms)" << std::endl; }
+
 
   private:
     Timer _timer;
@@ -169,24 +181,24 @@ namespace SeExprInternal2 {
 
 class _Mutex {
   public:
-    _Mutex() { _mutex = CreateMutex(NULL, FALSE, NULL); }
-    ~_Mutex() { CloseHandle(_mutex); }
-    void lock() { WaitForSingleObject(_mutex, INFINITE); }
-    void unlock() { ReleaseMutex(_mutex); }
+    _Mutex();
+    ~_Mutex();
+    void lock();
+    void unlock();
 
   private:
-    HANDLE _mutex;
+    void* _mutex;
 };
 
 class _SpinLock {
   public:
-    _SpinLock() { InitializeCriticalSection(&_spinlock); }
-    ~_SpinLock() { DeleteCriticalSection(&_spinlock); }
-    void lock() { EnterCriticalSection(&_spinlock); }
-    void unlock() { LeaveCriticalSection(&_spinlock); }
+    _SpinLock();
+    ~_SpinLock();
+    void lock();
+    void unlock();
 
   private:
-    CRITICAL_SECTION _spinlock;
+    void* _spinlock;
 };
 
 #else

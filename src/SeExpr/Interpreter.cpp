@@ -17,10 +17,11 @@
 #include "ExprNode.h"
 #include "Interpreter.h"
 #include "VarBlock.h"
+#include "Platform.h"
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
-#ifndef SEEXPR_WIN32
+#if !defined(WINDOWS)
 #include <dlfcn.h>
 #endif
 
@@ -28,13 +29,30 @@
 namespace SeExpr2 {
 
 void Interpreter::eval(VarBlock* block, bool debug) {
+    // get pointers to the working data
+    double* fp = d.data();
+    char** str = s.data();
+
+    // if we have a VarBlock instance, we need to update the working data
     if (block) {
-        static_assert(sizeof(char*) == sizeof(size_t), "Expect to fit size_t in char*");
-        s[0] = reinterpret_cast<char*>(block->data());
-        s[1] = reinterpret_cast<char*>(block->indirectIndex);
+        // if the VarBlock is flagged as thread safe, copy the interpreter's data to it.
+        if (block->threadSafe == true) {
+            // copy double data
+            block->d.resize(d.size());
+            fp = block->d.data();
+            memcpy(fp, d.data(), d.size() * sizeof(double));
+
+            // copy string data
+            block->s.resize(s.size());
+            str = block->s.data();
+            memcpy(str, s.data(), s.size() * sizeof(char*));
+        }
+
+        // set the variable evaluation data
+        str[0] = reinterpret_cast<char*>(block->data());
+        str[1] = reinterpret_cast<char*>(block->indirectIndex);
     }
-    double* fp = &d[0];
-    char** str = &s[0];
+
     int pc = _pcStart;
     int end = ops.size();
     while (pc < end) {
@@ -51,12 +69,12 @@ void Interpreter::eval(VarBlock* block, bool debug) {
 void Interpreter::print(int pc) const {
     std::cerr << "---- ops     ----------------------" << std::endl;
     for (size_t i = 0; i < ops.size(); i++) {
-#ifndef SEEXPR_WIN32
-        Dl_info info;
         const char* name = "";
+#if !defined(WINDOWS)
+        Dl_info info;
         if (dladdr((void*)ops[i].first, &info)) name = info.dli_sname;
-        fprintf(stderr, "%s %s %p (", pc == (int)i ? "-->" : "   ", name, ops[i].first);
 #endif
+        fprintf(stderr, "%s %s %p (", pc == (int)i ? "-->" : "   ", name, ops[i].first);
         int nextGuy = (i == ops.size() - 1 ? opData.size() : ops[i + 1].second);
         for (int k = ops[i].second; k < nextGuy; k++) {
             fprintf(stderr, " %d", opData[k]);
@@ -132,6 +150,40 @@ static Interpreter::OpF getTemplatizedOp2(int i) {
 }
 
 namespace {
+
+//! Binary operator for strings. Currently only handle '+'
+struct BinaryStringOp {
+    static int f(int* opData, double* fp, char** c, std::vector<int>& callStack) {
+        // get the operand data
+        char*& out = *(char**)c[opData[0]];
+        char* in1 = c[opData[1]];
+        char* in2 = c[opData[2]];
+
+        // delete previous data and allocate a new buffer, only if needed
+        // NOTE: this is more efficient, but might consume more memory...
+        // Maybe make this behaviour configurable ?
+        int len1 = strlen(in1);
+        int len2 = strlen(in2);
+        if (out == 0 || len1 + len2 + 1 > strlen(out))
+        {
+            delete [] out;
+            out = new char [len1 + len2 + 1];
+        }
+
+        // clear previous evaluation content
+        memset(out, 0, len1 + len2 + 1);
+
+        // concatenate strings
+        strcat(out, in1);
+        strcat(out + len1, in2);
+        out[len1 + len2] = '\0';
+
+        // copy to the output
+        c[opData[3]] = out;
+
+        return 1;
+    }
+};
 
 //! Computes a binary op of vector dimension d
 template <char op, int d>
@@ -538,33 +590,67 @@ int ExprBinaryOpNode::buildInterpreter(Interpreter* interpreter) const {
         }
     }
 
-    switch (_op) {
-        case '+':
-            interpreter->addOp(getTemplatizedOp2<'+', BinaryOp>(dimout));
-            break;
-        case '-':
-            interpreter->addOp(getTemplatizedOp2<'-', BinaryOp>(dimout));
-            break;
-        case '*':
-            interpreter->addOp(getTemplatizedOp2<'*', BinaryOp>(dimout));
-            break;
-        case '/':
-            interpreter->addOp(getTemplatizedOp2<'/', BinaryOp>(dimout));
-            break;
-        case '^':
-            interpreter->addOp(getTemplatizedOp2<'^', BinaryOp>(dimout));
-            break;
-        case '%':
-            interpreter->addOp(getTemplatizedOp2<'%', BinaryOp>(dimout));
-            break;
-        default:
-            assert(false);
+    // check if the node will output a string of numerical value
+    bool isString = child0->type().isString() || child1->type().isString();
+
+    // add the operator
+    if (isString == false) {
+        switch (_op) {
+            case '+':
+                interpreter->addOp(getTemplatizedOp2<'+', BinaryOp>(dimout));
+                break;
+            case '-':
+                interpreter->addOp(getTemplatizedOp2<'-', BinaryOp>(dimout));
+                break;
+            case '*':
+                interpreter->addOp(getTemplatizedOp2<'*', BinaryOp>(dimout));
+                break;
+            case '/':
+                interpreter->addOp(getTemplatizedOp2<'/', BinaryOp>(dimout));
+                break;
+            case '^':
+                interpreter->addOp(getTemplatizedOp2<'^', BinaryOp>(dimout));
+                break;
+            case '%':
+                interpreter->addOp(getTemplatizedOp2<'%', BinaryOp>(dimout));
+                break;
+            default:
+                assert(false);
+        }
+    } else {
+        switch (_op) {
+            case '+': {
+                interpreter->addOp(BinaryStringOp::f);
+                int intermediateOp = interpreter->allocPtr();
+                interpreter->s[intermediateOp] = (char*)(&_out);
+                interpreter->addOperand(intermediateOp);
+                break;
+            }
+            default:
+                assert(false);
+        }
     }
-    int op2 = interpreter->allocFP(dimout);
+
+    // allocate the output
+    int op2 = -1;
+    if (isString == false) {
+        op2 = interpreter->allocFP(dimout);
+    } else {
+        op2 = interpreter->allocPtr();
+    }
+
     interpreter->addOperand(op0);
     interpreter->addOperand(op1);
     interpreter->addOperand(op2);
-    interpreter->endOp();
+
+    // NOTE: one of the operand can be a function. If it's the case for
+    // strings, since functions are not immediately executed (they have
+    // endOp(false)) using endOp() here would result in a nullptr
+    // input operand during eval, thus the following arg to endOp.
+    //
+    // TODO: only stop execution if one of the operand is either a
+    // function of a var ref.
+    interpreter->endOp(isString == false);
 
     return op2;
 }

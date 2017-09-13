@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include "Platform.h"
 
 //#############################################################################
 // Template Metaprogramming Helpers
@@ -31,6 +32,19 @@ struct seexpr_static_assert {};
 template <class T>
 struct seexpr_static_assert<true, T> {
     typedef T TYPE;
+};
+
+//! Enable_if success case (can find the type TYPE)
+template <bool c, class T = void>
+struct my_enable_if {
+    typedef T TYPE;
+};
+//! Enable_if failure case (substitution failure is not an error)
+template <class T>
+struct my_enable_if<false, T> {
+#if defined(WINDOWS)
+    typedef T TYPE;
+#endif
 };
 
 //! Static conditional type true case

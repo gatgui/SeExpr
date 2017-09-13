@@ -79,9 +79,11 @@ endif()
 
 ## Make the SeExpr library with and without LLVM support
 file(GLOB llvm_cpp "*.cpp")
-add_library(SeExpr2 SHARED ${io_cpp} ${core_cpp} ${parser_cpp} ${llvm_cpp})
 if (NOT WIN32)
+    add_library(SeExpr2 SHARED ${io_cpp} ${core_cpp} ${parser_cpp} ${llvm_cpp})
     target_link_libraries(SeExpr2 "dl" "pthread")
+else()
+    add_library(SeExpr2 STATIC ${io_cpp} ${core_cpp} ${parser_cpp} ${llvm_cpp})
 endif()
 
 ## Install binary and includes
@@ -100,5 +102,9 @@ configure_file(seexpr2.pc.in seexpr2.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/seexpr2.pc DESTINATION share/pkgconfig)
 
 if (ENABLE_LLVM_BACKEND)
-    target_link_libraries(SeExpr2 ${LLVM_LIB} "dl" "pthread")
+    if (NOT WIN32)
+        target_link_libraries(SeExpr2 ${LLVM_LIB} "dl" "pthread")
+    else ()
+        target_link_libraries(SeExpr2 ${LLVM_LIB})
+    endif ()
 endif()
